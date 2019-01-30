@@ -79,7 +79,164 @@ def strass(A, B, steps):
     return C
 
 
-def neuron_layer(X, n_neurons, name, num_recursive_steps, activation=None):
+def bini(A, B, steps, e=1e-8):
+
+    # Check Dimensions
+    (m, n) = A.get_shape().as_list()
+    # rn assuming that m is bigger than n, nn and p
+    (nn, p) = B.get_shape().as_list()
+    if n != nn: raise ValueError("incompatible dimensions")
+
+    # pre-allocate output matrix
+    C = tf.zeros([m,p])
+
+    """
+    This is the notation I use from Bini's 1980 paper
+
+    |A1, A4|  |B1, B2|  =  |C1, C2|
+    |A2, A5|  |B3, B4|     |C3, C4|
+    |A3, A6|               |C5, C6|
+    """
+
+    # Base case
+    if steps == 0 or m == 1 or n == 1 or p == 1:
+        C = tf.matmul(A,B)
+        return C
+
+    # Static peeling
+    if (3**steps > m) or (2**steps > n) or (2**steps > p):
+        raise ValueError("Too many steps/ too small matricies for static peeling")
+
+    if (m % 3**steps) != 0:
+        extra_rows = m % 3**steps
+
+        #C[:m-extra_rows, :] =
+        Cmat = bini(A[:m-extra_rows, :], B, steps, e)
+        #C[m-extra_rows:, :] =
+
+        # need to expand dims if slice of A is a vector, and expand dims if it is
+        A_slice = A[m-extra_rows:, :]
+        (slice_len, guy) = A_slice.get_shape().as_list()
+
+        Crow = tf.matmul(A_slice, B)
+        C = tf.concat([Cmat, Crow], 0)
+        return C
+
+    if (n % 2**steps) != 0:
+        extra_cols = n % (2**steps)
+
+        Cmat = bini(A[:, :n-extra_cols], B[:n-extra_cols,:], steps, e)
+
+        A_slice = A[:, n-extra_cols:]
+        B_slice = B[n-extra_cols:, :]
+        (_, slice_len) = A_slice.get_shape().as_list()
+
+        Ccol = tf.matmul(A_slice, B_slice)
+
+        C = tf.add(Cmat, Ccol)
+        return C
+
+    if (p % 2**steps) != 0:
+        #  multiP = p//(2**steps)  # multipler to find how large to make the bini matrix
+        extra_cols = p % (2**steps)
+
+        Cmat = bini(A, B[:, :p-extra_cols], steps, e)
+
+        B_slice = B[:, p-extra_cols:]
+        (_, slice_len) = B_slice.get_shape().as_list()
+
+        Ccol = tf.matmul(A, B_slice)
+
+        C = tf.concat([Cmat, Ccol], 1)
+        return C
+
+    """
+    Dynamic peeling causes issues because the ideal epsilon value is determined by 
+    the shape of the matrix and in dynamic peeling, the shape of the matrix
+    is changed every recursive step which results in dimensions with a different 
+    ideal epsilon value
+    
+    #Dynamic peeling
+    if m % 3 == 1:
+        C[:m-1, :] = bini(A[:m-1,:],B, steps, e)
+        C[m-1,:] = A[m-1,:]@B
+        return C
+    if m % 3 == 2:
+        C[:m-2, :] = bini(A[:m-2,:],B, steps, e)
+        C[m-2:,:] = A[m-2:,:]@B
+        return C
+    if n % 2 == 1:
+        C = bini(A[:, :n-1], B[:n-1,:], steps, e)
+        C = C + np.outer(A[:,n-1],B[n-1,:])
+        return C
+    if p % 2 == 1:
+        C[:, :p-1] = bini(A, B[:,:p-1], steps, e)
+        C[:,p-1] = A@B[:,p-1]
+        return C
+    """
+
+
+    # split up the matricies once rows of A are divisible by 3
+    # and cols of A and rows and cols of are divisible by 2
+    m2 = int(m/3) #first third of the rows of A
+    m3 = m2*2     #second third of the rows of A
+    n2 = int(n/2) #half of the cols of A
+    p2 = int(p/2) #half of the cols of B
+    #nn2 = int(nn/2) # half of the rows of B
+
+    A1 = A[:m2, :n2]
+    A2 = A[m2:m3, :n2]
+    A3 = A[m3:, :n2]
+    A4 = A[:m2, n2:]
+    A5 = A[m2:m3, n2:]
+    A6 = A[m3:, n2:]
+
+    B1 = B[:n2, :p2]
+    B2 = B[:n2, p2:]
+    B3 = B[n2:, :p2]
+    B4 = B[n2:, p2:]
+
+    #bini(A, B, steps, e=0.1)
+    # conquer
+
+    # check if TF has a special fun for scalar mul
+    M1  = bini(tf.add(A1, A5)                  , tf.add(tf.scalar_mul(e, B1), B4)     , steps-1, e)
+    M2  = bini(A5                              , tf.subtract(-B3, B4)                 , steps-1, e)
+    M3  = bini(A1                              , B4                                   , steps-1, e)
+    M4  = bini(tf.add(tf.scalar_mul(e,A4), A5) , tf.add(tf.scalar_mul(-e, B1), B3)    , steps-1, e)
+    M5  = bini(tf.add(A1, tf.scalar_mul(e, A4)), tf.add(tf.scalar_mul(e, B2), B4)     , steps-1, e)
+    M6  = bini(tf.add(A2, A6)                  , tf.add(B1, tf.scalar_mul(e, B4))     , steps-1, e)
+    M7  = bini(A2                              , tf.subtract(-B1, B2)                 , steps-1, e)
+    M8  = bini(A6                              , B1                                   , steps-1, e)
+    M9  = bini(tf.add(A2, tf.scalar_mul(e, A3)), tf.subtract(B2, tf.scalar_mul(e, B4)), steps-1, e)
+    M10 = bini(tf.add(tf.scalar_mul(e, A3), A6), tf.add(B1, tf.scalar_mul(e, B3))     , steps-1, e)
+
+    # nation building
+    # gonna have to con cat these, cant use indexing to put this together
+    C1 = tf.scalar_mul((1/e), tf.add(M1, tf.subtract(tf.add(M2, M4), M3)))    #C[:m2, :p2]
+    C2 = tf.scalar_mul((1/e), tf.add(-M3, M5))                                #C[:m2, p2:]
+    C3 = tf.add(M4, tf.subtract(M6, M10))                                     #C[m2:m3, :p2] error from bini paper -M10 from +M10
+    C4 = tf.subtract(M1, tf.add(M5, M9))                                      #C[m2:m3, p2:] error from bini paper -M5 from +M5
+    C5 = tf.scalar_mul((1/e), tf.add(-M8,M10))                                #C[m3:, :p2]
+    C6 = tf.scalar_mul((1/e), ( tf.add(M6, tf.subtract(tf.add(M7, M9), M8)))) #C[m3:, p2:]
+
+
+    # need to put all of the above pieces together
+    C13 = tf.concat([C1, C3], 0)
+    C135 = tf.concat([C13, C5], 0)
+    C24 = tf.concat([C2, C4], 0)
+    C246 = tf.concat([C24, C6], 0)
+    C = tf.concat([C135, C246], 1)
+
+    return C
+
+
+def calculate_e(steps):
+    e = (2**-52)**(1/(1+steps))
+    return e
+
+
+def neuron_layer(X, n_neurons, name, num_recursive_steps, fastmm='s', activation=None):
     with tf.name_scope(name):
         n_inputs = int(X.get_shape()[1])
         stddev = 2 / np.sqrt(n_inputs)
@@ -87,7 +244,13 @@ def neuron_layer(X, n_neurons, name, num_recursive_steps, activation=None):
         W = tf.Variable(init, name="kernel")
         b = tf.Variable(tf.zeros([n_neurons]), name="bias")
 
-        Z = strass(X, W, num_recursive_steps) + b
+        # for Strassen's fast matrix multiply
+        if fastmm == 's':
+            Z = strass(X, W, num_recursive_steps) + b
+
+        # for Bini's fast matrix mulitply
+        if fastmm == 'b':
+            Z = bini(X, W, steps=num_recursive_steps, e=calculate_e(num_recursive_steps)) + b
 
         if activation is not None:
             return activation(Z)
@@ -102,7 +265,7 @@ if __name__ == '__main__':
     learning_rate = 0.01
     n_epochs = 50
     num_recur_steps = 1
-    num_neural_nets = 10
+    num_neural_nets = 2
 
     n_inputs = 28*28  # MNIST
     n_hidden1 = 300
@@ -127,11 +290,12 @@ if __name__ == '__main__':
         y = tf.placeholder(tf.int64, shape=(batch_size), name="y")
 
         with tf.name_scope("dnn"):
-            hidden1 = neuron_layer(X, n_hidden1, num_recursive_steps=num_recur_steps, name="hidden1",
-                                   activation=tf.nn.relu)
-            hidden2 = neuron_layer(hidden1, n_hidden2, num_recursive_steps=num_recur_steps, name="hidden2",
-                                   activation=tf.nn.relu)
-            logits = neuron_layer(hidden2, n_outputs, num_recursive_steps=num_recur_steps, name="outputs")
+            hidden1 = neuron_layer(X, n_hidden1, num_recursive_steps=num_recur_steps, fastmm='b',
+                                   name="hidden1", activation=tf.nn.relu)
+            hidden2 = neuron_layer(hidden1, n_hidden2, num_recursive_steps=num_recur_steps, fastmm='b',
+                                   name="hidden2", activation=tf.nn.relu)
+            logits = neuron_layer(hidden2, n_outputs, num_recursive_steps=num_recur_steps, fastmm='b',
+                                  name="outputs")
 
         with tf.name_scope("loss"):
             xentropy = tf.nn.sparse_softmax_cross_entropy_with_logits(labels=y, logits=logits)
