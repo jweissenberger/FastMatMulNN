@@ -81,13 +81,13 @@ def strass(A, B, steps):
 
 def bini(A, B, steps, e=1e-8):
 
-    # Check Dimensions
+    #Check Dimensions
     (m, n) = A.get_shape().as_list()
-    # rn assuming that m is bigger than n, nn and p
+    #rn assuming that m is bigger than n, nn and p
     (nn, p) = B.get_shape().as_list()
     if n != nn: raise ValueError("incompatible dimensions")
 
-    # pre-allocate output matrix
+    #pre-allocate output matrix
     C = tf.zeros([m,p])
 
     """
@@ -98,12 +98,12 @@ def bini(A, B, steps, e=1e-8):
     |A3, A6|               |C5, C6|
     """
 
-    # Base case
+    #Base case
     if steps == 0 or m == 1 or n == 1 or p == 1:
-        C = tf.matmul(A,B)
+        C = tf.matmul(A, B)
         return C
 
-    # Static peeling
+    #Static peeling
     if (3**steps > m) or (2**steps > n) or (2**steps > p):
         raise ValueError("Too many steps/ too small matricies for static peeling")
 
@@ -122,6 +122,7 @@ def bini(A, B, steps, e=1e-8):
         C = tf.concat([Cmat, Crow], 0)
         return C
 
+
     if (n % 2**steps) != 0:
         extra_cols = n % (2**steps)
 
@@ -136,8 +137,9 @@ def bini(A, B, steps, e=1e-8):
         C = tf.add(Cmat, Ccol)
         return C
 
+
     if (p % 2**steps) != 0:
-        #  multiP = p//(2**steps)  # multipler to find how large to make the bini matrix
+        multiP = p//(2**steps) #multipler to find how large to make the bini matrix
         extra_cols = p % (2**steps)
 
         Cmat = bini(A, B[:, :p-extra_cols], steps, e)
@@ -250,7 +252,9 @@ def neuron_layer(X, n_neurons, name, num_recursive_steps, fastmm='s', activation
 
         # for Bini's fast matrix mulitply
         if fastmm == 'b':
-            Z = bini(X, W, steps=num_recursive_steps, e=calculate_e(num_recursive_steps)) + b
+            guy = calculate_e(num_recursive_steps)
+            print('its just the guy:', guy)
+            Z = bini(X, W, steps=num_recursive_steps, e=guy) + b
 
         if activation is not None:
             return activation(Z)
@@ -264,7 +268,7 @@ if __name__ == '__main__':
     seed = 18
     learning_rate = 0.01
     n_epochs = 50
-    num_recur_steps = 1
+    num_recur_steps = 0
     num_neural_nets = 2
 
     n_inputs = 28*28  # MNIST
