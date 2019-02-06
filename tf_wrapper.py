@@ -100,7 +100,7 @@ def bini(A, B, steps, e=1e-8):
 
     #Base case
     if steps == 0 or m == 1 or n == 1 or p == 1:
-        C = tf.matmul(A, B)
+        C = tf.matmul(A,B)
         return C
 
     #Static peeling
@@ -218,7 +218,7 @@ def bini(A, B, steps, e=1e-8):
     C1 = tf.scalar_mul((1/e), tf.add(M1, tf.subtract(tf.add(M2, M4), M3)))    #C[:m2, :p2]
     C2 = tf.scalar_mul((1/e), tf.add(-M3, M5))                                #C[:m2, p2:]
     C3 = tf.add(M4, tf.subtract(M6, M10))                                     #C[m2:m3, :p2] error from bini paper -M10 from +M10
-    C4 = tf.subtract(M1, tf.add(M5, M9))                                      #C[m2:m3, p2:] error from bini paper -M5 from +M5
+    C4 = tf.add(tf.subtract(M1, M5), M9)                                      #C[m2:m3, p2:] error from bini paper -M5 from +M5
     C5 = tf.scalar_mul((1/e), tf.add(-M8,M10))                                #C[m3:, :p2]
     C6 = tf.scalar_mul((1/e), ( tf.add(M6, tf.subtract(tf.add(M7, M9), M8)))) #C[m3:, p2:]
 
@@ -253,7 +253,7 @@ def neuron_layer(X, n_neurons, name, num_recursive_steps, fastmm='s', activation
         # for Bini's fast matrix mulitply
         if fastmm == 'b':
             guy = calculate_e(num_recursive_steps)
-            print('its just the guy:', guy)
+            print('Calculated e:', guy)
             Z = bini(X, W, steps=num_recursive_steps, e=guy) + b
 
         if activation is not None:
@@ -265,11 +265,17 @@ def neuron_layer(X, n_neurons, name, num_recursive_steps, fastmm='s', activation
 if __name__ == '__main__':
 
     batch_size = 100
-    seed = 18
+    seed = 25
     learning_rate = 0.01
-    n_epochs = 50
-    num_recur_steps = 0
+    n_epochs = 10
+    num_recur_steps = 1
     num_neural_nets = 2
+
+    # should change the name of this every time you run a different time
+    avg_epoch_test_accuracy = np.zeros(n_epochs)
+    epoch_test_name = 'classic_10eps_2nets_test'
+    avg_epoch_train_accuracy = np.zeros(n_epochs)
+    epoch_train_name = 'classic_10eps_2nets_train'
 
     n_inputs = 28*28  # MNIST
     n_hidden1 = 300
@@ -335,6 +341,9 @@ if __name__ == '__main__':
 
                 final_test_acc = acc_test
 
+                avg_epoch_train_accuracy[epoch] += acc_train
+                avg_epoch_test_accuracy[epoch] += acc_test
+
                 if acc_test >= 0.97 and epoch_w97acc < 2:
                     epoch_w97acc = epoch
 
@@ -361,3 +370,9 @@ if __name__ == '__main__':
 
     print('\nAvg final test accuracy:', avg_final_test_acc, '\nAvg epoch where 97% test accuracy was reached:',
           avg_97epoch)
+
+    avg_epoch_test_accuracy /= num_neural_nets
+    avg_epoch_train_accuracy /= num_neural_nets
+    np.save(epoch_test_name, avg_epoch_test_accuracy)
+    np.save(epoch_train_name, avg_epoch_train_accuracy)
+

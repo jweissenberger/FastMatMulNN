@@ -3,12 +3,10 @@
   <component name="ChangeListManager">
     <list default="true" id="f096a12a-8e93-4db1-862d-3744493e48b6" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.ipynb_checkpoints/TFBiniUnitTesting-checkpoint.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/.ipynb_checkpoints/TFBiniUnitTesting-checkpoint.ipynb" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.ipynb_checkpoints/TFStrassenUnitTesting-checkpoint.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/.ipynb_checkpoints/TFStrassenUnitTesting-checkpoint.ipynb" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Bini.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/Bini.ipynb" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Strassen.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/Strassen.ipynb" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/TFBiniUnitTesting.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/TFBiniUnitTesting.ipynb" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/TFStrassenUnitTesting.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/TFStrassenUnitTesting.ipynb" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/tf_wrapper.py" beforeDir="false" afterPath="$PROJECT_DIR$/tf_wrapper.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/training_results1_30.rtf" beforeDir="false" afterPath="$PROJECT_DIR$/training_results1_30.rtf" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -21,11 +19,11 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/tf_wrapper.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="351">
-              <caret line="243" column="38" lean-forward="true" selection-start-line="243" selection-start-column="38" selection-end-line="243" selection-end-column="38" />
+            <state relative-caret-position="548">
+              <caret line="374" column="34" lean-forward="true" selection-start-line="374" selection-start-column="34" selection-end-line="374" selection-end-column="34" />
               <folding>
                 <element signature="e#0#23#0" expanded="true" />
-                <element signature="e#164#2268#0" />
+                <element signature="e#134#2230#0" />
               </folding>
             </state>
           </provider>
@@ -51,9 +49,10 @@
     </option>
   </component>
   <component name="ProjectFrameBounds">
-    <option name="y" value="24" />
-    <option name="width" value="1169" />
-    <option name="height" value="906" />
+    <option name="x" value="14" />
+    <option name="y" value="23" />
+    <option name="width" value="1178" />
+    <option name="height" value="926" />
   </component>
   <component name="ProjectView">
     <navigator proportions="" version="1">
@@ -137,10 +136,11 @@
     <servers />
   </component>
   <component name="ToolWindowManager">
-    <frame x="0" y="24" width="1169" height="906" extended-state="0" />
+    <frame x="14" y="23" width="1178" height="858" extended-state="0" />
     <editor active="true" />
     <layout>
-      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.22094055" />
+      <window_info active="true" anchor="top" x="1196" y="45" width="471" height="842" id="Run" order="0" type="WINDOWED" visible="true" weight="0.44348896" />
+      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.22271127" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info id="Image Layers" order="2" />
       <window_info id="Designer" order="3" />
@@ -156,7 +156,6 @@
       <window_info anchor="bottom" id="Terminal" order="6" />
       <window_info anchor="bottom" id="Event Log" order="7" side_tool="true" />
       <window_info anchor="bottom" id="Version Control" order="8" />
-      <window_info anchor="bottom" x="896" y="123" width="520" height="842" id="Run" order="9" type="WINDOWED" weight="0.44348896" />
       <window_info anchor="right" id="Commander" internal_type="SLIDING" order="0" type="SLIDING" weight="0.4" />
       <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
       <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.25" />
@@ -184,11 +183,11 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/tf_wrapper.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="351">
-          <caret line="243" column="38" lean-forward="true" selection-start-line="243" selection-start-column="38" selection-end-line="243" selection-end-column="38" />
+        <state relative-caret-position="548">
+          <caret line="374" column="34" lean-forward="true" selection-start-line="374" selection-start-column="34" selection-end-line="374" selection-end-column="34" />
           <folding>
             <element signature="e#0#23#0" expanded="true" />
-            <element signature="e#164#2268#0" />
+            <element signature="e#134#2230#0" />
           </folding>
         </state>
       </provider>
