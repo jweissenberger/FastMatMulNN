@@ -3,10 +3,8 @@
   <component name="ChangeListManager">
     <list default="true" id="f096a12a-8e93-4db1-862d-3744493e48b6" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Bini.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/Bini.ipynb" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Strassen.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/Strassen.ipynb" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/TFBiniUnitTesting.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/TFBiniUnitTesting.ipynb" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tf_wrapper.py" beforeDir="false" afterPath="$PROJECT_DIR$/tf_wrapper.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.ipynb_checkpoints/NetworkResults-checkpoint.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/.ipynb_checkpoints/NetworkResults-checkpoint.ipynb" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.ipynb_checkpoints/TFBiniUnitTesting-checkpoint.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/.ipynb_checkpoints/TFBiniUnitTesting-checkpoint.ipynb" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -19,8 +17,8 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/tf_wrapper.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="548">
-              <caret line="374" column="34" lean-forward="true" selection-start-line="374" selection-start-column="34" selection-end-line="374" selection-end-column="34" />
+            <state relative-caret-position="4243">
+              <caret line="377" lean-forward="true" selection-start-line="377" selection-end-line="377" />
               <folding>
                 <element signature="e#0#23#0" expanded="true" />
                 <element signature="e#134#2230#0" />
@@ -136,10 +134,10 @@
     <servers />
   </component>
   <component name="ToolWindowManager">
-    <frame x="14" y="23" width="1178" height="858" extended-state="0" />
+    <frame x="14" y="23" width="1178" height="926" extended-state="0" />
     <editor active="true" />
     <layout>
-      <window_info active="true" anchor="top" x="1196" y="45" width="471" height="842" id="Run" order="0" type="WINDOWED" visible="true" weight="0.44348896" />
+      <window_info active="true" anchor="top" x="1196" y="45" width="471" height="907" id="Run" order="0" type="WINDOWED" visible="true" weight="0.44348896" />
       <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.22271127" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info id="Image Layers" order="2" />
@@ -183,8 +181,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/tf_wrapper.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="548">
-          <caret line="374" column="34" lean-forward="true" selection-start-line="374" selection-start-column="34" selection-end-line="374" selection-end-column="34" />
+        <state relative-caret-position="4243">
+          <caret line="377" lean-forward="true" selection-start-line="377" selection-end-line="377" />
           <folding>
             <element signature="e#0#23#0" expanded="true" />
             <element signature="e#134#2230#0" />
