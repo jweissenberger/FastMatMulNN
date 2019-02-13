@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="f096a12a-8e93-4db1-862d-3744493e48b6" name="Default Changelist" comment="" />
+    <list default="true" id="f096a12a-8e93-4db1-862d-3744493e48b6" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/tf_wrapper.py" beforeDir="false" afterPath="$PROJECT_DIR$/tf_wrapper.py" afterDir="false" />
+    </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -13,11 +15,10 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/tf_wrapper.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="433">
-              <caret line="123" lean-forward="true" selection-start-line="123" selection-end-line="123" />
+            <state relative-caret-position="2265">
+              <caret line="221" column="31" selection-start-line="221" selection-start-column="31" selection-end-line="221" selection-end-column="31" />
               <folding>
                 <element signature="e#0#23#0" expanded="true" />
-                <element signature="e#134#2230#0" />
               </folding>
             </state>
           </provider>
@@ -43,9 +44,8 @@
     </option>
   </component>
   <component name="ProjectFrameBounds">
-    <option name="x" value="14" />
     <option name="y" value="23" />
-    <option name="width" value="1178" />
+    <option name="width" value="1195" />
     <option name="height" value="926" />
   </component>
   <component name="ProjectView">
@@ -69,7 +69,7 @@
     </panes>
   </component>
   <component name="PropertiesComponent">
-    <property name="com.android.tools.idea.instantapp.provision.ProvisionBeforeRunTaskProvider.myTimeStamp" value="1548889735313" />
+    <property name="com.android.tools.idea.instantapp.provision.ProvisionBeforeRunTaskProvider.myTimeStamp" value="1550021126486" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$" />
     <property name="project.structure.last.edited" value="Project" />
     <property name="project.structure.proportion" value="0.0" />
@@ -130,11 +130,11 @@
     <servers />
   </component>
   <component name="ToolWindowManager">
-    <frame x="14" y="23" width="1178" height="926" extended-state="0" />
+    <frame x="0" y="23" width="1195" height="926" extended-state="0" />
     <editor active="true" />
     <layout>
-      <window_info active="true" anchor="top" x="1196" y="45" width="471" height="907" id="Run" order="0" type="WINDOWED" visible="true" weight="0.44348896" />
-      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.22271127" />
+      <window_info anchor="top" x="1203" y="45" width="464" height="907" id="Run" order="0" type="WINDOWED" weight="0.44348896" />
+      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.21942759" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info id="Image Layers" order="2" />
       <window_info id="Designer" order="3" />
@@ -177,11 +177,10 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/tf_wrapper.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="433">
-          <caret line="123" lean-forward="true" selection-start-line="123" selection-end-line="123" />
+        <state relative-caret-position="2265">
+          <caret line="221" column="31" selection-start-line="221" selection-start-column="31" selection-end-line="221" selection-end-column="31" />
           <folding>
             <element signature="e#0#23#0" expanded="true" />
-            <element signature="e#134#2230#0" />
           </folding>
         </state>
       </provider>

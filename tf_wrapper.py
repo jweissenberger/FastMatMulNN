@@ -1,6 +1,7 @@
 import tensorflow as tf
 import numpy as np
 from tensorflow.examples.tutorials.mnist import input_data
+from numpy import linalg as la
 
 
 def strass(A, B, steps):
@@ -98,12 +99,12 @@ def bini(A, B, steps, e=1e-8):
     |A3, A6|               |C5, C6|
     """
 
-    #Base case
+    # Base case
     if steps == 0 or m == 1 or n == 1 or p == 1:
         C = tf.matmul(A,B)
         return C
 
-    #Static peeling
+    # Static peeling
     if (3**steps > m) or (2**steps > n) or (2**steps > p):
         raise ValueError("Too many steps/ too small matricies for static peeling")
 
@@ -122,7 +123,6 @@ def bini(A, B, steps, e=1e-8):
         C = tf.concat([Cmat, Crow], 0)
         return C
 
-
     if (n % 2**steps) != 0:
         extra_cols = n % (2**steps)
 
@@ -137,9 +137,8 @@ def bini(A, B, steps, e=1e-8):
         C = tf.add(Cmat, Ccol)
         return C
 
-
     if (p % 2**steps) != 0:
-        multiP = p//(2**steps) #multipler to find how large to make the bini matrix
+        multiP = p//(2**steps)  # multiplier to find how large to make the bini matrix
         extra_cols = p % (2**steps)
 
         Cmat = bini(A, B[:, :p-extra_cols], steps, e)
@@ -220,8 +219,7 @@ def bini(A, B, steps, e=1e-8):
     C3 = tf.add(M4, tf.subtract(M6, M10))                                     #C[m2:m3, :p2] error from bini paper -M10 from +M10
     C4 = tf.add(tf.subtract(M1, M5), M9)                                      #C[m2:m3, p2:] error from bini paper -M5 from +M5
     C5 = tf.scalar_mul((1/e), tf.add(-M8,M10))                                #C[m3:, :p2]
-    C6 = tf.scalar_mul((1/e), ( tf.add(M6, tf.subtract(tf.add(M7, M9), M8)))) #C[m3:, p2:]
-
+    C6 = tf.scalar_mul((1/e), (tf.add(M6, tf.subtract(tf.add(M7, M9), M8)))) #C[m3:, p2:]
 
     # need to put all of the above pieces together
     C13 = tf.concat([C1, C3], 0)
@@ -341,6 +339,7 @@ if __name__ == '__main__':
 
                 final_test_acc = acc_test
 
+                # adds the current test and train accuracy to that position so that the average can be calculated
                 avg_epoch_train_accuracy[epoch] += acc_train
                 avg_epoch_test_accuracy[epoch] += acc_test
 
@@ -375,4 +374,22 @@ if __name__ == '__main__':
     avg_epoch_train_accuracy /= num_neural_nets
     np.save(epoch_test_name, avg_epoch_test_accuracy)
     np.save(epoch_train_name, avg_epoch_train_accuracy)
+    
+    '''
+    steps = 1
+    with tf.Session() as sess:
+        a = np.random.rand(456,789)
+        w = np.random.rand(789,456)
 
+        a = tf.constant(a, dtype=tf.float64)
+        w = tf.constant(w, dtype=tf.float64)
+
+        m = sess.run(tf.matmul(a,w))
+        b = sess.run(bini(a,w,steps, calculate_e(steps)))
+
+    #print("A: \n", sess.run(a), '\n')
+    print("matmul: \n", m)
+    print("Bini: \n", b)
+    print("\n m-s: \n", m-b, '\n')
+    print("Bini Error: ", la.norm(b-m, 'fro')/la.norm(b))
+    '''
