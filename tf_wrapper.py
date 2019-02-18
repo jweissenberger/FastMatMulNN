@@ -197,7 +197,6 @@ def bini(A, B, steps, e=1e-8):
     B3 = B[n2:, :p2]
     B4 = B[n2:, p2:]
 
-    #bini(A, B, steps, e=0.1)
     # conquer
 
     # check if TF has a special fun for scalar mul
@@ -219,7 +218,7 @@ def bini(A, B, steps, e=1e-8):
     C3 = tf.add(M4, tf.subtract(M6, M10))                                     #C[m2:m3, :p2] error from bini paper -M10 from +M10
     C4 = tf.add(tf.subtract(M1, M5), M9)                                      #C[m2:m3, p2:] error from bini paper -M5 from +M5
     C5 = tf.scalar_mul((1/e), tf.add(-M8,M10))                                #C[m3:, :p2]
-    C6 = tf.scalar_mul((1/e), (tf.add(M6, tf.subtract(tf.add(M7, M9), M8)))) #C[m3:, p2:]
+    C6 = tf.scalar_mul((1/e), (tf.add(M6, tf.subtract(tf.add(M7, M9), M8))))  #C[m3:, p2:]
 
     # need to put all of the above pieces together
     C13 = tf.concat([C1, C3], 0)
@@ -232,7 +231,8 @@ def bini(A, B, steps, e=1e-8):
 
 
 def calculate_e(steps):
-    e = (2**-52)**(1/(1+steps))
+    # should be 26 if its double, 56 if its floating point
+    e = (2**-26)**(1/(1+steps))
     return e
 
 
@@ -250,9 +250,8 @@ def neuron_layer(X, n_neurons, name, num_recursive_steps, fastmm='s', activation
 
         # for Bini's fast matrix mulitply
         if fastmm == 'b':
-            guy = calculate_e(num_recursive_steps)
-            print('Calculated e:', guy)
-            Z = bini(X, W, steps=num_recursive_steps, e=guy) + b
+            # check what precision they use in backend
+            Z = bini(X, W, steps=num_recursive_steps, e=calculate_e(num_recursive_steps)) + b
 
         if activation is not None:
             return activation(Z)
@@ -318,7 +317,7 @@ if __name__ == '__main__':
             accuracy = tf.reduce_mean(tf.cast(correct, tf.float32))
 
         init = tf.global_variables_initializer()
-
+        
         with tf.Session() as sess:
             init.run()
             epoch_w97acc = 0
@@ -328,21 +327,29 @@ if __name__ == '__main__':
                 for iteration in range(mnist.train.num_examples // batch_size):
                     X_batch, y_batch = mnist.train.next_batch(batch_size)
                     sess.run(training_op, feed_dict={X: X_batch, y: y_batch})
+
                 acc_train = accuracy.eval(feed_dict={X: X_batch, y: y_batch})
 
                 num_batches_in_test = mnist.test.num_examples // batch_size
                 acc_test = 0
+
+                #TODO: need to make a loop for the training error too because right now just calc for one batch
+
+                # have to use a loop to calc test acc because X and y are placeholders and cannot change sizes
+                # which is needed for Bini and Strassen
                 for j in range(num_batches_in_test):
                     acc_test += accuracy.eval(feed_dict={X: mnist.test.images[j*batch_size:batch_size*(j+1)],
                                                          y: mnist.test.labels[j*batch_size:batch_size*(j+1)]})
                 acc_test /= num_batches_in_test
 
-                final_test_acc = acc_test
+                final_test_acc = acc_test  # keeps track of the test accuracy on the last epoch
 
                 # adds the current test and train accuracy to that position so that the average can be calculated
                 avg_epoch_train_accuracy[epoch] += acc_train
                 avg_epoch_test_accuracy[epoch] += acc_test
 
+                # keeps track of which epoch 97% test accuracy was reached, giving perspective on how quickly the
+                # nets learn
                 if acc_test >= 0.97 and epoch_w97acc < 2:
                     epoch_w97acc = epoch
 
@@ -374,22 +381,4 @@ if __name__ == '__main__':
     avg_epoch_train_accuracy /= num_neural_nets
     np.save(epoch_test_name, avg_epoch_test_accuracy)
     np.save(epoch_train_name, avg_epoch_train_accuracy)
-    
-    '''
-    steps = 1
-    with tf.Session() as sess:
-        a = np.random.rand(456,789)
-        w = np.random.rand(789,456)
 
-        a = tf.constant(a, dtype=tf.float64)
-        w = tf.constant(w, dtype=tf.float64)
-
-        m = sess.run(tf.matmul(a,w))
-        b = sess.run(bini(a,w,steps, calculate_e(steps)))
-
-    #print("A: \n", sess.run(a), '\n')
-    print("matmul: \n", m)
-    print("Bini: \n", b)
-    print("\n m-s: \n", m-b, '\n')
-    print("Bini Error: ", la.norm(b-m, 'fro')/la.norm(b))
-    '''
