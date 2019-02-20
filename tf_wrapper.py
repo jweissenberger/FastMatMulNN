@@ -264,23 +264,23 @@ if __name__ == '__main__':
     batch_size = 100
     seed = 25
     learning_rate = 0.01
-    n_epochs = 10
+    n_epochs = 50
     num_recur_steps = 1
-    num_neural_nets = 2
+    num_neural_nets = 20
 
     # should change the name of this every time you run a different time
     avg_epoch_test_accuracy = np.zeros(n_epochs)
-    epoch_test_name = 'classic_10eps_2nets_test'
+    epoch_test_name = 'bini_50eps_20nets_1step_test'
     avg_epoch_train_accuracy = np.zeros(n_epochs)
-    epoch_train_name = 'classic_10eps_2nets_train'
+    epoch_train_name = 'bini_50eps_20nets_1step_train'
 
     n_inputs = 28*28  # MNIST
     n_hidden1 = 300
     n_hidden2 = 300
     n_outputs = 10
 
-    epoch_acc97s = []
-    final_test_accs = []
+    epoch_acc97s = 0  # will have the sum of the epochs at which 97% accuracy was reached, will be used to find average
+    final_test_accs = 0  # will have sum of final test acc, used to calculate average
 
     mnist = input_data.read_data_sets("/tmp/data/")
     X_train = mnist.train.images
@@ -289,9 +289,9 @@ if __name__ == '__main__':
     y_test = mnist.test.labels.astype("int")
 
     for q in range(num_neural_nets):
-        tf.reset_default_graph()
+        tf.reset_default_graph()  # clears the computational graph
 
-        tf.set_random_seed(seed+q)
+        tf.set_random_seed(seed+q)  # updates the seed so that each net is different
 
         X = tf.placeholder(tf.float32, shape=(batch_size, n_inputs), name="X")
         y = tf.placeholder(tf.int64, shape=(batch_size), name="y")
@@ -328,19 +328,25 @@ if __name__ == '__main__':
                     X_batch, y_batch = mnist.train.next_batch(batch_size)
                     sess.run(training_op, feed_dict={X: X_batch, y: y_batch})
 
-                acc_train = accuracy.eval(feed_dict={X: X_batch, y: y_batch})
+                #acc_train = accuracy.eval(feed_dict={X: X_batch, y: y_batch})
 
                 num_batches_in_test = mnist.test.num_examples // batch_size
+                num_batches_in_train = mnist.train.num_examples // batch_size
                 acc_test = 0
+                acc_train = 0
 
-                #TODO: need to make a loop for the training error too because right now just calc for one batch
-
-                # have to use a loop to calc test acc because X and y are placeholders and cannot change sizes
+                # have to use a loop to calc the acc because X and y are placeholders and cannot change sizes
                 # which is needed for Bini and Strassen
                 for j in range(num_batches_in_test):
                     acc_test += accuracy.eval(feed_dict={X: mnist.test.images[j*batch_size:batch_size*(j+1)],
                                                          y: mnist.test.labels[j*batch_size:batch_size*(j+1)]})
+
+                for j in range(num_batches_in_train):
+                    acc_train += accuracy.eval(feed_dict={X: mnist.train.images[j*batch_size:batch_size*(j+1)],
+                                                          y: mnist.train.labels[j*batch_size:batch_size*(j+1)]})
+
                 acc_test /= num_batches_in_test
+                acc_train /= num_batches_in_train
 
                 final_test_acc = acc_test  # keeps track of the test accuracy on the last epoch
 
@@ -359,24 +365,17 @@ if __name__ == '__main__':
             print('Final test accuracy:', final_test_acc, '\nEpoch where 97% test accuracy was reached:',
                   epoch_w97acc, end='\n\n')
 
-            final_test_accs.append(final_test_acc)
-            epoch_acc97s.append(epoch_w97acc)
+            final_test_accs += final_test_acc
+            epoch_acc97s += epoch_w97acc
 
-    avg_final_test_acc = 0
-    for j in final_test_accs:
-        avg_final_test_acc += j
-
-    avg_final_test_acc /= len(final_test_accs)
-
-    avg_97epoch = 0
-    for j in epoch_acc97s:
-        avg_97epoch += j
-
-    avg_97epoch /= len(epoch_acc97s)
+    # calculate average final test accuracy
+    avg_final_test_acc = final_test_accs/num_neural_nets
+    avg_97epoch = epoch_acc97s / num_neural_nets
 
     print('\nAvg final test accuracy:', avg_final_test_acc, '\nAvg epoch where 97% test accuracy was reached:',
           avg_97epoch)
 
+    # save the average test and train accuracy per epoch so that they can be plotted in a notebook
     avg_epoch_test_accuracy /= num_neural_nets
     avg_epoch_train_accuracy /= num_neural_nets
     np.save(epoch_test_name, avg_epoch_test_accuracy)

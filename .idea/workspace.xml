@@ -2,10 +2,12 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="f096a12a-8e93-4db1-862d-3744493e48b6" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.ipynb_checkpoints/TFBiniUnitTesting-checkpoint.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/.ipynb_checkpoints/TFBiniUnitTesting-checkpoint.ipynb" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/TFBiniUnitTesting.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/TFBiniUnitTesting.ipynb" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/TensorFlow Tutorial.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/TensorFlow Tutorial.ipynb" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.ipynb_checkpoints/NetworkResults-checkpoint.ipynb" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.ipynb_checkpoints/Untitled-checkpoint.ipynb" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/NetworkResults.ipynb" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Untitled.ipynb" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/tf_wrapper.py" beforeDir="false" afterPath="$PROJECT_DIR$/tf_wrapper.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/training_results1_30.rtf" beforeDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -18,10 +20,12 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/tf_wrapper.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="847">
-              <caret line="247" column="14" selection-start-line="247" selection-start-column="14" selection-end-line="247" selection-end-column="14" />
+            <state relative-caret-position="366">
+              <caret line="288" column="44" lean-forward="true" selection-start-line="288" selection-start-column="44" selection-end-line="288" selection-end-column="44" />
               <folding>
                 <element signature="e#0#23#0" expanded="true" />
+                <element signature="e#165#2261#0" />
+                <element signature="e#2300#7628#0" />
               </folding>
             </state>
           </provider>
@@ -48,7 +52,7 @@
   </component>
   <component name="ProjectFrameBounds">
     <option name="y" value="23" />
-    <option name="width" value="1195" />
+    <option name="width" value="1226" />
     <option name="height" value="926" />
   </component>
   <component name="ProjectView">
@@ -72,7 +76,7 @@
     </panes>
   </component>
   <component name="PropertiesComponent">
-    <property name="com.android.tools.idea.instantapp.provision.ProvisionBeforeRunTaskProvider.myTimeStamp" value="1550512052254" />
+    <property name="com.android.tools.idea.instantapp.provision.ProvisionBeforeRunTaskProvider.myTimeStamp" value="1550685425652" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$" />
     <property name="project.structure.last.edited" value="Project" />
     <property name="project.structure.proportion" value="0.0" />
@@ -133,11 +137,10 @@
     <servers />
   </component>
   <component name="ToolWindowManager">
-    <frame x="0" y="23" width="1195" height="926" extended-state="0" />
+    <frame x="0" y="23" width="1226" height="926" extended-state="0" />
     <editor active="true" />
     <layout>
-      <window_info active="true" anchor="top" x="1197" y="45" width="470" height="907" id="Run" order="0" type="WINDOWED" visible="true" weight="0.44348896" />
-      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.22289678" />
+      <window_info content_ui="combo" id="Project" order="0" weight="0.20945945" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info id="Image Layers" order="2" />
       <window_info id="Designer" order="3" />
@@ -146,13 +149,14 @@
       <window_info id="Favorites" order="6" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Find" order="1" />
-      <window_info anchor="bottom" id="Debug" order="2" weight="0.4" />
-      <window_info anchor="bottom" id="Cvs" order="3" weight="0.25" />
-      <window_info anchor="bottom" id="Inspection" order="4" weight="0.4" />
-      <window_info anchor="bottom" id="TODO" order="5" />
-      <window_info anchor="bottom" id="Terminal" order="6" />
-      <window_info anchor="bottom" id="Event Log" order="7" side_tool="true" />
-      <window_info anchor="bottom" id="Version Control" order="8" />
+      <window_info active="true" anchor="bottom" x="1109" y="23" width="571" height="926" id="Run" order="2" type="FLOATING" visible="true" weight="0.2386091" />
+      <window_info anchor="bottom" id="Debug" order="3" weight="0.4" />
+      <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
+      <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
+      <window_info anchor="bottom" id="TODO" order="6" />
+      <window_info anchor="bottom" id="Terminal" order="7" />
+      <window_info anchor="bottom" id="Event Log" order="8" side_tool="true" />
+      <window_info anchor="bottom" id="Version Control" order="9" />
       <window_info anchor="right" id="Commander" internal_type="SLIDING" order="0" type="SLIDING" weight="0.4" />
       <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
       <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.25" />
@@ -180,10 +184,12 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/tf_wrapper.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="847">
-          <caret line="247" column="14" selection-start-line="247" selection-start-column="14" selection-end-line="247" selection-end-column="14" />
+        <state relative-caret-position="366">
+          <caret line="288" column="44" lean-forward="true" selection-start-line="288" selection-start-column="44" selection-end-line="288" selection-end-column="44" />
           <folding>
             <element signature="e#0#23#0" expanded="true" />
+            <element signature="e#165#2261#0" />
+            <element signature="e#2300#7628#0" />
           </folding>
         </state>
       </provider>
