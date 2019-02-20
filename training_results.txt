@@ -24,3 +24,16 @@ The above training accuracy is not a good measure because it is only calculated 
 
 Results (2/20):
 These results were measured using the entire training set
+
+Classic, 50 epochs, 20 Networks
+Avg final test accuracy: 0.9746500065028668 
+Avg epoch where 97% test accuracy was reached: 30.25
+
+
+1 Step Bini, 50 Epochs, 20 Neural nets
+Avg final test accuracy: 0.9747450064122674 
+Avg epoch where 97% test accuracy was reached: 29.2
+
+1 Strass, 
+Avg final test accuracy: 0.9744100064635279 
+Avg epoch where 97% test accuracy was reached: 31.05

@@ -231,7 +231,7 @@ def bini(A, B, steps, e=1e-8):
 
 
 def calculate_e(steps):
-    # should be 26 if its double, 56 if its floating point
+    # should be 26 if its double, 52 if its floating point
     e = (2**-26)**(1/(1+steps))
     return e
 
@@ -251,7 +251,8 @@ def neuron_layer(X, n_neurons, name, num_recursive_steps, fastmm='s', activation
         # for Bini's fast matrix mulitply
         if fastmm == 'b':
             # check what precision they use in backend
-            Z = bini(X, W, steps=num_recursive_steps, e=calculate_e(num_recursive_steps)) + b
+            #calculate_e(num_recursive_steps)
+            Z = bini(X, W, steps=num_recursive_steps, e=0.1) + b
 
         if activation is not None:
             return activation(Z)
@@ -270,9 +271,9 @@ if __name__ == '__main__':
 
     # should change the name of this every time you run a different time
     avg_epoch_test_accuracy = np.zeros(n_epochs)
-    epoch_test_name = 'bini_50eps_20nets_1step_test'
+    epoch_test_name = 'strass_1step_50eps_20nets_test'
     avg_epoch_train_accuracy = np.zeros(n_epochs)
-    epoch_train_name = 'bini_50eps_20nets_1step_train'
+    epoch_train_name = 'strass_1step_50eps_20nets_train'
 
     n_inputs = 28*28  # MNIST
     n_hidden1 = 300
