@@ -263,17 +263,17 @@ def neuron_layer(X, n_neurons, name, num_recursive_steps, fastmm='s', activation
 if __name__ == '__main__':
 
     batch_size = 100
-    seed = 25
+    seed = 100
     learning_rate = 0.01
     n_epochs = 50
-    num_recur_steps = 1
+    num_recur_steps = 2
     num_neural_nets = 20
 
     # should change the name of this every time you run a different time
     avg_epoch_test_accuracy = np.zeros(n_epochs)
-    epoch_test_name = 'strass_1step_50eps_20nets_test'
+    epoch_test_name = 'strass_2step_50eps_20nets_test'
     avg_epoch_train_accuracy = np.zeros(n_epochs)
-    epoch_train_name = 'strass_1step_50eps_20nets_train'
+    epoch_train_name = 'strass_2step_50eps_20nets_train'
 
     n_inputs = 28*28  # MNIST
     n_hidden1 = 300
@@ -298,11 +298,11 @@ if __name__ == '__main__':
         y = tf.placeholder(tf.int64, shape=(batch_size), name="y")
 
         with tf.name_scope("dnn"):
-            hidden1 = neuron_layer(X, n_hidden1, num_recursive_steps=num_recur_steps, fastmm='b',
+            hidden1 = neuron_layer(X, n_hidden1, num_recursive_steps=num_recur_steps, fastmm='s',
                                    name="hidden1", activation=tf.nn.relu)
-            hidden2 = neuron_layer(hidden1, n_hidden2, num_recursive_steps=num_recur_steps, fastmm='b',
+            hidden2 = neuron_layer(hidden1, n_hidden2, num_recursive_steps=num_recur_steps, fastmm='s',
                                    name="hidden2", activation=tf.nn.relu)
-            logits = neuron_layer(hidden2, n_outputs, num_recursive_steps=num_recur_steps, fastmm='b',
+            logits = neuron_layer(hidden2, n_outputs, num_recursive_steps=num_recur_steps, fastmm='s',
                                   name="outputs")
 
         with tf.name_scope("loss"):
@@ -329,8 +329,6 @@ if __name__ == '__main__':
                     X_batch, y_batch = mnist.train.next_batch(batch_size)
                     sess.run(training_op, feed_dict={X: X_batch, y: y_batch})
 
-                #acc_train = accuracy.eval(feed_dict={X: X_batch, y: y_batch})
-
                 num_batches_in_test = mnist.test.num_examples // batch_size
                 num_batches_in_train = mnist.train.num_examples // batch_size
                 acc_test = 0
@@ -346,6 +344,7 @@ if __name__ == '__main__':
                     acc_train += accuracy.eval(feed_dict={X: mnist.train.images[j*batch_size:batch_size*(j+1)],
                                                           y: mnist.train.labels[j*batch_size:batch_size*(j+1)]})
 
+                # were technically calculating the average accuracy per batch but its the same thing
                 acc_test /= num_batches_in_test
                 acc_train /= num_batches_in_train
 
