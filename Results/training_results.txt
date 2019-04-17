@@ -37,3 +37,8 @@ Avg epoch where 97% test accuracy was reached: 29.2
 1 Strass, 
 Avg final test accuracy: 0.9744100064635279 
 Avg epoch where 97% test accuracy was reached: 31.05
+
+Results (3/17)
+2 Step Strass, 50 Epochs, 20 Nets
+Avg final test accuracy: 0.9745350066125393 
+Avg epoch where 97% test accuracy was reached: 30.35

@@ -1,4 +1,4 @@
-import tensorflow as tf
+import tensorflow as tf  # must be tensorflow 1.4.0
 import numpy as np
 from tensorflow.examples.tutorials.mnist import input_data
 from numpy import linalg as la
@@ -271,9 +271,9 @@ if __name__ == '__main__':
 
     # should change the name of this every time you run a different time
     avg_epoch_test_accuracy = np.zeros(n_epochs)
-    epoch_test_name = 'strass_2step_50eps_20nets_test'
+    epoch_test_name = 'bini_2step_50eps_20nets_test'
     avg_epoch_train_accuracy = np.zeros(n_epochs)
-    epoch_train_name = 'strass_2step_50eps_20nets_train'
+    epoch_train_name = 'bini_2step_50eps_20nets_train'
 
     n_inputs = 28*28  # MNIST
     n_hidden1 = 300
@@ -298,11 +298,11 @@ if __name__ == '__main__':
         y = tf.placeholder(tf.int64, shape=(batch_size), name="y")
 
         with tf.name_scope("dnn"):
-            hidden1 = neuron_layer(X, n_hidden1, num_recursive_steps=num_recur_steps, fastmm='s',
+            hidden1 = neuron_layer(X, n_hidden1, num_recursive_steps=num_recur_steps, fastmm='b',
                                    name="hidden1", activation=tf.nn.relu)
-            hidden2 = neuron_layer(hidden1, n_hidden2, num_recursive_steps=num_recur_steps, fastmm='s',
+            hidden2 = neuron_layer(hidden1, n_hidden2, num_recursive_steps=num_recur_steps, fastmm='b',
                                    name="hidden2", activation=tf.nn.relu)
-            logits = neuron_layer(hidden2, n_outputs, num_recursive_steps=num_recur_steps, fastmm='s',
+            logits = neuron_layer(hidden2, n_outputs, num_recursive_steps=num_recur_steps, fastmm='b',
                                   name="outputs")
 
         with tf.name_scope("loss"):
