@@ -42,3 +42,10 @@ Results (3/17)
 2 Step Strass, 50 Epochs, 20 Nets
 Avg final test accuracy: 0.9745350066125393 
 Avg epoch where 97% test accuracy was reached: 30.35
+
+
+Results (3/20)
+2 Steps Bini 50 Epochs, 20 Nets
+Avg final test accuracy: 0.9736700063049794 
+Avg epoch where 97% test accuracy was reached: 32.65 
+(slightly higher than others, will test with 100 nets to see if difference carries over)

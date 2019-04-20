@@ -231,7 +231,7 @@ def bini(A, B, steps, e=1e-8):
 
 
 def calculate_e(steps):
-    # should be 26 if its double, 52 if its floating point
+    # should be 26 if its single, 52 if its floating point
     e = (2**-26)**(1/(1+steps))
     return e
 
@@ -267,13 +267,13 @@ if __name__ == '__main__':
     learning_rate = 0.01
     n_epochs = 50
     num_recur_steps = 2
-    num_neural_nets = 20
+    num_neural_nets = 100
 
     # should change the name of this every time you run a different time
     avg_epoch_test_accuracy = np.zeros(n_epochs)
-    epoch_test_name = 'bini_2step_50eps_20nets_test'
+    epoch_test_name = 'bini_2step_100eps_20nets_test'
     avg_epoch_train_accuracy = np.zeros(n_epochs)
-    epoch_train_name = 'bini_2step_50eps_20nets_train'
+    epoch_train_name = 'bini_2step_100eps_20nets_train'
 
     n_inputs = 28*28  # MNIST
     n_hidden1 = 300

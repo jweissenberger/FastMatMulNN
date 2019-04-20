@@ -2,11 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="f096a12a-8e93-4db1-862d-3744493e48b6" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/Results/.ipynb_checkpoints/Network_training_graphs-checkpoint.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/Results/.ipynb_checkpoints/Network_training_graphs-checkpoint.ipynb" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Results/Network_training_graphs.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/Results/Network_training_graphs.ipynb" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Results/training_results.txt" beforeDir="false" afterPath="$PROJECT_DIR$/Results/training_results.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/strass_2step_50eps_20nets_test.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/strass_2step_50eps_20nets_train.npy" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/tf_wrapper.py" beforeDir="false" afterPath="$PROJECT_DIR$/tf_wrapper.py" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -20,11 +16,12 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/tf_wrapper.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state>
-              <caret column="51" selection-start-column="51" selection-end-column="51" />
+            <state relative-caret-position="333">
+              <caret line="276" lean-forward="true" selection-start-line="276" selection-end-line="276" />
               <folding>
-                <element signature="e#165#2261#0" />
-                <element signature="e#2300#7599#0" />
+                <element signature="e#0#51#0" expanded="true" />
+                <element signature="e#193#2289#0" />
+                <element signature="e#2328#7627#0" />
               </folding>
             </state>
           </provider>
@@ -51,7 +48,7 @@
   </component>
   <component name="ProjectFrameBounds">
     <option name="y" value="23" />
-    <option name="width" value="1226" />
+    <option name="width" value="1457" />
     <option name="height" value="926" />
   </component>
   <component name="ProjectView">
@@ -59,6 +56,7 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
+      <pane id="PackagesPane" />
       <pane id="ProjectPane">
         <subPane>
           <expand>
@@ -71,7 +69,6 @@
         </subPane>
       </pane>
       <pane id="Scope" />
-      <pane id="PackagesPane" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -136,10 +133,10 @@
     <servers />
   </component>
   <component name="ToolWindowManager">
-    <frame x="0" y="23" width="1226" height="926" extended-state="0" />
+    <frame x="0" y="23" width="1457" height="926" extended-state="0" />
     <editor active="true" />
     <layout>
-      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.20945945" />
+      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.17809187" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info id="Image Layers" order="2" />
       <window_info id="Designer" order="3" />
@@ -167,27 +164,16 @@
     </layout>
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/Bini.ipynb">
-      <provider selected="true" editor-type-id="ipnb-editor">
-        <state>
-          <selected id="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/TFBiniUnitTesting.ipynb">
-      <provider selected="true" editor-type-id="ipnb-editor">
-        <state>
-          <selected id="0" />
-        </state>
-      </provider>
-    </entry>
+    <entry file="file://$PROJECT_DIR$/Bini.ipynb" />
+    <entry file="file://$PROJECT_DIR$/TFBiniUnitTesting.ipynb" />
     <entry file="file://$PROJECT_DIR$/tf_wrapper.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state>
-          <caret column="51" selection-start-column="51" selection-end-column="51" />
+        <state relative-caret-position="333">
+          <caret line="276" lean-forward="true" selection-start-line="276" selection-end-line="276" />
           <folding>
-            <element signature="e#165#2261#0" />
-            <element signature="e#2300#7599#0" />
+            <element signature="e#0#51#0" expanded="true" />
+            <element signature="e#193#2289#0" />
+            <element signature="e#2328#7627#0" />
           </folding>
         </state>
       </provider>
