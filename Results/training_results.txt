@@ -49,3 +49,7 @@ Results (3/20)
 Avg final test accuracy: 0.9736700063049794 
 Avg epoch where 97% test accuracy was reached: 32.65 
 (slightly higher than others, will test with 100 nets to see if difference carries over)
+
+Results (3/21):
+Avg final test accuracy: 0.9735340061485764 
+Avg epoch where 97% test accuracy was reached: 33.89
