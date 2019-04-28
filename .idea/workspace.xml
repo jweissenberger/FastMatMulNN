@@ -2,11 +2,6 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="f096a12a-8e93-4db1-862d-3744493e48b6" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/FastMM/Bini.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/FastMM/Bini.ipynb" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Results/.ipynb_checkpoints/Network_training_graphs-checkpoint.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/Results/.ipynb_checkpoints/Network_training_graphs-checkpoint.ipynb" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Results/Network_training_graphs.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/Results/Network_training_graphs.ipynb" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Results/training_results.txt" beforeDir="false" afterPath="$PROJECT_DIR$/Results/training_results.txt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/tf2.0_wrapper.py" beforeDir="false" afterPath="$PROJECT_DIR$/tf2.0_wrapper.py" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -17,11 +12,11 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file pinned="false" current-in-tab="false">
+      <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/tf_wrapper.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="840">
-              <caret line="276" selection-start-line="276" selection-end-line="276" />
+            <state relative-caret-position="725">
+              <caret line="362" lean-forward="true" selection-start-line="362" selection-end-line="362" />
               <folding>
                 <element signature="e#0#51#0" expanded="true" />
                 <element signature="e#193#2289#0" />
@@ -31,11 +26,11 @@
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="true">
+      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/tf2.0_wrapper.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="637">
-              <caret line="110" column="43" lean-forward="true" selection-start-line="110" selection-start-column="43" selection-end-line="110" selection-end-column="43" />
+            <state relative-caret-position="562">
+              <caret line="107" column="63" selection-start-line="107" selection-start-column="27" selection-end-line="107" selection-end-column="63" />
               <folding>
                 <element signature="e#17#40#0" expanded="true" />
               </folding>
@@ -89,7 +84,7 @@
     </panes>
   </component>
   <component name="PropertiesComponent">
-    <property name="com.android.tools.idea.instantapp.provision.ProvisionBeforeRunTaskProvider.myTimeStamp" value="1556120062719" />
+    <property name="com.android.tools.idea.instantapp.provision.ProvisionBeforeRunTaskProvider.myTimeStamp" value="1556301305996" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$" />
     <property name="project.structure.last.edited" value="SDKs" />
     <property name="project.structure.proportion" value="0.0" />
@@ -209,24 +204,24 @@
   <component name="editorHistoryManager">
     <entry file="file://$PROJECT_DIR$/Bini.ipynb" />
     <entry file="file://$PROJECT_DIR$/TFBiniUnitTesting.ipynb" />
-    <entry file="file://$PROJECT_DIR$/tf_wrapper.py">
+    <entry file="file://$PROJECT_DIR$/tf2.0_wrapper.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="840">
-          <caret line="276" selection-start-line="276" selection-end-line="276" />
+        <state relative-caret-position="562">
+          <caret line="107" column="63" selection-start-line="107" selection-start-column="27" selection-end-line="107" selection-end-column="63" />
           <folding>
-            <element signature="e#0#51#0" expanded="true" />
-            <element signature="e#193#2289#0" />
-            <element signature="e#2328#7627#0" />
+            <element signature="e#17#40#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/tf2.0_wrapper.py">
+    <entry file="file://$PROJECT_DIR$/tf_wrapper.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="637">
-          <caret line="110" column="43" lean-forward="true" selection-start-line="110" selection-start-column="43" selection-end-line="110" selection-end-column="43" />
+        <state relative-caret-position="725">
+          <caret line="362" lean-forward="true" selection-start-line="362" selection-end-line="362" />
           <folding>
-            <element signature="e#17#40#0" expanded="true" />
+            <element signature="e#0#51#0" expanded="true" />
+            <element signature="e#193#2289#0" />
+            <element signature="e#2328#7627#0" />
           </folding>
         </state>
       </provider>

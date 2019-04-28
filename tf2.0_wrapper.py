@@ -87,6 +87,8 @@ class MLPWithDropout(Layer):
 
 if __name__ == '__main__':
 
+    batch_size = 64
+
     mlp = MLPWithDropout()
     loss_fn = tf.keras.losses.SparseCategoricalCrossentropy(from_logits=True)
     optimizer = tf.keras.optimizers.SGD(learning_rate=1e-3)
@@ -106,7 +108,7 @@ if __name__ == '__main__':
     (x_train, y_train), _ = tf.keras.datasets.mnist.load_data()
     dataset = tf.data.Dataset.from_tensor_slices(
         (x_train.reshape(60000, 784).astype('float32') / 255, y_train))
-    dataset = dataset.shuffle(buffer_size=1024).batch(64)
+    dataset = dataset.shuffle(buffer_size=1024).batch(batch_size)
 
     for step, (x, y) in enumerate(dataset):
         loss = train_on_batch(x, y)
