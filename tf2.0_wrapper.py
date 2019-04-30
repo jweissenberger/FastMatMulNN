@@ -2,6 +2,8 @@
 import tensorflow as tf
 from tensorflow.keras.layers import Layer
 
+# https://colab.research.google.com/drive/17u-pRZJnKN0gO5XZmq8n5A2bKGrfKEUg#scrollTo=uwttOFombD1F
+
 
 class Linear(Layer):
     """y = w.x + b"""
