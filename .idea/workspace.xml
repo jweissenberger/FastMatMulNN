@@ -3,6 +3,8 @@
   <component name="ChangeListManager">
     <list default="true" id="f096a12a-8e93-4db1-862d-3744493e48b6" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/FastMM/TFStrassenUnitTesting.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/FastMM/TFStrassenUnitTesting.ipynb" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/predicting_movie_reviews_with_bert_on_tf_hub.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/predicting_movie_reviews_with_bert_on_tf_hub.ipynb" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -15,13 +17,39 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/tf_wrapper.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="757">
-              <caret line="362" selection-start-line="362" selection-end-line="362" />
+            <state relative-caret-position="150">
+              <caret line="10" column="4" lean-forward="true" selection-start-line="10" selection-start-column="4" selection-end-line="10" selection-end-column="36" />
               <folding>
                 <element signature="e#0#51#0" expanded="true" />
-                <element signature="e#193#2289#0" />
                 <element signature="e#2328#7627#0" />
               </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/FastMM/TFStrassenUnitTesting.ipynb">
+          <provider selected="true" editor-type-id="ipnb-editor">
+            <state>
+              <selected id="0" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/FastMM/NNStrass.ipynb">
+          <provider selected="true" editor-type-id="ipnb-editor">
+            <state>
+              <selected id="0" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/predicting_movie_reviews_with_bert_on_tf_hub.ipynb">
+          <provider selected="true" editor-type-id="ipnb-editor">
+            <state>
+              <selected id="13" />
             </state>
           </provider>
         </entry>
@@ -53,12 +81,12 @@
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
-        <option value="$PROJECT_DIR$/tf_wrapper.py" />
         <option value="$PROJECT_DIR$/tf2.0_wrapper.py" />
+        <option value="$PROJECT_DIR$/tf_wrapper.py" />
       </list>
     </option>
   </component>
-  <component name="ProjectFrameBounds">
+  <component name="ProjectFrameBounds" extendedState="6">
     <option name="y" value="23" />
     <option name="width" value="1654" />
     <option name="height" value="926" />
@@ -74,6 +102,11 @@
             <path>
               <item name="FastMatMulNN" type="b2602c69:ProjectViewProjectNode" />
               <item name="FastMatMulNN" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="FastMatMulNN" type="b2602c69:ProjectViewProjectNode" />
+              <item name="FastMatMulNN" type="462c0819:PsiDirectoryNode" />
+              <item name="FastMM" type="462c0819:PsiDirectoryNode" />
             </path>
           </expand>
           <select />
@@ -171,10 +204,10 @@
     <servers />
   </component>
   <component name="ToolWindowManager">
-    <frame x="0" y="23" width="1654" height="926" extended-state="0" />
+    <frame x="0" y="23" width="1680" height="963" extended-state="6" />
     <editor active="true" />
     <layout>
-      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.16253102" />
+      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.16178267" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info id="Image Layers" order="2" />
       <window_info id="Designer" order="3" />
@@ -204,24 +237,44 @@
   <component name="editorHistoryManager">
     <entry file="file://$PROJECT_DIR$/Bini.ipynb" />
     <entry file="file://$PROJECT_DIR$/TFBiniUnitTesting.ipynb" />
-    <entry file="file://$PROJECT_DIR$/tf_wrapper.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="757">
-          <caret line="362" selection-start-line="362" selection-end-line="362" />
-          <folding>
-            <element signature="e#0#51#0" expanded="true" />
-            <element signature="e#193#2289#0" />
-            <element signature="e#2328#7627#0" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/tf2.0_wrapper.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="1650">
           <caret line="111" column="45" selection-start-line="111" selection-start-column="45" selection-end-line="111" selection-end-column="45" />
           <folding>
             <element signature="e#17#40#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/predicting_movie_reviews_with_bert_on_tf_hub.ipynb">
+      <provider selected="true" editor-type-id="ipnb-editor">
+        <state>
+          <selected id="13" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/FastMM/TFStrassenUnitTesting.ipynb">
+      <provider selected="true" editor-type-id="ipnb-editor">
+        <state>
+          <selected id="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/FastMM/NNStrass.ipynb">
+      <provider selected="true" editor-type-id="ipnb-editor">
+        <state>
+          <selected id="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/tf_wrapper.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="150">
+          <caret line="10" column="4" lean-forward="true" selection-start-line="10" selection-start-column="4" selection-end-line="10" selection-end-column="36" />
+          <folding>
+            <element signature="e#0#51#0" expanded="true" />
+            <element signature="e#2328#7627#0" />
           </folding>
         </state>
       </provider>
