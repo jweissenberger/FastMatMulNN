@@ -6,8 +6,8 @@
 using namespace tensorflow;
 
 REGISTER_OP("ClassicMatMul")
-    .Input("A_matrix: float")
-    .Input("B_matrix: float")
+    .Input("a_matrix: float")
+    .Input("b_matrix: float")
     .Output("classic_mat_mul: float")
     .SetShapeFn([](::tensorflow::shape_inference::InferenceContext* c) {
     shape_inference::ShapeHandle A_shape;
@@ -66,7 +66,7 @@ public:
     // classic mm
     for (int i = 0; i < A_shape.dim_size(0); i++){
         for (int j = 0; j < B_shape.dim_size(1); j++){
-            for (int k = 0; j < B_shape.dim_size(1); j++){
+            for (int k = 0; k < B_shape.dim_size(1); k++){
                 output_tensor(i, j) += A_tensor(i, k) * B_tensor(k, j);
             }
         }
