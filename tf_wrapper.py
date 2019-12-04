@@ -363,7 +363,7 @@ if __name__ == '__main__':
 
             print('\nNetwork:', q)
             print('Final test accuracy:', final_test_acc, '\nEpoch where 97% test accuracy was reached:',
-                  epoch_w97acc, end='\n\n')
+                  epoch_w97acc)
 
             final_test_accs += final_test_acc
             epoch_acc97s += epoch_w97acc

@@ -2,9 +2,12 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="f096a12a-8e93-4db1-862d-3744493e48b6" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/TF_op/op_nn.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/FastMM/TFStrassenUnitTesting.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/FastMM/TFStrassenUnitTesting.ipynb" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/predicting_movie_reviews_with_bert_on_tf_hub.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/predicting_movie_reviews_with_bert_on_tf_hub.ipynb" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/TF_op/cmm_test.py" beforeDir="false" afterPath="$PROJECT_DIR$/TF_op/cmm_test.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tf_wrapper.py" beforeDir="false" afterPath="$PROJECT_DIR$/tf_wrapper.py" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -13,60 +16,68 @@
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
   <component name="FileEditorManager">
-    <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/tf_wrapper.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="150">
-              <caret line="10" column="4" lean-forward="true" selection-start-line="10" selection-start-column="4" selection-end-line="10" selection-end-column="36" />
-              <folding>
-                <element signature="e#0#51#0" expanded="true" />
-                <element signature="e#2328#7627#0" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/FastMM/TFStrassenUnitTesting.ipynb">
-          <provider selected="true" editor-type-id="ipnb-editor">
-            <state>
-              <selected id="0" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/FastMM/NNStrass.ipynb">
-          <provider selected="true" editor-type-id="ipnb-editor">
-            <state>
-              <selected id="0" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/predicting_movie_reviews_with_bert_on_tf_hub.ipynb">
-          <provider selected="true" editor-type-id="ipnb-editor">
-            <state>
-              <selected id="13" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/tf2.0_wrapper.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1650">
-              <caret line="111" column="45" selection-start-line="111" selection-start-column="45" selection-end-line="111" selection-end-column="45" />
-              <folding>
-                <element signature="e#17#40#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-    </leaf>
+    <splitter split-orientation="horizontal" split-proportion="0.5">
+      <split-first>
+        <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
+          <file pinned="false" current-in-tab="false">
+            <entry file="file://$PROJECT_DIR$/tf_wrapper.py">
+              <provider selected="true" editor-type-id="text-editor">
+                <state relative-caret-position="1651">
+                  <caret line="365" column="30" selection-start-line="365" selection-start-column="30" selection-end-line="365" selection-end-column="30" />
+                  <folding>
+                    <element signature="e#0#51#0" expanded="true" />
+                    <element signature="e#2328#7627#0" />
+                  </folding>
+                </state>
+              </provider>
+            </entry>
+          </file>
+          <file pinned="false" current-in-tab="false">
+            <entry file="file://$PROJECT_DIR$/TF_op/op_nn.py">
+              <provider selected="true" editor-type-id="text-editor">
+                <state relative-caret-position="301">
+                  <caret line="42" column="26" selection-start-line="42" selection-start-column="26" selection-end-line="42" selection-end-column="26" />
+                  <folding>
+                    <element signature="e#0#23#0" expanded="true" />
+                  </folding>
+                </state>
+              </provider>
+            </entry>
+          </file>
+          <file pinned="false" current-in-tab="false">
+            <entry file="file://$PROJECT_DIR$/TF_op/backup">
+              <provider selected="true" editor-type-id="text-editor">
+                <state>
+                  <caret column="4" lean-forward="true" selection-start-column="4" selection-end-line="24" selection-end-column="36" />
+                </state>
+              </provider>
+            </entry>
+          </file>
+          <file pinned="false" current-in-tab="true">
+            <entry file="file://$PROJECT_DIR$/TF_op/cmm_test.py">
+              <provider selected="true" editor-type-id="text-editor">
+                <state relative-caret-position="150">
+                  <caret line="10" column="35" selection-start-line="10" selection-start-column="35" selection-end-line="10" selection-end-column="35" />
+                </state>
+              </provider>
+            </entry>
+          </file>
+        </leaf>
+      </split-first>
+      <split-second>
+        <leaf>
+          <file pinned="false" current-in-tab="true">
+            <entry file="file://$PROJECT_DIR$/tf2.0_wrapper.py">
+              <provider selected="true" editor-type-id="text-editor">
+                <state relative-caret-position="-1006">
+                  <caret line="2" selection-start-line="2" selection-end-line="2" selection-end-column="41" />
+                </state>
+              </provider>
+            </entry>
+          </file>
+        </leaf>
+      </split-second>
+    </splitter>
   </component>
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
@@ -75,21 +86,30 @@
       </list>
     </option>
   </component>
+  <component name="FindInProjectRecents">
+    <findStrings>
+      <find>mlp</find>
+    </findStrings>
+  </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
-        <option value="$PROJECT_DIR$/tf2.0_wrapper.py" />
         <option value="$PROJECT_DIR$/tf_wrapper.py" />
+        <option value="$PROJECT_DIR$/tf2.0_wrapper.py" />
+        <option value="$PROJECT_DIR$/TF_op/backup" />
+        <option value="$PROJECT_DIR$/TF_op/op_nn.py" />
+        <option value="$PROJECT_DIR$/TF_op/cmm_test.py" />
       </list>
     </option>
   </component>
-  <component name="ProjectFrameBounds" extendedState="6">
-    <option name="y" value="23" />
-    <option name="width" value="1654" />
-    <option name="height" value="926" />
+  <component name="ProjectFrameBounds">
+    <option name="x" value="-1" />
+    <option name="y" value="-1039" />
+    <option name="width" value="1680" />
+    <option name="height" value="963" />
   </component>
   <component name="ProjectView">
     <navigator proportions="" version="1">
@@ -106,17 +126,18 @@
             <path>
               <item name="FastMatMulNN" type="b2602c69:ProjectViewProjectNode" />
               <item name="FastMatMulNN" type="462c0819:PsiDirectoryNode" />
-              <item name="FastMM" type="462c0819:PsiDirectoryNode" />
+              <item name="TF_op" type="462c0819:PsiDirectoryNode" />
             </path>
           </expand>
           <select />
         </subPane>
       </pane>
-      <pane id="PackagesPane" />
       <pane id="Scope" />
+      <pane id="PackagesPane" />
     </panes>
   </component>
   <component name="PropertiesComponent">
+    <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
     <property name="com.android.tools.idea.instantapp.provision.ProvisionBeforeRunTaskProvider.myTimeStamp" value="1556640260216" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$" />
     <property name="project.structure.last.edited" value="SDKs" />
@@ -204,16 +225,17 @@
     <servers />
   </component>
   <component name="ToolWindowManager">
-    <frame x="0" y="23" width="1680" height="963" extended-state="6" />
+    <frame x="-1" y="-1039" width="1680" height="963" extended-state="0" />
     <editor active="true" />
     <layout>
-      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.16178267" />
+      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.1615431" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info id="Image Layers" order="2" />
       <window_info id="Designer" order="3" />
       <window_info id="UI Designer" order="4" />
       <window_info id="Capture Tool" order="5" />
       <window_info id="Favorites" order="6" side_tool="true" />
+      <window_info anchor="bottom" id="Python Console" />
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Find" order="1" />
       <window_info anchor="bottom" x="1162" y="23" width="516" height="926" id="Run" order="2" type="FLOATING" weight="0.2386091" />
@@ -237,45 +259,54 @@
   <component name="editorHistoryManager">
     <entry file="file://$PROJECT_DIR$/Bini.ipynb" />
     <entry file="file://$PROJECT_DIR$/TFBiniUnitTesting.ipynb" />
-    <entry file="file://$PROJECT_DIR$/tf2.0_wrapper.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1650">
-          <caret line="111" column="45" selection-start-line="111" selection-start-column="45" selection-end-line="111" selection-end-column="45" />
-          <folding>
-            <element signature="e#17#40#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/predicting_movie_reviews_with_bert_on_tf_hub.ipynb">
-      <provider selected="true" editor-type-id="ipnb-editor">
-        <state>
-          <selected id="13" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/FastMM/TFStrassenUnitTesting.ipynb">
-      <provider selected="true" editor-type-id="ipnb-editor">
-        <state>
-          <selected id="0" />
-        </state>
-      </provider>
+      <provider selected="true" editor-type-id="text-editor" />
     </entry>
     <entry file="file://$PROJECT_DIR$/FastMM/NNStrass.ipynb">
-      <provider selected="true" editor-type-id="ipnb-editor">
+      <provider selected="true" editor-type-id="text-editor" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/predicting_movie_reviews_with_bert_on_tf_hub.ipynb">
+      <provider selected="true" editor-type-id="text-editor" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/tf2.0_wrapper.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-1006">
+          <caret line="2" selection-start-line="2" selection-end-line="2" selection-end-column="41" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/TF_op/backup">
+      <provider selected="true" editor-type-id="text-editor">
         <state>
-          <selected id="0" />
+          <caret column="4" lean-forward="true" selection-start-column="4" selection-end-line="24" selection-end-column="36" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/tf_wrapper.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="150">
-          <caret line="10" column="4" lean-forward="true" selection-start-line="10" selection-start-column="4" selection-end-line="10" selection-end-column="36" />
+        <state relative-caret-position="1651">
+          <caret line="365" column="30" selection-start-line="365" selection-start-column="30" selection-end-line="365" selection-end-column="30" />
           <folding>
             <element signature="e#0#51#0" expanded="true" />
             <element signature="e#2328#7627#0" />
           </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/TF_op/op_nn.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="301">
+          <caret line="42" column="26" selection-start-line="42" selection-start-column="26" selection-end-line="42" selection-end-column="26" />
+          <folding>
+            <element signature="e#0#23#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/TF_op/cmm_test.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="150">
+          <caret line="10" column="35" selection-start-line="10" selection-start-column="35" selection-end-line="10" selection-end-column="35" />
         </state>
       </provider>
     </entry>
