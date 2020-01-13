@@ -1,70 +1,107 @@
 import tensorflow as tf
-from tensorflow.keras.layers import Layer
+from tensorflow.keras import layers
+from tensorflow.keras import Model
 
 
-class Linear(Layer):
-    """y = w.x + b"""
+class Linear(layers.Layer):
 
-    def __init__(self, units=32):
+    def __init__(self, units=32, input_dim=32):
         super(Linear, self).__init__()
-        self.units = units
-
-    def build(self, input_shape):
-        self.w = self.add_weight(shape=(input_shape[-1], self.units),
+        self.w = self.add_weight(shape=(input_dim, units),
                                  initializer='random_normal',
                                  trainable=True)
-        self.b = self.add_weight(shape=(self.units,),
-                                 initializer='random_normal',
+        self.b = self.add_weight(shape=(units,),
+                                 initializer='zeros',
                                  trainable=True)
 
     def call(self, inputs):
-        return classic_mm_module(inputs, self.w) + self.b
+        return tf.matmul(inputs, self.w) + self.b
 
 
-class Network(Layer):
+class MyModel(Model):
+    def __init__(self, batch_size):
+        super(MyModel, self).__init__()
 
-    def __init__(self):
-        super(Network, self).__init__()
-        self.linear_1 = Linear(500)
-        self.linear_2 = Linear(300)
-        self.linear_3 = Linear(200)
-        self.linear_4 = Linear(10)
+        self.d1 = Linear(input_dim=batch_size, units=100)
+        self.d2 = Linear(input_dim=100, units=300)
+        self.d3 = Linear(input_dim=300, units=100)
+        self.out = Linear(input_dim=100, units=10)
 
-    def call(self, inputs):
-        x = self.linear_1(inputs)
+    def call(self, x):
+        x = self.d1(x)
         x = tf.nn.relu(x)
-        x = self.linear_2
+        x = self.d2(x)
         x = tf.nn.relu(x)
-        x = self.linear_3
+        x = self.d3(x)
         x = tf.nn.relu(x)
-        return self.linear_4(x)
+        x = self.out(x)
+        x = tf.nn.softmax(x)
+        return x
+
+
+@tf.function
+def train_step(images, labels):
+  with tf.GradientTape() as tape:
+    predictions = model(images)
+    loss = loss_object(labels, predictions)
+  gradients = tape.gradient(loss, model.trainable_variables)
+  optimizer.apply_gradients(zip(gradients, model.trainable_variables))
+
+  train_loss(loss)
+  train_accuracy(labels, predictions)
+
+
+@tf.function
+def test_step(images, labels):
+  predictions = model(images)
+  t_loss = loss_object(labels, predictions)
+
+  test_loss(t_loss)
+  test_accuracy(labels, predictions)
 
 
 if __name__ == '__main__':
-    classic_mm_module = tf.load_op_library('./classic_mat_mul.so')
+    #classic_mm_module = tf.load_op_library('./classic_mat_mul.so')
 
-    batch_size = 128
+    mnist = tf.keras.datasets.mnist
+    (x_train, y_train), (x_test, y_test) = mnist.load_data()
+    x_train, x_test = x_train / 255.0, x_test / 255.0
+
+    x_train.reshape(60000, 784)
+    x_test = x_test.reshape(10000, 784)
+
+    batch_size = 64
+
+    model = MyModel(batch_size=batch_size)
+
+    loss_object = tf.keras.losses.SparseCategoricalCrossentropy()
+
     optimizer = tf.keras.optimizers.Adam()
-    network = Network()
-    (x_train, y_train), _ = tf.keras.datasets.mnist.load_data()
-    dataset = tf.data.Dataset.from_tensor_slices(
-        (x_train.reshape(60000, 784).astype('float32') / 255, y_train))
-    dataset = dataset.shuffle(buffer_size=1024).batch(batch_size)
 
+    train_loss = tf.keras.metrics.Mean(name='train_loss')
+    train_accuracy = tf.keras.metrics.SparseCategoricalAccuracy(name='train_accuracy')
 
-    # input_shape=(28, 28)
+    test_loss = tf.keras.metrics.Mean(name='test_loss')
+    test_accuracy = tf.keras.metrics.SparseCategoricalAccuracy(name='test_accuracy')
 
-    @tf.function
-    def train_on_batch(x, y):
-        with tf.GradientTape() as tape:
-            logits = network(x)
-            loss = tf.keras.losses.categorical_crossentropy(y_true=y, y_pred=logits, from_logits=True)
-            gradients = tape.gradient(loss, network.trainable_weights)
-        optimizer.apply_gradients(zip(gradients, network.trainable_weights))
-        return loss
+    EPOCHS = 5
 
+    for epoch in range(EPOCHS):
+        # Reset the metrics at the start of the next epoch
+        train_loss.reset_states()
+        train_accuracy.reset_states()
+        test_loss.reset_states()
+        test_accuracy.reset_states()
 
-    for step, (x, y) in enumerate(dataset):
-        loss = train_on_batch(x, y)
-        if step % 100 == 0:
-            print(step, float(loss))
+        for batch in range(60000//batch_size):
+            train_step(x_train[batch*batch_size:(batch+1)*batch_size], labels)
+
+        for test_images, test_labels in test_ds:
+            test_step(test_images, test_labels)
+
+        template = 'Epoch {}, Loss: {}, Accuracy: {}, Test Loss: {}, Test Accuracy: {}'
+        print(template.format(epoch + 1,
+                              train_loss.result(),
+                              train_accuracy.result() * 100,
+                              test_loss.result(),
+                              test_accuracy.result() * 100))

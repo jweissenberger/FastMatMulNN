@@ -2,6 +2,7 @@
 #include "tensorflow/core/framework/tensor_shape.h"
 #include "tensorflow/core/platform/default/logging.h"
 #include "tensorflow/core/framework/shape_inference.h"
+#include "tensorflow/core/common_runtime/dma_helper.h"
 
 using namespace tensorflow;
 
@@ -71,6 +72,13 @@ public:
             }
         }
     }
+
+    const float* ptr = reinterpret_cast<const float*>(output->tensor_data().data());
+    std::cout<< ptr[0] <<std::endl;
+
+    float *ptr2 = static_cast<float *>(DMAHelper::base(output));
+    ptr2[0] = 7;
+    std::cout<< ptr2[0] <<std::endl;
 
   }
 };
