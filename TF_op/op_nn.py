@@ -1,7 +1,30 @@
 import tensorflow as tf
 from tensorflow.keras import layers
 from tensorflow.keras import Model
+from tensorflow.python.ops import gen_math_ops
+from tensorflow.python.ops import math_ops
 
+classic_mm_module = tf.load_op_library('./classic_mat_mul.so')
+
+@tf.RegisterGradient("ClassicMatMul")
+def _ClassicMatMulGrad(op, grad):
+    t_a = op.get_attr("transpose_a")  #https://github.com/tensorflow/tensorflow/blob/b00e936e42f3370256bc7d17d4f7685ae7cd750f/tensorflow/core/kernels/matmul_op.cc#L272
+    t_b = op.get_attr("transpose_b")
+    a = math_ops.conj(op.inputs[0])
+    b = math_ops.conj(op.inputs[1])
+    if not t_a and not t_b:
+        grad_a = gen_math_ops.mat_mul(grad, b, transpose_b=True)
+        grad_b = gen_math_ops.mat_mul(a, grad, transpose_a=True)
+    elif not t_a and t_b:
+        grad_a = gen_math_ops.mat_mul(grad, b)
+        grad_b = gen_math_ops.mat_mul(grad, a, transpose_a=True)
+    elif t_a and not t_b:
+        grad_a = gen_math_ops.mat_mul(b, grad, transpose_b=True)
+        grad_b = gen_math_ops.mat_mul(a, grad)
+    elif t_a and t_b:
+        grad_a = gen_math_ops.mat_mul(b, grad, transpose_a=True, transpose_b=True)
+        grad_b = gen_math_ops.mat_mul(grad, a, transpose_a=True, transpose_b=True)
+    return grad_a, grad_b
 
 class Linear(layers.Layer):
 
@@ -15,14 +38,15 @@ class Linear(layers.Layer):
                                  trainable=True)
 
     def call(self, inputs):
-        return tf.matmul(inputs, self.w) + self.b
+        #return tf.matmul(inputs, self.w) + self.b
+        return classic_mm_module.ClassicMatMul(a_matrix=inputs, b_matrix=self.w) + self.b
 
 
 class MyModel(Model):
-    def __init__(self, batch_size):
+    def __init__(self):
         super(MyModel, self).__init__()
 
-        self.d1 = Linear(input_dim=batch_size, units=100)
+        self.d1 = Linear(input_dim=784, units=100)
         self.d2 = Linear(input_dim=100, units=300)
         self.d3 = Linear(input_dim=300, units=100)
         self.out = Linear(input_dim=100, units=10)
@@ -67,12 +91,12 @@ if __name__ == '__main__':
     (x_train, y_train), (x_test, y_test) = mnist.load_data()
     x_train, x_test = x_train / 255.0, x_test / 255.0
 
-    x_train.reshape(60000, 784)
+    x_train = x_train.reshape(60000, 784)
     x_test = x_test.reshape(10000, 784)
 
     batch_size = 64
 
-    model = MyModel(batch_size=batch_size)
+    model = MyModel()
 
     loss_object = tf.keras.losses.SparseCategoricalCrossentropy()
 
@@ -94,10 +118,9 @@ if __name__ == '__main__':
         test_accuracy.reset_states()
 
         for batch in range(60000//batch_size):
-            train_step(x_train[batch*batch_size:(batch+1)*batch_size], labels)
+            train_step(x_train[batch*batch_size:(batch+1)*batch_size], y_train[batch*batch_size:(batch+1)*batch_size])
 
-        for test_images, test_labels in test_ds:
-            test_step(test_images, test_labels)
+        test_step(x_test, y_test)
 
         template = 'Epoch {}, Loss: {}, Accuracy: {}, Test Loss: {}, Test Accuracy: {}'
         print(template.format(epoch + 1,
