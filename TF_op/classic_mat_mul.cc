@@ -67,18 +67,18 @@ public:
     // classic mm
     for (int i = 0; i < A_shape.dim_size(0); i++){
         for (int j = 0; j < B_shape.dim_size(1); j++){
-            for (int k = 0; k < B_shape.dim_size(1); k++){
+            for (int k = 0; k < B_shape.dim_size(0); k++){
                 output_tensor(i, j) += A_tensor(i, k) * B_tensor(k, j);
             }
         }
     }
 
-    const float* ptr = reinterpret_cast<const float*>(output->tensor_data().data());
-    std::cout<< ptr[0] <<std::endl;
-
-    float *ptr2 = static_cast<float *>(DMAHelper::base(output));
-    ptr2[0] = 7;
-    std::cout<< ptr2[0] <<std::endl;
+//    const float* ptr = reinterpret_cast<const float*>(output->tensor_data().data());
+//    std::cout<< ptr[0] <<std::endl;
+//
+//    float *ptr2 = static_cast<float *>(DMAHelper::base(output));
+//    ptr2[0] = 7;
+//    std::cout<< ptr2[0] <<std::endl;
 
   }
 };

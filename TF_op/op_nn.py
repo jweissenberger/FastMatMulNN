@@ -6,25 +6,15 @@ from tensorflow.python.ops import math_ops
 
 classic_mm_module = tf.load_op_library('./classic_mat_mul.so')
 
+
 @tf.RegisterGradient("ClassicMatMul")
 def _ClassicMatMulGrad(op, grad):
-    t_a = op.get_attr("transpose_a")  #https://github.com/tensorflow/tensorflow/blob/b00e936e42f3370256bc7d17d4f7685ae7cd750f/tensorflow/core/kernels/matmul_op.cc#L272
-    t_b = op.get_attr("transpose_b")
     a = math_ops.conj(op.inputs[0])
     b = math_ops.conj(op.inputs[1])
-    if not t_a and not t_b:
-        grad_a = gen_math_ops.mat_mul(grad, b, transpose_b=True)
-        grad_b = gen_math_ops.mat_mul(a, grad, transpose_a=True)
-    elif not t_a and t_b:
-        grad_a = gen_math_ops.mat_mul(grad, b)
-        grad_b = gen_math_ops.mat_mul(grad, a, transpose_a=True)
-    elif t_a and not t_b:
-        grad_a = gen_math_ops.mat_mul(b, grad, transpose_b=True)
-        grad_b = gen_math_ops.mat_mul(a, grad)
-    elif t_a and t_b:
-        grad_a = gen_math_ops.mat_mul(b, grad, transpose_a=True, transpose_b=True)
-        grad_b = gen_math_ops.mat_mul(grad, a, transpose_a=True, transpose_b=True)
+    grad_a = gen_math_ops.mat_mul(grad, b, transpose_b=True)
+    grad_b = gen_math_ops.mat_mul(a, grad, transpose_a=True)
     return grad_a, grad_b
+
 
 class Linear(layers.Layer):
 
@@ -85,7 +75,6 @@ def test_step(images, labels):
 
 
 if __name__ == '__main__':
-    #classic_mm_module = tf.load_op_library('./classic_mat_mul.so')
 
     mnist = tf.keras.datasets.mnist
     (x_train, y_train), (x_test, y_test) = mnist.load_data()

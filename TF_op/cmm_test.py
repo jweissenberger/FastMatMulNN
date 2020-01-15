@@ -7,8 +7,8 @@ g++ -std=c++11 -shared classic_mat_mul.cc -o classic_mat_mul.so -fPIC ${TF_CFLAG
 import tensorflow as tf
 classic_mm_module = tf.load_op_library('./classic_mat_mul.so')
 
-a = tf.random.uniform(shape=(10, 10))
-b = tf.random.uniform(shape=(10, 10))
+a = tf.random.uniform(shape=(4, 4))
+b = tf.random.uniform(shape=(4, 4))
 
 op = classic_mm_module.ClassicMatMul(a_matrix=a, b_matrix=b)
 
