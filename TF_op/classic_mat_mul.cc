@@ -64,6 +64,18 @@ public:
     auto B_tensor = B_matrix.matrix<float>();
     auto output_tensor = output->matrix<float>();
 
+//    for (int i = 0; i < A_tensor.shape().dim_size(0); i++){
+//       for (int j = 0; j < A_tensor.shape().dim_size(1); j++){
+//            output_tensor(i, j) += A_tensor(i, j);
+//       }
+//    }
+
+    //zero out the output matrix
+    for (int i = 0; i < output_shape.dim_size(0); i++){
+        for (int j = 0; j < output_shape.dim_size(0); j++){
+        output_tensor(i, j) = 0;
+        }
+    }
     // classic mm
     for (int i = 0; i < A_shape.dim_size(0); i++){
         for (int j = 0; j < B_shape.dim_size(1); j++){

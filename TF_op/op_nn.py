@@ -28,7 +28,8 @@ class Linear(layers.Layer):
                                  trainable=True)
 
     def call(self, inputs):
-        #return tf.matmul(inputs, self.w) + self.b
+        #print(tf.matmul(inputs, self.w) + self.b)
+        #print(classic_mm_module.ClassicMatMul(a_matrix=inputs, b_matrix=self.w) + self.b)
         return classic_mm_module.ClassicMatMul(a_matrix=inputs, b_matrix=self.w) + self.b
 
 
@@ -36,10 +37,14 @@ class MyModel(Model):
     def __init__(self):
         super(MyModel, self).__init__()
 
-        self.d1 = Linear(input_dim=784, units=100)
-        self.d2 = Linear(input_dim=100, units=300)
-        self.d3 = Linear(input_dim=300, units=100)
-        self.out = Linear(input_dim=100, units=10)
+        layer1 = 50
+        layer2 = 30
+        layer3 = 10
+
+        self.d1 = Linear(input_dim=784, units=layer1)
+        self.d2 = Linear(input_dim=layer1, units=layer2)
+        self.d3 = Linear(input_dim=layer2, units=layer3)
+        self.out = Linear(input_dim=layer3, units=10)
 
     def call(self, x):
         x = self.d1(x)
