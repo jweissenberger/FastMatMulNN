@@ -9,6 +9,8 @@ classic_mm_module = tf.load_op_library('./classic_mat_mul.so')
 
 @tf.RegisterGradient("ClassicMatMul")
 def _ClassicMatMulGrad(op, grad):
+    print('grad', type(grad))
+    print('op', type(op.inputs[0]))
     a = math_ops.conj(op.inputs[0])
     b = math_ops.conj(op.inputs[1])
     grad_a = gen_math_ops.mat_mul(grad, b, transpose_b=True)
@@ -28,7 +30,7 @@ class Linear(layers.Layer):
                                  trainable=True)
 
     def call(self, inputs):
-        #print(tf.matmul(inputs, self.w) + self.b)
+        #return tf.matmul(inputs, self.w) + self.b
         #print(classic_mm_module.ClassicMatMul(a_matrix=inputs, b_matrix=self.w) + self.b)
         return classic_mm_module.ClassicMatMul(a_matrix=inputs, b_matrix=self.w) + self.b
 
