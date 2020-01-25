@@ -9,12 +9,13 @@ classic_mm_module = tf.load_op_library('./classic_mat_mul.so')
 
 @tf.RegisterGradient("ClassicMatMul")
 def _ClassicMatMulGrad(op, grad):
-    print('grad', type(grad))
-    print('op', type(op.inputs[0]))
     a = math_ops.conj(op.inputs[0])
     b = math_ops.conj(op.inputs[1])
-    grad_a = gen_math_ops.mat_mul(grad, b, transpose_b=True)
-    grad_b = gen_math_ops.mat_mul(a, grad, transpose_a=True)
+    grad_a = tf.matmul(grad, b, transpose_b=True)
+    grad_b = tf.matmul(a, grad, transpose_a=True)
+    # grad_a = classic_mm_module.ClassicMatMul(a_matrix=grad, b_matrix=tf.transpose(b))
+    # grad_b = classic_mm_module.ClassicMatMul(a_matrix=tf.transpose(a), b_matrix=grad)
+    print(grad_a)
     return grad_a, grad_b
 
 
