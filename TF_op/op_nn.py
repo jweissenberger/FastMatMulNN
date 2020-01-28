@@ -9,14 +9,15 @@ classic_mm_module = tf.load_op_library('./classic_mat_mul.so')
 
 @tf.RegisterGradient("ClassicMatMul")
 def _ClassicMatMulGrad(op, grad):
-    a = math_ops.conj(op.inputs[0])
-    b = math_ops.conj(op.inputs[1])
-    grad_a = tf.matmul(grad, b, transpose_b=True)
-    grad_b = tf.matmul(a, grad, transpose_a=True)
-    # grad_a = classic_mm_module.ClassicMatMul(a_matrix=grad, b_matrix=tf.transpose(b))
-    # grad_b = classic_mm_module.ClassicMatMul(a_matrix=tf.transpose(a), b_matrix=grad)
-    print(grad_a)
-    return grad_a, grad_b
+    # a = math_ops.conj(op.inputs[0])
+    # b = math_ops.conj(op.inputs[1])
+    # grad_a = tf.matmul(grad, b, transpose_b=True)
+    # grad_b = tf.matmul(a, grad, transpose_a=True)
+    # # grad_a = classic_mm_module.ClassicMatMul(a_matrix=grad, b_matrix=tf.transpose(b))
+    # # grad_b = classic_mm_module.ClassicMatMul(a_matrix=tf.transpose(a), b_matrix=grad)
+    # print(grad_a)
+    #return grad_a, grad_b
+    return 0
 
 
 class Linear(layers.Layer):
@@ -83,6 +84,12 @@ def test_step(images, labels):
 
 
 if __name__ == '__main__':
+
+    a = tf.Variable(tf.random.uniform(shape=(4, 4)))
+    b = tf.Variable(tf.random.uniform(shape=(4, 4)))
+
+    op = classic_mm_module.ClassicMatMul(a_matrix=a, b_matrix=b)
+    print('OP:\n', op)
 
     mnist = tf.keras.datasets.mnist
     (x_train, y_train), (x_test, y_test) = mnist.load_data()
