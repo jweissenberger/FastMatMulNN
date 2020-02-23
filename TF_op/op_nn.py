@@ -3,21 +3,29 @@ from tensorflow.keras import layers
 from tensorflow.keras import Model
 from tensorflow.python.ops import gen_math_ops
 from tensorflow.python.ops import math_ops
+from tensorflow.python.framework import ops
+from tensorflow.python.ops import array_ops
+from tensorflow.python.ops import sparse_ops
 
 classic_mm_module = tf.load_op_library('./classic_mat_mul.so')
+zero_out_module = tf.load_op_library('./zero_out.so')
 
 
 @tf.RegisterGradient("ClassicMatMul")
-def _ClassicMatMulGrad(op, grad):
-    # a = math_ops.conj(op.inputs[0])
-    # b = math_ops.conj(op.inputs[1])
-    # grad_a = tf.matmul(grad, b, transpose_b=True)
-    # grad_b = tf.matmul(a, grad, transpose_a=True)
-    # # grad_a = classic_mm_module.ClassicMatMul(a_matrix=grad, b_matrix=tf.transpose(b))
-    # # grad_b = classic_mm_module.ClassicMatMul(a_matrix=tf.transpose(a), b_matrix=grad)
-    # print(grad_a)
-    #return grad_a, grad_b
-    return 0
+def _ClassicMatMul_grad(op, grad):
+    # must use ops in this
+    a = math_ops.conj(op.inputs[0])
+    b = math_ops.conj(op.inputs[1])
+    grad_a = gen_math_ops.mat_mul(grad, b, transpose_b=True)
+    grad_b = gen_math_ops.mat_mul(a, grad, transpose_a=True)
+    bt = array_ops.transpose(op.inputs[1])
+    at = array_ops.transpose(op.inputs[0])
+    #grad_a = classic_mm_module.ClassicMatMul(a_matrix=grad, b_matrix=bt)
+    #grad_b = classic_mm_module.ClassicMatMul(a_matrix=at, b_matrix=grad)
+    print("grad a", grad_a)
+    print("grad b", grad_b)
+    return grad_a, grad_b
+    # print(op.inputs)
 
 
 class Linear(layers.Layer):
@@ -35,6 +43,7 @@ class Linear(layers.Layer):
         #return tf.matmul(inputs, self.w) + self.b
         #print(classic_mm_module.ClassicMatMul(a_matrix=inputs, b_matrix=self.w) + self.b)
         return classic_mm_module.ClassicMatMul(a_matrix=inputs, b_matrix=self.w) + self.b
+        #return  zero_out_module.zero_out(inputs)
 
 
 class MyModel(Model):
@@ -74,6 +83,7 @@ def train_step(images, labels):
   train_accuracy(labels, predictions)
 
 
+
 @tf.function
 def test_step(images, labels):
   predictions = model(images)
@@ -84,12 +94,6 @@ def test_step(images, labels):
 
 
 if __name__ == '__main__':
-
-    a = tf.Variable(tf.random.uniform(shape=(4, 4)))
-    b = tf.Variable(tf.random.uniform(shape=(4, 4)))
-
-    op = classic_mm_module.ClassicMatMul(a_matrix=a, b_matrix=b)
-    print('OP:\n', op)
 
     mnist = tf.keras.datasets.mnist
     (x_train, y_train), (x_test, y_test) = mnist.load_data()

@@ -65,11 +65,12 @@ public:
     auto output_tensor = output->matrix<float>();
 
     //zero out the output matrix
-    for (int i = 0; i < output_shape.dim_size(0); i++){
-        for (int j = 0; j < output_shape.dim_size(0); j++){
-        output_tensor(i, j) = 0;
-        }
-    }
+    ****this is where the error is, its caused by filling the output matrix with zeros **
+//    for (int i = 0; i < output_shape.dim_size(0); i++){
+//        for (int j = 0; j < output_shape.dim_size(0); j++){
+//        output_tensor(i, j) = 0;
+//        }
+//    }
     // classic mm
     for (int i = 0; i < A_shape.dim_size(0); i++){
         for (int j = 0; j < B_shape.dim_size(1); j++){
@@ -78,6 +79,10 @@ public:
             }
         }
     }
+//    std::cout<<A_shape.dim_size(0) << A_shape.dim_size(1) <<std::endl;
+//    std::cout<<B_shape.dim_size(0) << B_shape.dim_size(1)<<std::endl;
+//    std::cout<<output_shape.dim_size(0) << output_shape.dim_size(1)<<std::endl;
+
 
 //    const float* ptr = reinterpret_cast<const float*>(output->tensor_data().data());
 //    std::cout<< ptr[0] <<std::endl;
