@@ -1,11 +1,8 @@
 import tensorflow as tf
 from tensorflow.keras import layers
 from tensorflow.keras import Model
-from tensorflow.python.ops import gen_math_ops
-from tensorflow.python.ops import math_ops
-from tensorflow.python.framework import ops
 from tensorflow.python.ops import array_ops
-from tensorflow.python.ops import sparse_ops
+
 
 classic_mm_module = tf.load_op_library('./classic_mat_mul.so')
 zero_out_module = tf.load_op_library('./zero_out.so')
@@ -13,19 +10,13 @@ zero_out_module = tf.load_op_library('./zero_out.so')
 
 @tf.RegisterGradient("ClassicMatMul")
 def _ClassicMatMul_grad(op, grad):
-    # must use ops in this
-    a = math_ops.conj(op.inputs[0])
-    b = math_ops.conj(op.inputs[1])
-    grad_a = gen_math_ops.mat_mul(grad, b, transpose_b=True)
-    grad_b = gen_math_ops.mat_mul(a, grad, transpose_a=True)
+    # here I am using our classic matmul to pass the gradients back in backprop, I could use classic mat mul here as well
+    # must use ops in this, not normal tensorflow calls
     bt = array_ops.transpose(op.inputs[1])
     at = array_ops.transpose(op.inputs[0])
-    #grad_a = classic_mm_module.ClassicMatMul(a_matrix=grad, b_matrix=bt)
-    #grad_b = classic_mm_module.ClassicMatMul(a_matrix=at, b_matrix=grad)
-    print("grad a", grad_a)
-    print("grad b", grad_b)
+    grad_a = classic_mm_module.ClassicMatMul(a_matrix=grad, b_matrix=bt)
+    grad_b = classic_mm_module.ClassicMatMul(a_matrix=at, b_matrix=grad)
     return grad_a, grad_b
-    # print(op.inputs)
 
 
 class Linear(layers.Layer):
@@ -40,10 +31,8 @@ class Linear(layers.Layer):
                                  trainable=True)
 
     def call(self, inputs):
-        #return tf.matmul(inputs, self.w) + self.b
-        #print(classic_mm_module.ClassicMatMul(a_matrix=inputs, b_matrix=self.w) + self.b)
+        # this is the multiplication, can use normal tensorflow code here as well
         return classic_mm_module.ClassicMatMul(a_matrix=inputs, b_matrix=self.w) + self.b
-        #return  zero_out_module.zero_out(inputs)
 
 
 class MyModel(Model):

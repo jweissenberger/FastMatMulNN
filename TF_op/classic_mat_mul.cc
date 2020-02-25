@@ -64,16 +64,10 @@ public:
     auto B_tensor = B_matrix.matrix<float>();
     auto output_tensor = output->matrix<float>();
 
-    //zero out the output matrix
-    ****this is where the error is, its caused by filling the output matrix with zeros **
-//    for (int i = 0; i < output_shape.dim_size(0); i++){
-//        for (int j = 0; j < output_shape.dim_size(0); j++){
-//        output_tensor(i, j) = 0;
-//        }
-//    }
     // classic mm
     for (int i = 0; i < A_shape.dim_size(0); i++){
         for (int j = 0; j < B_shape.dim_size(1); j++){
+            output_tensor(i, j) = 0; //zero out the output matrix
             for (int k = 0; k < B_shape.dim_size(0); k++){
                 output_tensor(i, j) += A_tensor(i, k) * B_tensor(k, j);
             }
