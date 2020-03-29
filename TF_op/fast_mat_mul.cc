@@ -64,18 +64,33 @@ public:
     auto B_tensor = B_matrix.matrix<float>();
     auto output_tensor = output->matrix<float>();
 
-    // classic mm
-    for (int i = 0; i < A_shape.dim_size(0); i++){
-        for (int j = 0; j < B_shape.dim_size(1); j++){
-            output_tensor(i, j) = 0; //zero out the output matrix
-            for (int k = 0; k < B_shape.dim_size(0); k++){
-                output_tensor(i, j) += A_tensor(i, k) * B_tensor(k, j);
-            }
-        }
+    const CBLAS_LAYOUT layout = CblasColMajor;
+    const CBLAS_TRANSPOSE transa = 'N';
+    const CBLAS_TRANSPOSE transb = 'N';
+    const MKL_INT m = output_shape.dim_size(0);
+    const MKL_INT n = output_shape.dim_size(1);
+    const MKL_INT k = A_shape.dim_size(1);
+    const MKL_INT lda = A_shape.dim_size(0);
+    const MKL_INT ldb = B_shape.dim_size(0);
+    const MKL_INT ldc = output_shape.dim_size(0);
+    const float alpha = 1.0;
+    const float beta = 0.0;
+    const float* a = reinterpret_cast<const float*>(A_tensor->tensor_data().data());
+    const float* b = reinterpret_cast<const float*>(B_tensor->tensor_data().data());
+    const float* c = static_cast<float *>(DMAHelper::base(output));
+    maybe let's understand better the three lines above, DMAHelper vs data() and reinterpret_cast vs static_cast
+
+//    std::cout<<A_shape.dim_size(0) << A_shape.dim_size(1) <<std::endl;
+//    std::cout<<B_shape.dim_size(0) << B_shape.dim_size(1)<<std::endl;
+//    std::cout<<output_shape.dim_size(0) << output_shape.dim_size(1)<<std::endl;
+
+
+//    const float* ptr = reinterpret_cast<const float*>(output->tensor_data().data());
+//    std::cout<< ptr[0] <<std::endl;
+//
+//    float *ptr2 = static_cast<float *>(DMAHelper::base(output));
+//    ptr2[0] = 7;
+//    std::cout<< ptr2[0] <<std::endl;
+
     }
-
-
-  }
-};
-
-REGISTER_KERNEL_BUILDER(Name("ClassicMatMul").Device(DEVICE_CPU), ClassicMatMulOp);
+}
