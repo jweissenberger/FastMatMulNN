@@ -1,3 +1,10 @@
+// To compile:
+//TF_CFLAGS=( $(python -c 'import tensorflow as tf; print(" ".join(tf.sysconfig.get_compile_flags()))') )
+//TF_LFLAGS=( $(python -c 'import tensorflow as tf; print(" ".join(tf.sysconfig.get_link_flags()))') )
+//g++ -std=c++11 -shared fast_mat_mul.cc -o fast_mat_mul.so -fPIC ${TF_CFLAGS[@]} ${TF_LFLAGS[@]} -O2
+// if on a mac add this to the end of the final command: -undefined dynamic_lookup
+// note: it must be tensorflow 2.0
+
 #include "tensorflow/core/framework/op_kernel.h"
 #include "tensorflow/core/framework/tensor_shape.h"
 #include "tensorflow/core/platform/default/logging.h"
