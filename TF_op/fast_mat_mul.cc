@@ -15,10 +15,10 @@
 
 using namespace tensorflow;
 
-REGISTER_OP("ClassicMatMul")
+REGISTER_OP("FastMatMul")
     .Input("a_matrix: float")
     .Input("b_matrix: float")
-    .Output("classic_mat_mul: float")
+    .Output("fast_mat_mul: float")
     .SetShapeFn([](::tensorflow::shape_inference::InferenceContext* c) {
     shape_inference::ShapeHandle A_shape;
     TF_RETURN_IF_ERROR(c->WithRank(c->input(0), 2, &A_shape)); // get shape of input matrix A
@@ -35,11 +35,11 @@ REGISTER_OP("ClassicMatMul")
     return Status::OK();
   });
 
-class ClassicMatMulOp : public OpKernel {
+class FastMatMulOp : public OpKernel {
 public:
   /// \brief Constructor.
   /// \param context
-  explicit ClassicMatMulOp(OpKernelConstruction* context) : OpKernel(context) {}
+  explicit FastMatMulOp(OpKernelConstruction* context) : OpKernel(context) {}
 
   void Compute(OpKernelContext* context) override {
 
