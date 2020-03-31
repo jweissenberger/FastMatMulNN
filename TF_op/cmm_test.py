@@ -10,6 +10,7 @@ import unittest
 #tf.compat.v1.disable_eager_execution()
 
 classic_mm_module = tf.load_op_library('./classic_mat_mul.so')
+#classic_mm_module = tf.load_op_library('./fast_mat_mul.so')
 
 tf.random.set_seed(1)
 

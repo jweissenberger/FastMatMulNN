@@ -11,6 +11,8 @@
 #include "tensorflow/core/framework/shape_inference.h"
 #include "tensorflow/core/common_runtime/dma_helper.h"
 
+#include "mkl.h"
+
 using namespace tensorflow;
 
 REGISTER_OP("ClassicMatMul")
@@ -66,14 +68,9 @@ public:
     Tensor* output = NULL;
     OP_REQUIRES_OK(context, context->allocate_output(0, output_shape, &output));
 
-    // get the corresponding Eigen tensors for data access
-    auto A_tensor = A_matrix.matrix<float>();
-    auto B_tensor = B_matrix.matrix<float>();
-    auto output_tensor = output->matrix<float>();
-
     const CBLAS_LAYOUT layout = CblasColMajor;
-    const CBLAS_TRANSPOSE transa = 'N';
-    const CBLAS_TRANSPOSE transb = 'N';
+    const CBLAS_TRANSPOSE transa = CblasNoTrans;
+    const CBLAS_TRANSPOSE transb = CblasNoTrans;
     const MKL_INT m = output_shape.dim_size(0);
     const MKL_INT n = output_shape.dim_size(1);
     const MKL_INT k = A_shape.dim_size(1);
@@ -82,15 +79,10 @@ public:
     const MKL_INT ldc = output_shape.dim_size(0);
     const float alpha = 1.0;
     const float beta = 0.0;
-    const float* a = reinterpret_cast<const float*>(A_tensor->tensor_data().data());
-    const float* b = reinterpret_cast<const float*>(B_tensor->tensor_data().data());
-    const float* c = static_cast<float *>(DMAHelper::base(output));
-    maybe let's understand better the three lines above, DMAHelper vs data() and reinterpret_cast vs static_cast
-
-//    std::cout<<A_shape.dim_size(0) << A_shape.dim_size(1) <<std::endl;
-//    std::cout<<B_shape.dim_size(0) << B_shape.dim_size(1)<<std::endl;
-//    std::cout<<output_shape.dim_size(0) << output_shape.dim_size(1)<<std::endl;
-
+    const float* a = static_cast<const float *>(DMAHelper::base(&A_matrix));
+    const float* b = static_cast<const float *>(DMAHelper::base(&B_matrix));
+    float* c = static_cast<float *>(DMAHelper::base(output));
+    cblas_sgemm(layout, transa, transb, m, n, k, alpha, a, lda, b, ldb, beta, c, ldc);
 
 //    const float* ptr = reinterpret_cast<const float*>(output->tensor_data().data());
 //    std::cout<< ptr[0] <<std::endl;
@@ -100,4 +92,4 @@ public:
 //    std::cout<< ptr2[0] <<std::endl;
 
     }
-}
+};
