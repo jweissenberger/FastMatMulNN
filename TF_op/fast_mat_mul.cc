@@ -68,15 +68,15 @@ public:
     Tensor* output = NULL;
     OP_REQUIRES_OK(context, context->allocate_output(0, output_shape, &output));
 
-    const CBLAS_LAYOUT layout = CblasColMajor;
+    const CBLAS_LAYOUT layout = CblasRowMajor;
     const CBLAS_TRANSPOSE transa = CblasNoTrans;
     const CBLAS_TRANSPOSE transb = CblasNoTrans;
     const MKL_INT m = output_shape.dim_size(0);
     const MKL_INT n = output_shape.dim_size(1);
     const MKL_INT k = A_shape.dim_size(1);
-    const MKL_INT lda = A_shape.dim_size(0);
-    const MKL_INT ldb = B_shape.dim_size(0);
-    const MKL_INT ldc = output_shape.dim_size(0);
+    const MKL_INT lda = A_shape.dim_size(1);
+    const MKL_INT ldb = B_shape.dim_size(1);
+    const MKL_INT ldc = output_shape.dim_size(1);
     const float alpha = 1.0;
     const float beta = 0.0;
     const float* a = static_cast<const float *>(DMAHelper::base(&A_matrix));
