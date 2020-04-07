@@ -18,7 +18,7 @@ class Linear(layers.Layer):
 
     def call(self, inputs):
         # this is the multiplication, can use normal tensorflow code here as well
-        return tf.matmul(a_matrix=inputs, b_matrix=self.w) + self.b
+        return tf.matmul(inputs, self.w) + self.b
 
 
 class MyModel(Model):
