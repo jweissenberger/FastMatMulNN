@@ -5,7 +5,6 @@ from tensorflow.python.ops import array_ops
 import time
 
 
-classic_mm_module = tf.load_op_library('./classic_mat_mul.so')
 fast_mm_module = tf.load_op_library('./fast_mat_mul.so')
 
 
@@ -15,8 +14,8 @@ def _ClassicMatMul_grad(op, grad):
     # must use ops in this, not normal tensorflow calls
     bt = array_ops.transpose(op.inputs[1])
     at = array_ops.transpose(op.inputs[0])
-    grad_a = fast_mm_module.FastMatMulOp(a_matrix=grad, b_matrix=bt)
-    grad_b = fast_mm_module.FastMatMulOp(a_matrix=at, b_matrix=grad)
+    grad_a = fast_mm_module.FastMatMul(a_matrix=grad, b_matrix=bt)
+    grad_b = fast_mm_module.FastMatMul(a_matrix=at, b_matrix=grad)
     return grad_a, grad_b
 
 
@@ -33,7 +32,7 @@ class Linear(layers.Layer):
 
     def call(self, inputs):
         # this is the multiplication, can use normal tensorflow code here as well
-        return fast_mm_module.FastMatMulOp(a_matrix=inputs, b_matrix=self.w) + self.b
+        return fast_mm_module.FastMatMul(a_matrix=inputs, b_matrix=self.w) + self.b
 
 
 class MyModel(Model):
