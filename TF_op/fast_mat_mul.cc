@@ -93,3 +93,5 @@ public:
 
     }
 };
+
+REGISTER_KERNEL_BUILDER(Name("FastMatMul").Device(DEVICE_CPU), FastMatMulOp);
