@@ -10,8 +10,8 @@ fast_mm_module = tf.load_op_library('./fast_mat_mul.so')
 
 tf.random.set_seed(1)
 
-a = tf.Variable(tf.random.uniform(shape=(4, 4)))
-b = tf.Variable(tf.random.uniform(shape=(4, 4)))
+a = tf.Variable(tf.random.uniform(shape=(4, 5)))
+b = tf.Variable(tf.random.uniform(shape=(5, 6)))
 
 #op = classic_mm_module.ClassicMatMul(a_matrix=a, b_matrix=b)
 op = fast_mm_module.FastMatMul(a_matrix=a, b_matrix=b)
