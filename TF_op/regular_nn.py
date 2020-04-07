@@ -2,21 +2,7 @@ import tensorflow as tf
 from tensorflow.keras import layers
 from tensorflow.keras import Model
 from tensorflow.python.ops import array_ops
-
-
-classic_mm_module = tf.load_op_library('./classic_mat_mul.so')
-zero_out_module = tf.load_op_library('./zero_out.so')
-
-
-@tf.RegisterGradient("ClassicMatMul")
-def _ClassicMatMul_grad(op, grad):
-    # here I am using our classic matmul to pass the gradients back in backprop, I could use classic mat mul here as well
-    # must use ops in this, not normal tensorflow calls
-    bt = array_ops.transpose(op.inputs[1])
-    at = array_ops.transpose(op.inputs[0])
-    grad_a = classic_mm_module.ClassicMatMul(a_matrix=grad, b_matrix=bt)
-    grad_b = classic_mm_module.ClassicMatMul(a_matrix=at, b_matrix=grad)
-    return grad_a, grad_b
+import time
 
 
 class Linear(layers.Layer):
@@ -32,7 +18,7 @@ class Linear(layers.Layer):
 
     def call(self, inputs):
         # this is the multiplication, can use normal tensorflow code here as well
-        return classic_mm_module.ClassicMatMul(a_matrix=inputs, b_matrix=self.w) + self.b
+        return tf.matmul(a_matrix=inputs, b_matrix=self.w) + self.b
 
 
 class MyModel(Model):
@@ -105,8 +91,8 @@ if __name__ == '__main__':
     test_loss = tf.keras.metrics.Mean(name='test_loss')
     test_accuracy = tf.keras.metrics.SparseCategoricalAccuracy(name='test_accuracy')
 
-    EPOCHS = 5
-
+    EPOCHS = 10
+    total = 0
     for epoch in range(EPOCHS):
         # Reset the metrics at the start of the next epoch
         train_loss.reset_states()
@@ -114,14 +100,20 @@ if __name__ == '__main__':
         test_loss.reset_states()
         test_accuracy.reset_states()
 
+        a = time.time()
         for batch in range(60000//batch_size):
             train_step(x_train[batch*batch_size:(batch+1)*batch_size], y_train[batch*batch_size:(batch+1)*batch_size])
 
         test_step(x_test, y_test)
-
+        b = time.time()
         template = 'Epoch {}, Loss: {}, Accuracy: {}, Test Loss: {}, Test Accuracy: {}'
         print(template.format(epoch + 1,
                               train_loss.result(),
                               train_accuracy.result() * 100,
                               test_loss.result(),
                               test_accuracy.result() * 100))
+        diff = b-a
+        total += diff
+        print(f'Time for Epoch:{diff}\n')
+
+    print(f'Average time per Epoch:{diff/EPOCHS}')
