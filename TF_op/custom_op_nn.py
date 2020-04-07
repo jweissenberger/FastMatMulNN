@@ -8,7 +8,7 @@ import time
 fast_mm_module = tf.load_op_library('./fast_mat_mul.so')
 
 
-@tf.RegisterGradient("ClassicMatMul")
+@tf.RegisterGradient("FastMatMul")
 def _Fast_MatMul_grad(op, grad):
     # here I am using our classic matmul to pass the gradients back in backprop, I could use classic mat mul here as well
     # must use ops in this, not normal tensorflow calls
