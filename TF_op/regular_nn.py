@@ -116,4 +116,4 @@ if __name__ == '__main__':
         total += diff
         print(f'Time for Epoch:{diff}\n')
 
-    print(f'Average time per Epoch:{diff/EPOCHS}')
+    print(f'Average time per Epoch:{total/EPOCHS}')
