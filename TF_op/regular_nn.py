@@ -91,29 +91,47 @@ if __name__ == '__main__':
     test_loss = tf.keras.metrics.Mean(name='test_loss')
     test_accuracy = tf.keras.metrics.SparseCategoricalAccuracy(name='test_accuracy')
 
-    EPOCHS = 10
-    total = 0
-    for epoch in range(EPOCHS):
-        # Reset the metrics at the start of the next epoch
-        train_loss.reset_states()
-        train_accuracy.reset_states()
-        test_loss.reset_states()
-        test_accuracy.reset_states()
+    train_times = 0
+    num_models = 10
+    for i in range(num_models):
+        model = MyModel()
 
-        a = time.time()
-        for batch in range(60000//batch_size):
-            train_step(x_train[batch*batch_size:(batch+1)*batch_size], y_train[batch*batch_size:(batch+1)*batch_size])
+        loss_object = tf.keras.losses.SparseCategoricalCrossentropy()
 
-        test_step(x_test, y_test)
-        b = time.time()
-        template = 'Epoch {}, Loss: {}, Accuracy: {}, Test Loss: {}, Test Accuracy: {}'
-        print(template.format(epoch + 1,
-                              train_loss.result(),
-                              train_accuracy.result() * 100,
-                              test_loss.result(),
-                              test_accuracy.result() * 100))
-        diff = b-a
-        total += diff
-        print(f'Time for Epoch:{diff}\n')
+        optimizer = tf.keras.optimizers.Adam()
 
-    print(f'Average time per Epoch:{total/EPOCHS}')
+        train_loss = tf.keras.metrics.Mean(name='train_loss')
+        train_accuracy = tf.keras.metrics.SparseCategoricalAccuracy(name='train_accuracy')
+
+        test_loss = tf.keras.metrics.Mean(name='test_loss')
+        test_accuracy = tf.keras.metrics.SparseCategoricalAccuracy(name='test_accuracy')
+
+        EPOCHS = 10
+        total = 0
+        for epoch in range(EPOCHS):
+            # Reset the metrics at the start of the next epoch
+            train_loss.reset_states()
+            train_accuracy.reset_states()
+            test_loss.reset_states()
+            test_accuracy.reset_states()
+
+            a = time.time()
+            for batch in range(60000 // batch_size):
+                train_step(x_train[batch * batch_size:(batch + 1) * batch_size],
+                           y_train[batch * batch_size:(batch + 1) * batch_size])
+
+            test_step(x_test, y_test)
+            b = time.time()
+            template = 'Epoch {}, Loss: {}, Accuracy: {}, Test Loss: {}, Test Accuracy: {}'
+            print(template.format(epoch + 1,
+                                  train_loss.result(),
+                                  train_accuracy.result() * 100,
+                                  test_loss.result(),
+                                  test_accuracy.result() * 100))
+            diff = b - a
+            total += diff
+            print(f'Time for Epoch:{diff}\n')
+            print(f'Average time per Epoch:{total / EPOCHS}')
+            train_times += total
+
+    print(f'Total average epoch time: {train_times / (num_models * EPOCHS)}')
