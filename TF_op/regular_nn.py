@@ -79,18 +79,6 @@ if __name__ == '__main__':
 
     batch_size = 64
 
-    model = MyModel()
-
-    loss_object = tf.keras.losses.SparseCategoricalCrossentropy()
-
-    optimizer = tf.keras.optimizers.Adam()
-
-    train_loss = tf.keras.metrics.Mean(name='train_loss')
-    train_accuracy = tf.keras.metrics.SparseCategoricalAccuracy(name='train_accuracy')
-
-    test_loss = tf.keras.metrics.Mean(name='test_loss')
-    test_accuracy = tf.keras.metrics.SparseCategoricalAccuracy(name='test_accuracy')
-
     train_times = 0
     num_models = 10
     for i in range(num_models):
