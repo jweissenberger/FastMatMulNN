@@ -25,9 +25,9 @@ class MyModel(Model):
     def __init__(self):
         super(MyModel, self).__init__()
 
-        layer1 = 50
-        layer2 = 30
-        layer3 = 10
+        layer1 = 800
+        layer2 = 700
+        layer3 = 100
 
         self.d1 = Linear(input_dim=784, units=layer1)
         self.d2 = Linear(input_dim=layer1, units=layer2)
