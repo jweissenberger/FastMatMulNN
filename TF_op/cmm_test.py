@@ -19,9 +19,9 @@ b = tf.Variable(tf.random.uniform(shape=(8000, 8000)))
 
 print("looping:")
 for i in range(10000):
-    op = fast_mm_module.FastMatMul(a_matrix=a, b_matrix=b)
+    #op = fast_mm_module.FastMatMul(a_matrix=a, b_matrix=b)
 
-# regular = tf.matmul(a, b)
+    regular = tf.matmul(a, b)
 #
 # print('\n\n\nregular: ', regular)
 # print('\n\n\nop: ', op)
