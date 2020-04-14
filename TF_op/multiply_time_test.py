@@ -3,13 +3,22 @@
 import tensorflow as tf
 import time
 
+# to change MKL's threads at runtime
+import ctypes
+mkl_rt = ctypes.CDLL('libmkl_rt.so')
+mkl_set_num_threads = mkl_rt.MKL_Set_Num_Threads
+mkl_get_max_threads = mkl_rt.MKL_Get_Max_Threads
 
 fast_mm_module = tf.load_op_library('./fast_mat_mul.so')
 
 custom_time = 0
 regular_time = 0
 
-loops = 1000
+print( mkl_get_max_threads() )
+mkl_set_num_threads(1)
+print( mkl_get_max_threads() )
+
+loops = 100
 for i in range(loops):
 
     a = tf.Variable(tf.random.uniform(shape=(1000, 1000)))
