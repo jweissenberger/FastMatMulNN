@@ -13,12 +13,7 @@
 
 // include arbenson-fast-matmul stuff
 #include "linalg.hpp"
-//#include "bini322_10_52_approx.hpp"
-extern "C" {
-    template <typename Scalar>
-    double FastMatmul(Matrix<Scalar>& A, Matrix<Scalar>& B, Matrix<Scalar>& C,
-    int num_steps, double x);
-}
+#include "bini322_10_52_approx.hpp"
 
 using namespace tensorflow;
 
@@ -86,7 +81,7 @@ public:
     double lambda = 1e-4; // error parameter (to be tuned for numsteps)
     
     // call Bini's matmul
-    FastMatmul(A, B, C, numsteps, lambda);
+    bini322_10_52_approx::FastMatmul(A, B, C, numsteps, lambda);
 
 //    const float* ptr = reinterpret_cast<const float*>(output->tensor_data().data());
 //    std::cout<< ptr[0] <<std::endl;
