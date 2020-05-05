@@ -18,6 +18,8 @@ print( mkl_get_max_threads() )
 mkl_set_num_threads(1)
 print( mkl_get_max_threads() )
 
+diff = 0
+
 loops = 100
 for i in range(loops):
 
@@ -35,6 +37,10 @@ for i in range(loops):
     custom_time += t2-t1
     regular_time += t4-t3
 
+    diff += tf.norm(op - regular)/ tf.norm(regular)
+
+
 print(f'\n\nNumber of loops:{loops}')
 print(f'Average custom time: {custom_time/loops}')
 print(f'Average regular time: {regular_time/loops}')
+print(f'Average relative error: {diff/loops}')
