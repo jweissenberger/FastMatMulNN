@@ -79,10 +79,10 @@ public:
     Matrix<float> B = Matrix<float>(b, B_shape.dim_size(0), B_shape.dim_size(0), B_shape.dim_size(1));
     Matrix<float> C = Matrix<float>(c, output->dim_size(0), output->dim_size(0), output->dim_size(1));
     int numsteps = context->input(4); // number of recursive steps
-    double lambda = context->input(3); // error parameter (to be tuned for numsteps)
+    double epsilon = context->input(3); // error parameter (to be tuned for numsteps)
     
     // call Schonhage's matmul
-    schonhage333_21_117_approx::FastMatmul(A, B, C, numsteps, lambda);
+    schonhage333_21_117_approx::FastMatmul(A, B, C, numsteps, epsilon);
 
 //    const float* ptr = reinterpret_cast<const float*>(output->tensor_data().data());
 //    std::cout<< ptr[0] <<std::endl;

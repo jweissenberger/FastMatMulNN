@@ -20,6 +20,8 @@ using namespace tensorflow;
 REGISTER_OP("FastMatMul")
     .Input("a_matrix: float")
     .Input("b_matrix: float")
+    .Input("epsilon: double")
+    .Input("steps: int")
     .Output("fast_mat_mul: float")
     .SetShapeFn([](::tensorflow::shape_inference::InferenceContext* c) {
     shape_inference::ShapeHandle A_shape;
@@ -77,11 +79,11 @@ public:
     Matrix<float> A = Matrix<float>(a, A_shape.dim_size(0), A_shape.dim_size(0), A_shape.dim_size(1));
     Matrix<float> B = Matrix<float>(b, B_shape.dim_size(0), B_shape.dim_size(0), B_shape.dim_size(1));
     Matrix<float> C = Matrix<float>(c, output->dim_size(0), output->dim_size(0), output->dim_size(1));
-    int numsteps = 1; // number of recursive steps
-    double lambda = 1e-4; // error parameter (to be tuned for numsteps)
+    int numsteps = context->input(4); // number of recursive steps
+    double epsilon = context->input(3); // error parameter (to be tuned for numsteps)
     
     // call Bini's matmul
-    bini322_10_52_approx::FastMatmul(A, B, C, numsteps, lambda);
+    bini322_10_52_approx::FastMatmul(A, B, C, numsteps, epsilon);
 
 //    const float* ptr = reinterpret_cast<const float*>(output->tensor_data().data());
 //    std::cout<< ptr[0] <<std::endl;
