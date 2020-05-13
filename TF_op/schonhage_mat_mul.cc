@@ -53,6 +53,9 @@ public:
     const Tensor& epsilon = context->input(2);
     const Tensor& numsteps = context->input(3);
 
+    auto epsilon_matrix = epsilon.matrix<float>();
+    auto numsteps_matrix = numsteps.matrix<int32>();
+
     // check shapes of inputs
     const TensorShape& A_shape = A_matrix.shape();
     const TensorShape& B_shape = B_matrix.shape();
@@ -82,7 +85,7 @@ public:
     Matrix<float> C = Matrix<float>(c, output->dim_size(0), output->dim_size(0), output->dim_size(1));
     
     // call Schonhage's matmul
-    schonhage333_21_117_approx::FastMatmul(A, B, C, numsteps(0,0), epsilon(0,0));
+    schonhage333_21_117_approx::FastMatmul(A, B, C, numsteps_matrix(0,0), epsilon_matrix(0,0));
 
 //    const float* ptr = reinterpret_cast<const float*>(output->tensor_data().data());
 //    std::cout<< ptr[0] <<std::endl;
