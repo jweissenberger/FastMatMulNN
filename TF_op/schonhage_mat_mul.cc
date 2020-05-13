@@ -85,7 +85,7 @@ public:
     Matrix<float> C = Matrix<float>(c, output->dim_size(0), output->dim_size(0), output->dim_size(1));
     
     // call Schonhage's matmul
-    schonhage333_21_117_approx::FastMatmul(A, B, C, numsteps_matrix(0,0), epsilon_matrix(0,0));
+    schonhage333_21_117_approx::FastMatmul(A, B, C, numsteps_matrix(0), epsilon_matrix(0));
 
 //    const float* ptr = reinterpret_cast<const float*>(output->tensor_data().data());
 //    std::cout<< ptr[0] <<std::endl;
