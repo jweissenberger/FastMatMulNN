@@ -17,10 +17,10 @@
 using namespace tensorflow;
 
 REGISTER_OP("FastMatMul")
+    .Attr("epsilon: float")
+    .Attr("steps: int")
     .Input("a_matrix: float")
     .Input("b_matrix: float")
-    .Input("epsilon: float")
-    .Input("steps: int32")
     .Output("fast_mat_mul: float")
     .SetShapeFn([](::tensorflow::shape_inference::InferenceContext* c) {
     shape_inference::ShapeHandle A_shape;
@@ -50,11 +50,12 @@ public:
     // get the inputs
     const Tensor& A_matrix = context->input(0);
     const Tensor& B_matrix = context->input(1);
-    const Tensor& epsilon = context->input(2);
-    const Tensor& numsteps = context->input(3);
 
-    auto epsilon_matrix = epsilon.matrix<float>();
-    auto numsteps_matrix = numsteps.matrix<int32>();
+    // get attrs
+    int numsteps;
+    context->GetAttr("steps", &numsteps)
+    float epsilon;
+    context->GetAttr("epsilon", &epsilon)
 
     // check shapes of inputs
     const TensorShape& A_shape = A_matrix.shape();
@@ -85,7 +86,7 @@ public:
     Matrix<float> C = Matrix<float>(c, output->dim_size(0), output->dim_size(0), output->dim_size(1));
     
     // call Schonhage's matmul
-    schonhage333_21_117_approx::FastMatmul(A, B, C, numsteps_matrix, epsilon_matrix);
+    schonhage333_21_117_approx::FastMatmul(A, B, C, numsteps, epsilon);
 
 //    const float* ptr = reinterpret_cast<const float*>(output->tensor_data().data());
 //    std::cout<< ptr[0] <<std::endl;
