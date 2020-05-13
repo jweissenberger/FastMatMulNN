@@ -53,7 +53,7 @@ public:
     const Tensor& epsilon = context->input(2);
     const Tensor& numsteps = context->input(3);
 
-    auto epsilon_matrix = epsilon.matrix<float>();
+    auto epsilon_matrix = epsilon.matrix<double>();
     auto numsteps_matrix = numsteps.matrix<int32>();
 
     // check shapes of inputs
