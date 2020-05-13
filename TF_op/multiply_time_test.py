@@ -24,8 +24,8 @@ dim = 6
 loops = 3
 for i in range(loops):
 
-    a = tf.Variable(tf.random.uniform(shape=(dim,dim)))
-    b = tf.Variable(tf.random.uniform(shape=(dim,dim)))
+    a = tf.Variable(tf.random.uniform(shape=(dim, dim)))
+    b = tf.Variable(tf.random.uniform(shape=(dim, dim)))
 
     t1 = time.time()
     op = fast_mm_module.FastMatMul(a_matrix=b, b_matrix=a, epsilon=1e-2, steps=2)
