@@ -19,7 +19,7 @@ using namespace tensorflow;
 REGISTER_OP("FastMatMul")
     .Input("a_matrix: float")
     .Input("b_matrix: float")
-    .Input("epsilon: double")
+    .Input("epsilon: float")
     .Input("steps: int32")
     .Output("fast_mat_mul: float")
     .SetShapeFn([](::tensorflow::shape_inference::InferenceContext* c) {
@@ -53,7 +53,7 @@ public:
     const Tensor& epsilon = context->input(2);
     const Tensor& numsteps = context->input(3);
 
-    auto epsilon_matrix = epsilon.matrix<double>();
+    auto epsilon_matrix = epsilon.matrix<float>();
     auto numsteps_matrix = numsteps.matrix<int32>();
 
     // check shapes of inputs
