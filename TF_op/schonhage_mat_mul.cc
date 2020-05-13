@@ -20,7 +20,7 @@ REGISTER_OP("FastMatMul")
     .Input("a_matrix: float")
     .Input("b_matrix: float")
     .Input("epsilon: double")
-    .Input("steps: int")
+    .Input("steps: int32")
     .Output("fast_mat_mul: float")
     .SetShapeFn([](::tensorflow::shape_inference::InferenceContext* c) {
     shape_inference::ShapeHandle A_shape;
