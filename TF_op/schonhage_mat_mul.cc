@@ -78,8 +78,10 @@ public:
     Matrix<float> A = Matrix<float>(a, A_shape.dim_size(0), A_shape.dim_size(0), A_shape.dim_size(1));
     Matrix<float> B = Matrix<float>(b, B_shape.dim_size(0), B_shape.dim_size(0), B_shape.dim_size(1));
     Matrix<float> C = Matrix<float>(c, output->dim_size(0), output->dim_size(0), output->dim_size(1));
-    int numsteps = context->input(4); // number of recursive steps
-    double epsilon = context->input(3); // error parameter (to be tuned for numsteps)
+    auto numsteps_tmp = context->input(4).scalar<int>();
+    int numsteps = numsteps_tmp(0); // number of recursive steps
+    auto epsilon_tmp = context->input(3).scalar<float>();
+    double epsilon = epsilon_tmp(0); // error parameter (to be tuned for numsteps)
     
     // call Schonhage's matmul
     schonhage333_21_117_approx::FastMatmul(A, B, C, numsteps, epsilon);
