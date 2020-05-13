@@ -15,7 +15,6 @@
 #include "schonhage333_21_117_approx.hpp"
 
 using namespace tensorflow;
-using tensorflow::shape_inference::InferenceContext;
 
 REGISTER_OP("FastMatMul")
     .Attr("epsilon: float")
@@ -54,9 +53,9 @@ public:
 
     // get attrs
     int numsteps;
-    OP_REQUIRES_OK(context, context->GetAttr("steps", &numsteps));
+    OP_REQUIRES_OK(context, context->tensorflow::shape_inference::InferenceContext::GetAttr("steps", &numsteps));
     float epsilon;
-    OP_REQUIRES_OK(context,context->GetAttr("epsilon", &epsilon));
+    OP_REQUIRES_OK(context,context->tensorflow::shape_inference::InferenceContext::GetAttr("epsilon", &epsilon));
 
     // check shapes of inputs
     const TensorShape& A_shape = A_matrix.shape();
