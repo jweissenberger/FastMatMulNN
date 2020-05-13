@@ -50,8 +50,8 @@ public:
     // get the inputs
     const Tensor& A_matrix = context->input(0);
     const Tensor& B_matrix = context->input(1);
-    const Tensor& numsteps = context->input(0);
-    const Tensor& epsilon = context->input(1);
+    const Tensor& epsilon = context->input(2);
+    const Tensor& numsteps = context->input(3);
 
     // check shapes of inputs
     const TensorShape& A_shape = A_matrix.shape();
