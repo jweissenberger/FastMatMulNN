@@ -14,7 +14,6 @@
 #include "linalg.hpp"
 #include "schonhage333_21_117_approx.hpp"
 
-using tensorflow::shape_inference::InferenceContext;
 using namespace tensorflow;
 
 REGISTER_OP("FastMatMul")
@@ -43,7 +42,13 @@ class FastMatMulOp : public OpKernel {
 public:
   /// \brief Constructor.
   /// \param context
-  explicit FastMatMulOp(OpKernelConstruction* context) : OpKernel(context) {}
+  explicit FastMatMulOp(OpKernelConstruction* context) : OpKernel(context) {
+    // get attrs
+    int numsteps;
+    OP_REQUIRES_OK(context, context->GetAttr("steps", &numsteps));
+    float epsilon;
+    OP_REQUIRES_OK(context,context->GetAttr("epsilon", &epsilon));
+  }
 
   void Compute(OpKernelContext* context) override {
 
@@ -51,12 +56,6 @@ public:
     // get the inputs
     const Tensor& A_matrix = context->input(0);
     const Tensor& B_matrix = context->input(1);
-
-    // get attrs
-    int numsteps;
-    OP_REQUIRES_OK(context, context->GetAttr("steps", &numsteps));
-    float epsilon;
-    OP_REQUIRES_OK(context,context->GetAttr("epsilon", &epsilon));
 
     // check shapes of inputs
     const TensorShape& A_shape = A_matrix.shape();
