@@ -39,8 +39,6 @@ for i in range(loops):
     regular_time += t4-t3
 
     diff += tf.norm(op - regular)/ tf.norm(regular)
-    print(op)
-    print(regular)
 
 print(f'\n\nNumber of loops:{loops}')
 print(f'Average custom time: {custom_time/loops}')
