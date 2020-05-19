@@ -44,10 +44,9 @@ public:
   /// \param context
   explicit FastMatMulOp(OpKernelConstruction* context) : OpKernel(context) {
     // get attrs
-    int numsteps;
-    OP_REQUIRES_OK(context, context->GetAttr("steps", &numsteps));
-    float epsilon;
-    OP_REQUIRES_OK(context,context->GetAttr("epsilon", &epsilon));
+
+    OP_REQUIRES_OK(context, context->GetAttr("steps", &numsteps_));
+    OP_REQUIRES_OK(context,context->GetAttr("epsilon", &epsilon_));
   }
 
   void Compute(OpKernelContext* context) override {
@@ -86,7 +85,7 @@ public:
     Matrix<float> C = Matrix<float>(c, output->dim_size(0), output->dim_size(0), output->dim_size(1));
     
     // call Schonhage's matmul
-    schonhage333_21_117_approx::FastMatmul(A, B, C, numsteps, epsilon);
+    schonhage333_21_117_approx::FastMatmul(A, B, C, numsteps_, epsilon_);
 
 //    const float* ptr = reinterpret_cast<const float*>(output->tensor_data().data());
 //    std::cout<< ptr[0] <<std::endl;
@@ -96,6 +95,11 @@ public:
 //    std::cout<< ptr2[0] <<std::endl;
 
     }
+
+  private:
+    int numsteps_;
+    float epsilon_;
+
 };
 
 REGISTER_KERNEL_BUILDER(Name("FastMatMul").Device(DEVICE_CPU), FastMatMulOp);
