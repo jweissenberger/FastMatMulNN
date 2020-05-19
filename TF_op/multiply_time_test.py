@@ -20,7 +20,7 @@ print( mkl_get_max_threads() )
 
 diff = 0
 
-dim = 1000
+dim = 50
 loops = 3
 for i in range(loops):
 
