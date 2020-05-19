@@ -20,7 +20,7 @@ print( mkl_get_max_threads() )
 
 diff = 0
 
-dim = 50
+dim = 20
 loops = 3
 for i in range(loops):
 
@@ -37,6 +37,8 @@ for i in range(loops):
 
     custom_time += t2-t1
     regular_time += t4-t3
+    print(op, "\n\n\n")
+    print(regular, "\n\n\n")
 
     diff += tf.norm(op - regular)/ tf.norm(regular)
 
