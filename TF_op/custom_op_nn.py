@@ -138,8 +138,8 @@ if __name__ == '__main__':
                               test_accuracy.result() * 100))
         diff = b-a
         total += diff
-        print(f'Time for Epoch:{diff}\n')
+        print(f'Time for Epoch:{diff}')
         if epoch != 0:
-            print(f'Running Average: {total / epoch}')
+            print(f'Running Average: {total / epoch}\n')
         train_times += total
     print(f'Average time per Epoch:{total / EPOCHS}')

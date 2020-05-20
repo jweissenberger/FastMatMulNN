@@ -40,6 +40,8 @@ for i in range(loops):
     print(op, "\n\n\n")
     print(regular, "\n\n\n")
 
+    print(op-regular)
+
     diff += tf.norm(op - regular)/ tf.norm(regular)
 
 print(f'\n\nNumber of loops:{loops}')
