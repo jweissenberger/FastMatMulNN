@@ -41,7 +41,7 @@ class Linear(layers.Layer):
 
     def call(self, inputs):
         # this is the multiplication, can use normal tensorflow code here as well
-        return fast_mm_module.FastMatMul(a_matrix=inputs, b_matrix=self.w, epsilon=1e-2, steps=2) + self.b
+        return fast_mm_module.FastMatMul(a_matrix=inputs, b_matrix=self.w, epsilon=1e-2, steps=1) + self.b
 
 
 class MyModel(Model):
