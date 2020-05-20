@@ -117,5 +117,6 @@ if __name__ == '__main__':
         diff = b - a
         total += diff
         print(f'Time for Epoch:{diff}\n')
+        print(f'Running Average: {total/epoch}')
         train_times += total
     print(f'Average time per Epoch:{total / EPOCHS}')

@@ -23,8 +23,8 @@ def _Fast_MatMul_grad(op, grad):
     # must use ops in this, not normal tensorflow calls
     bt = array_ops.transpose(op.inputs[1])
     at = array_ops.transpose(op.inputs[0])
-    grad_a = fast_mm_module.FastMatMul(a_matrix=grad, b_matrix=bt, epsilon=1e-2, steps=2)
-    grad_b = fast_mm_module.FastMatMul(a_matrix=at, b_matrix=grad, epsilon=1e-2, steps=2)
+    grad_a = fast_mm_module.FastMatMul(a_matrix=grad, b_matrix=bt, epsilon=1e-2, steps=1)
+    grad_b = fast_mm_module.FastMatMul(a_matrix=at, b_matrix=grad, epsilon=1e-2, steps=1)
     return grad_a, grad_b
 
 
@@ -139,5 +139,6 @@ if __name__ == '__main__':
         diff = b-a
         total += diff
         print(f'Time for Epoch:{diff}\n')
+        print(f'Running Average: {total/epoch}')
         train_times += total
     print(f'Average time per Epoch:{total / EPOCHS}')
