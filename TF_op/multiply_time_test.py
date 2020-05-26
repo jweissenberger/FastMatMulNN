@@ -20,7 +20,7 @@ print( mkl_get_max_threads() )
 
 diff = 0
 
-dim = 2000
+dim = 500
 loops = 2
 for i in range(loops):
 
@@ -28,7 +28,7 @@ for i in range(loops):
     b = tf.Variable(tf.random.uniform(shape=(dim, dim)))
 
     t1 = time.time()
-    op = fast_mm_module.FastMatMul(a_matrix=b, b_matrix=a, epsilon=1e-1, steps=2)
+    op = fast_mm_module.FastMatMul(a_matrix=b, b_matrix=a, epsilon=1e-2, steps=1)
     t2 = time.time()
 
     t3 = time.time()
