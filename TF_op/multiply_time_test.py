@@ -28,7 +28,7 @@ for i in range(loops):
     b = tf.Variable(tf.random.uniform(shape=(dim, dim)), dtype=tf.float32)
 
     t1 = time.time()
-    op = fast_mm_module.FastMatMul(a_matrix=b, b_matrix=a, epsilon=1e-2, steps=1)
+    op = fast_mm_module.FastMatMul(a_matrix=b, b_matrix=a, epsilon=0.00390625, steps=1)
     t2 = time.time()
 
     t3 = time.time()
@@ -50,5 +50,5 @@ print(f'Average relative error: {diff/loops}')
 
 '''
 epsilon, error
-1e-2, 0.00111992540769279
+1e-2, 0.0011192269157618284
 '''
