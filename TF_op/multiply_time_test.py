@@ -20,8 +20,8 @@ print( mkl_get_max_threads() )
 
 diff = 0
 
-dim = 9
-loops = 3
+dim = 500
+loops = 2
 for i in range(loops):
 
     a = tf.Variable(tf.random.uniform(shape=(dim, dim)))
