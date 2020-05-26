@@ -21,7 +21,7 @@ print( mkl_get_max_threads() )
 diff = 0
 
 dim = 2000
-loops = 2
+loops = 20
 for i in range(loops):
 
     a = tf.Variable(tf.random.uniform(shape=(dim, dim)), dtype=tf.float32)
@@ -47,3 +47,8 @@ print(f'Average custom time: {avg_custom}')
 print(f'Average regular time: {avg_reg}')
 print(f'Times faster: {avg_reg/avg_custom}')
 print(f'Average relative error: {diff/loops}')
+
+'''
+epsilon, error
+1e-2, 0.00111992540769279
+'''
