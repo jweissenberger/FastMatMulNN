@@ -1,0 +1,5 @@
+Bini 1 step: 1e-8 (square root of machine epsilon)
+Bini 2 steps: 1e-5 (machine epsilon to the 1/3)
+
+Schon 1 step: 1e-5 (machine epsilon to the 1/3)
+Schon 2 steps: 1e-3 (machine epsilon to the 1/5)
