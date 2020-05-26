@@ -28,7 +28,7 @@ for i in range(loops):
     b = tf.Variable(tf.random.uniform(shape=(dim, dim)), dtype=tf.float32)
 
     t1 = time.time()
-    op = fast_mm_module.FastMatMul(a_matrix=b, b_matrix=a, epsilon=0.00390625, steps=1)
+    op = fast_mm_module.FastMatMul(a_matrix=b, b_matrix=a, epsilon=1e-1, steps=1)
     t2 = time.time()
 
     t3 = time.time()
@@ -49,6 +49,8 @@ print(f'Times faster: {avg_reg/avg_custom}')
 print(f'Average relative error: {diff/loops}')
 
 '''
+for 1 step of schonhage
 epsilon, error
-1e-2, 0.0011192269157618284
+1e-2,       0.0011192269157618284
+0.00390625, 0.007263661827892065
 '''
