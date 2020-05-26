@@ -1,5 +1,6 @@
-Bini 1 step: 1e-8 (square root of machine epsilon)
-Bini 2 steps: 1e-5 (machine epsilon to the 1/3)
+Bini 1 step: 1e-8 (square root of machine epsilon) = 0.000244140625
+Bini 2 steps: 1e-5 (machine epsilon to the 1/3) = 0.00390625
 
-Schon 1 step: 1e-5 (machine epsilon to the 1/3)
-Schon 2 steps: 1e-3 (machine epsilon to the 1/5)
+Schon 1 step: 1e-5 (machine epsilon to the 1/3) =  0.00390625
+Schon 2 steps: 1e-3 (machine epsilon to the 1/5) =  0.0358968235937
+

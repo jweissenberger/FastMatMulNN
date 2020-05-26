@@ -24,11 +24,11 @@ dim = 2000
 loops = 2
 for i in range(loops):
 
-    a = tf.Variable(tf.random.uniform(shape=(dim, dim)))
-    b = tf.Variable(tf.random.uniform(shape=(dim, dim)))
+    a = tf.Variable(tf.random.uniform(shape=(dim, dim)), dtype=tf.float32)
+    b = tf.Variable(tf.random.uniform(shape=(dim, dim)), dtype=tf.float32)
 
     t1 = time.time()
-    op = fast_mm_module.FastMatMul(a_matrix=b, b_matrix=a, epsilon=1e-5, steps=1)
+    op = fast_mm_module.FastMatMul(a_matrix=b, b_matrix=a, epsilon=0.00390625, steps=1)
     t2 = time.time()
 
     t3 = time.time()
@@ -37,14 +37,13 @@ for i in range(loops):
 
     custom_time += t2-t1
     regular_time += t4-t3
-    print(op, "\n\n\n")
-    print(regular, "\n\n\n")
-
-    print(op-regular)
 
     diff += tf.norm(op - regular)/ tf.norm(regular)
 
+avg_custom = custom_time/loops
+avg_reg = regular_time/loops
 print(f'\n\nNumber of loops:{loops}')
-print(f'Average custom time: {custom_time/loops}')
-print(f'Average regular time: {regular_time/loops}')
+print(f'Average custom time: {avg_custom}')
+print(f'Average regular time: {avg_reg}')
+print(f'Times faster: {avg_reg/avg_custom}')
 print(f'Average relative error: {diff/loops}')
