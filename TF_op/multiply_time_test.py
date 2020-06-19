@@ -20,15 +20,15 @@ print( mkl_get_max_threads() )
 
 diff = 0
 
-dim = 10
-loops = 3
+dim = 2000
+loops = 20
 for i in range(loops):
 
-    a = tf.Variable(tf.random.uniform(shape=(dim, dim)))
-    b = tf.Variable(tf.random.uniform(shape=(dim, dim)))
+    a = tf.Variable(tf.random.uniform(shape=(dim, dim)), dtype=tf.float32)
+    b = tf.Variable(tf.random.uniform(shape=(dim, dim)), dtype=tf.float32)
 
     t1 = time.time()
-    op = fast_mm_module.FastMatMul(a_matrix=b, b_matrix=a, epsilon=1e-2, steps=1)
+    op = fast_mm_module.FastMatMul(a_matrix=b, b_matrix=a, epsilon=1e-3, steps=1)
     t2 = time.time()
 
     t3 = time.time()
@@ -37,14 +37,23 @@ for i in range(loops):
 
     custom_time += t2-t1
     regular_time += t4-t3
-    print(op, "\n\n\n")
-    print(regular, "\n\n\n")
-
-    print(op-regular)
 
     diff += tf.norm(op - regular)/ tf.norm(regular)
 
+avg_custom = custom_time/loops
+avg_reg = regular_time/loops
 print(f'\n\nNumber of loops:{loops}')
-print(f'Average custom time: {custom_time/loops}')
-print(f'Average regular time: {regular_time/loops}')
+print(f'Average custom time: {avg_custom}')
+print(f'Average regular time: {avg_reg}')
+print(f'Times faster: {avg_reg/avg_custom}')
 print(f'Average relative error: {diff/loops}')
+
+'''
+for 1 step of schonhage
+epsilon, error
+1e-1,       0.003515852615237236
+1e-2,       0.0011192269157618284
+1e-3,       0.1134304627776146
+1e-5,       1107.096435546875
+0.00390625, 0.007263661827892065
+'''
