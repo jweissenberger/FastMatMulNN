@@ -8,27 +8,30 @@ import ctypes
 mkl_rt = ctypes.CDLL('libmkl_rt.so')
 mkl_set_num_threads = mkl_rt.MKL_Set_Num_Threads
 mkl_get_max_threads = mkl_rt.MKL_Get_Max_Threads
+print( mkl_get_max_threads() )
+#mkl_set_num_threads(1)
 
 fast_mm_module = tf.load_op_library('./schonhage_mat_mul.so')
 
 custom_time = 0
 regular_time = 0
 
-print( mkl_get_max_threads() )
-mkl_set_num_threads(1)
-print( mkl_get_max_threads() )
+
+# to change TensorFlow's threads at runtime
+#tf.config.threading.set_intra_op_parallelism_threads(12)
+#tf.config.threading.set_inter_op_parallelism_threads(1)
 
 diff = 0
 
-dim = 2000
-loops = 20
+dim = 6000
+loops = 3
 for i in range(loops):
 
     a = tf.Variable(tf.random.uniform(shape=(dim, dim)), dtype=tf.float32)
     b = tf.Variable(tf.random.uniform(shape=(dim, dim)), dtype=tf.float32)
 
     t1 = time.time()
-    op = fast_mm_module.FastMatMul(a_matrix=b, b_matrix=a, epsilon=1e-3, steps=1)
+    op = fast_mm_module.FastMatMul(a_matrix=b, b_matrix=a, epsilon=1e-2, steps=1)
     t2 = time.time()
 
     t3 = time.time()
