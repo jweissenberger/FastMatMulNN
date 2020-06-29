@@ -20,8 +20,8 @@ using namespace tensorflow;
 REGISTER_OP("FastMatMul")
     .Input("a_matrix: float")
     .Input("b_matrix: float")
-    .Input("epsilon: double")
-    .Input("steps: int32")
+    .Attr("epsilon: float")
+    .Attr("steps: int")
     .Output("fast_mat_mul: float")
     .SetShapeFn([](::tensorflow::shape_inference::InferenceContext* c) {
     shape_inference::ShapeHandle A_shape;
@@ -43,7 +43,10 @@ class FastMatMulOp : public OpKernel {
 public:
   /// \brief Constructor.
   /// \param context
-  explicit FastMatMulOp(OpKernelConstruction* context) : OpKernel(context) {}
+  explicit FastMatMulOp(OpKernelConstruction* context) : OpKernel(context) {
+    OP_REQUIRES_OK(context,context->GetAttr("steps",&numsteps_));
+    OP_REQUIRES_OK(context,context->GetAttr("epsilon",&epsilon_));
+  }
 
   void Compute(OpKernelContext* context) override {
 
@@ -79,13 +82,13 @@ public:
     Matrix<float> A = Matrix<float>(a, A_shape.dim_size(0), A_shape.dim_size(0), A_shape.dim_size(1));
     Matrix<float> B = Matrix<float>(b, B_shape.dim_size(0), B_shape.dim_size(0), B_shape.dim_size(1));
     Matrix<float> C = Matrix<float>(c, output->dim_size(0), output->dim_size(0), output->dim_size(1));
-    auto numsteps_tmp = context->input(3).scalar<int32>();
-    int numsteps = numsteps_tmp(0); // number of recursive steps
-    auto epsilon_tmp = context->input(2).scalar<float>();
-    double epsilon = epsilon_tmp(0); // error parameter (to be tuned for numsteps)
+    //auto numsteps_tmp = context->input(3).scalar<int32>();
+    //int numsteps = numsteps_tmp(0); // number of recursive steps
+    //auto epsilon_tmp = context->input(2).scalar<float>();
+    //double epsilon = epsilon_tmp(0); // error parameter (to be tuned for numsteps)
     
     // call Bini's matmul
-    bini322_10_52_approx::FastMatmul(A, B, C, numsteps, epsilon);
+    bini322_10_52_approx::FastMatmul(A, B, C, numsteps_, epsilon_);
 
 //    const float* ptr = reinterpret_cast<const float*>(output->tensor_data().data());
 //    std::cout<< ptr[0] <<std::endl;
@@ -95,6 +98,9 @@ public:
 //    std::cout<< ptr2[0] <<std::endl;
 
     }
+  private:
+    int numsteps_;
+    float epsilon_;
 };
 
 REGISTER_KERNEL_BUILDER(Name("FastMatMul").Device(DEVICE_CPU), FastMatMulOp);
