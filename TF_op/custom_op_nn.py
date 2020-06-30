@@ -10,7 +10,7 @@ mkl_rt = ctypes.CDLL('libmkl_rt.so')
 mkl_set_num_threads = mkl_rt.MKL_Set_Num_Threads
 mkl_get_max_threads = mkl_rt.MKL_Get_Max_Threads
 
-fast_mm_module = tf.load_op_library('./schonhage_mat_mul.so')
+fast_mm_module = tf.load_op_library('obj/schonhage_mat_mul.so')
 
 print( mkl_get_max_threads() )
 mkl_set_num_threads(1)
