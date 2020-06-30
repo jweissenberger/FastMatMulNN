@@ -1,5 +1,5 @@
 CC=g++
-CFLAGS=-fpermissive -std=c++11 -shared
+CFLAGS=-fpermissive -std=c++11 -shared -fPIC -O3
 
 # tensorflow flags
 TF_CFLAGS=-I/home/ballard/miniconda3/lib/python3.7/site-packages/tensorflow/include -D_GLIBCXX_USE_CXX11_ABI=0
@@ -16,11 +16,12 @@ PAR_FLAGS=-fopenmp -D_PARALLEL_=1 # for DFS strategy (always call parallel MKL)
 #PAR_FLAGS=-fopenmp -D_PARALLEL_=3 # for hybrid strategy (currently seg faults)
 FMM_FLAGS=-I$(FMMROOT)/linalg -I$(FMMROOT)/util -I$(FMMROOT)/algorithms $(PAR_FLAGS)
 
-CPP_FILES = $(wildcard src/*.cc)
-OBJS = $(patsubst src/%.cc,obj/%.so,$(CPP_FILES))
+# get names of all object files to build
+CC_FILES = $(wildcard src/*.cc)
+OBJS = $(patsubst src/%.cc,obj/%.so,$(CC_FILES))
 
 obj/%.so: src/%.cc 
-	$(CC) $(CFLAGS) $< -o $@ $(CFLAGS) -fPIC $(TF_CFLAGS) $(TF_LFLAGS) -O3 $(FMM_FLAGS) $(MKL_FLAGS)
+	$(CC) $(CFLAGS) $< -o $@ $(TF_CFLAGS) $(TF_LFLAGS) $(FMM_FLAGS) $(MKL_FLAGS)
 
 all: $(OBJS)
 
