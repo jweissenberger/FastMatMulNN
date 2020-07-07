@@ -3,16 +3,17 @@ from tensorflow.keras import layers
 from tensorflow.keras import Model
 from tensorflow.python.ops import array_ops
 import time
+import argparse
 
-# to change MKL's threads at runtime
-import ctypes
-mkl_rt = ctypes.CDLL('libmkl_rt.so')
-mkl_set_num_threads = mkl_rt.MKL_Set_Num_Threads
-mkl_get_max_threads = mkl_rt.MKL_Get_Max_Threads
-
-print( mkl_get_max_threads() )
-mkl_set_num_threads(1)
-print( mkl_get_max_threads() )
+# # to change MKL's threads at runtime
+# import ctypes
+# mkl_rt = ctypes.CDLL('libmkl_rt.so')
+# mkl_set_num_threads = mkl_rt.MKL_Set_Num_Threads
+# mkl_get_max_threads = mkl_rt.MKL_Get_Max_Threads
+#
+# print( mkl_get_max_threads() )
+# mkl_set_num_threads(1)
+# print( mkl_get_max_threads() )
 
 class Linear(layers.Layer):
 
@@ -26,31 +27,29 @@ class Linear(layers.Layer):
                                  trainable=True)
 
     def call(self, inputs):
-        # this is the multiplication, can use normal tensorflow code here as well
         return tf.matmul(inputs, self.w) + self.b
 
 
 class MyModel(Model):
-    def __init__(self):
+    def __init__(self, node, num_layers):
         super(MyModel, self).__init__()
 
-        layer1 = 800
-        layer2 = 700
-        layer3 = 100
-
-        self.d1 = Linear(input_dim=784, units=layer1)
-        self.d2 = Linear(input_dim=layer1, units=layer2)
-        self.d3 = Linear(input_dim=layer2, units=layer3)
-        self.out = Linear(input_dim=layer3, units=10)
+        self.num_layers = num_layers
+        self.input_layer = Linear(input_dim=784, units=node)
+        self.output_layer = Linear(input_dim=node, units=10)
+        self.hidden = {}
+        for i in range(num_layers):
+            self.hidden[f'h{i}'] = Linear(input_dim=node, units=node)
 
     def call(self, x):
-        x = self.d1(x)
+        x = self.input_layer(x)
         x = tf.nn.relu(x)
-        x = self.d2(x)
-        x = tf.nn.relu(x)
-        x = self.d3(x)
-        x = tf.nn.relu(x)
-        x = self.out(x)
+
+        for i in range(self.num_layers):
+            x = self.hidden[f'h{i}'](x)
+            x = tf.nn.relu(x)
+
+        x = self.output_layer(x)
         x = tf.nn.softmax(x)
         return x
 
@@ -79,6 +78,20 @@ def test_step(images, labels):
 
 if __name__ == '__main__':
 
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--layers", type=int)
+    parser.add_argument("--nodes", type=int)
+    parser.add_argument("--bs", type=int)
+    parser.add_argument("--epochs", type=int)
+
+
+    args = parser.parse_args()
+    batch_size = args.bs
+    EPOCHS = args.epochs
+    nodes = args.nodes
+    layers = args.layers
+
+
     mnist = tf.keras.datasets.mnist
     (x_train, y_train), (x_test, y_test) = mnist.load_data()
     x_train, x_test = x_train / 255.0, x_test / 255.0
@@ -86,10 +99,7 @@ if __name__ == '__main__':
     x_train = x_train.reshape(60000, 784)
     x_test = x_test.reshape(10000, 784)
 
-    batch_size = 64
-
-    train_times = 0
-    model = MyModel()
+    model = MyModel(node=nodes, num_layers=layers)
 
     loss_object = tf.keras.losses.SparseCategoricalCrossentropy()
 
@@ -101,7 +111,6 @@ if __name__ == '__main__':
     test_loss = tf.keras.metrics.Mean(name='test_loss')
     test_accuracy = tf.keras.metrics.SparseCategoricalAccuracy(name='test_accuracy')
 
-    EPOCHS = 100
     total = 0
     for epoch in range(EPOCHS):
         # Reset the metrics at the start of the next epoch
@@ -117,16 +126,12 @@ if __name__ == '__main__':
 
         test_step(x_test, y_test)
         b = time.time()
-        template = 'Epoch {}, Loss: {}, Accuracy: {}, Test Loss: {}, Test Accuracy: {}'
-        print(template.format(epoch + 1,
-                              train_loss.result(),
-                              train_accuracy.result() * 100,
-                              test_loss.result(),
-                              test_accuracy.result() * 100))
+        print(f'Epoch {epoch + 1}, Loss: {train_loss.result()}, Accuracy: {train_accuracy.result() * 100},'
+              f'Test Loss: {test_loss.result()}, Test Accuracy: {test_accuracy.result() * 100}')
+
         diff = b - a
         total += diff
         print(f'Time for Epoch:{diff}')
         if epoch != 0:
             print(f'Running Average: {total/epoch}\n')
-        train_times += total
     print(f'Average time per Epoch:{total / EPOCHS}')
