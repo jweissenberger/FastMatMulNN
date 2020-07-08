@@ -111,6 +111,11 @@ if __name__ == '__main__':
     test_loss = tf.keras.metrics.Mean(name='test_loss')
     test_accuracy = tf.keras.metrics.SparseCategoricalAccuracy(name='test_accuracy')
 
+    train_accuracy_list = []
+    train_loss_list = []
+    test_accuracy_list = []
+    test_loss_list = []
+
     total = 0
     for epoch in range(EPOCHS):
         # Reset the metrics at the start of the next epoch
@@ -119,19 +124,36 @@ if __name__ == '__main__':
         test_loss.reset_states()
         test_accuracy.reset_states()
 
+        total_batch_time = 0
+        batches = 0
+
         a = time.time()
         for batch in range(60000 // batch_size):
+            x = time.time()
             train_step(x_train[batch * batch_size:(batch + 1) * batch_size],
                        y_train[batch * batch_size:(batch + 1) * batch_size])
+            y = time.time()
+
+            total_batch_time += y-x
+            batches += 1
+
 
         test_step(x_test, y_test)
         b = time.time()
         print(f'Epoch {epoch + 1}, Loss: {train_loss.result()}, Accuracy: {train_accuracy.result() * 100},'
               f'Test Loss: {test_loss.result()}, Test Accuracy: {test_accuracy.result() * 100}')
 
+        train_accuracy_list.append(train_accuracy.result())
+        train_loss_list.append(train_loss.result())
+        test_accuracy_list.append(test_accuracy.result())
+        test_loss_list.append(test_loss.result())
+
         diff = b - a
         total += diff
         print(f'Time for Epoch:{diff}')
-        if epoch != 0:
-            print(f'Running Average: {total/epoch}\n')
+        print(f'Average single batch time this epoch: {total_batch_time/batches}')
+        print(f'Running Average Epoch time: {total/(epoch + 1)}\n')
+
+    # write the performance lists to file
+
     print(f'Average time per Epoch:{total / EPOCHS}')
