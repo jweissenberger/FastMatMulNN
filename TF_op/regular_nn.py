@@ -5,15 +5,15 @@ from tensorflow.python.ops import array_ops
 import time
 import argparse
 
-# # to change MKL's threads at runtime
-# import ctypes
-# mkl_rt = ctypes.CDLL('libmkl_rt.so')
-# mkl_set_num_threads = mkl_rt.MKL_Set_Num_Threads
-# mkl_get_max_threads = mkl_rt.MKL_Get_Max_Threads
-#
-# print( mkl_get_max_threads() )
-# mkl_set_num_threads(1)
-# print( mkl_get_max_threads() )
+# to change MKL's threads at runtime
+import ctypes
+mkl_rt = ctypes.CDLL('libmkl_rt.so')
+mkl_set_num_threads = mkl_rt.MKL_Set_Num_Threads
+mkl_get_max_threads = mkl_rt.MKL_Get_Max_Threads
+
+print( mkl_get_max_threads() )
+mkl_set_num_threads(1)
+print( mkl_get_max_threads() )
 
 class Linear(layers.Layer):
 
@@ -116,6 +116,8 @@ if __name__ == '__main__':
     test_accuracy_list = []
     test_loss_list = []
 
+    overall_average_batch_time = 0
+
     total = 0
     for epoch in range(EPOCHS):
         # Reset the metrics at the start of the next epoch
@@ -154,6 +156,25 @@ if __name__ == '__main__':
         print(f'Average single batch time this epoch: {total_batch_time/batches}')
         print(f'Running Average Epoch time: {total/(epoch + 1)}\n')
 
-    # write the performance lists to file
+        overall_average_batch_time += total_batch_time/batches
 
-    print(f'Average time per Epoch:{total / EPOCHS}')
+    # write the performance lists to file
+    with open(f'Regular_layers{layers}_nodes{nodes}_epochs{EPOCHS}_bs{batch_size}_accuracy_and_loss.txt', 'wt') as file:
+        file.write('train_accuracy')
+        for i in train_accuracy_list:
+            file.write(f',{i}')
+
+        file.write('\ntrain_loss')
+        for i in train_loss_list:
+            file.write(f',{i}')
+
+        file.write('\ntest_accuracy')
+        for i in test_accuracy_list:
+            file.write(f',{i}')
+
+        file.write('\ntest_loss')
+        for i in test_loss_list:
+            file.write(f',{i}')
+
+    print(f'Average time per Batch: {overall_average_batch_time / EPOCHS}')
+    print(f'Average time per Epoch: {total / EPOCHS}')

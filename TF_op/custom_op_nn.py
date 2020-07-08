@@ -3,14 +3,13 @@ from tensorflow.keras import layers
 from tensorflow.keras import Model
 from tensorflow.python.ops import array_ops
 import time
+import argparse
 
 # to change MKL's threads at runtime
 import ctypes
 mkl_rt = ctypes.CDLL('libmkl_rt.so')
 mkl_set_num_threads = mkl_rt.MKL_Set_Num_Threads
 mkl_get_max_threads = mkl_rt.MKL_Get_Max_Threads
-
-fast_mm_module = tf.load_op_library('obj/schonhage_mat_mul.so')
 
 print( mkl_get_max_threads() )
 mkl_set_num_threads(1)
@@ -40,31 +39,30 @@ class Linear(layers.Layer):
                                  trainable=True)
 
     def call(self, inputs):
-        # this is the multiplication, can use normal tensorflow code here as well
+        # the important line:
         return fast_mm_module.FastMatMul(a_matrix=inputs, b_matrix=self.w, epsilon=1e-2, steps=1) + self.b
 
 
 class MyModel(Model):
-    def __init__(self):
+    def __init__(self, node, num_layers):
         super(MyModel, self).__init__()
 
-        layer1 = 800
-        layer2 = 700
-        layer3 = 100
-
-        self.d1 = Linear(input_dim=784, units=layer1)
-        self.d2 = Linear(input_dim=layer1, units=layer2)
-        self.d3 = Linear(input_dim=layer2, units=layer3)
-        self.out = Linear(input_dim=layer3, units=10)
+        self.num_layers = num_layers
+        self.input_layer = Linear(input_dim=784, units=node)
+        self.output_layer = Linear(input_dim=node, units=10)
+        self.hidden = {}
+        for i in range(num_layers):
+            self.hidden[f'h{i}'] = Linear(input_dim=node, units=node)
 
     def call(self, x):
-        x = self.d1(x)
+        x = self.input_layer(x)
         x = tf.nn.relu(x)
-        x = self.d2(x)
-        x = tf.nn.relu(x)
-        x = self.d3(x)
-        x = tf.nn.relu(x)
-        x = self.out(x)
+
+        for i in range(self.num_layers):
+            x = self.hidden[f'h{i}'](x)
+            x = tf.nn.relu(x)
+
+        x = self.output_layer(x)
         x = tf.nn.softmax(x)
         return x
 
@@ -93,6 +91,22 @@ def test_step(images, labels):
 
 if __name__ == '__main__':
 
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--layers", type=int)
+    parser.add_argument("--nodes", type=int)
+    parser.add_argument("--bs", type=int)
+    parser.add_argument("--epochs", type=int)
+    parser.add_argument("--mm", type=str)  # name of the matrix multiplication algorithm
+
+    args = parser.parse_args()
+    batch_size = args.bs
+    EPOCHS = args.epochs
+    nodes = args.nodes
+    layers = args.layers
+    mm_algo = args.mm
+
+    fast_mm_module = tf.load_op_library(f'obj/{mm_algo}.so')
+
     mnist = tf.keras.datasets.mnist
     (x_train, y_train), (x_test, y_test) = mnist.load_data()
     x_train, x_test = x_train / 255.0, x_test / 255.0
@@ -100,10 +114,14 @@ if __name__ == '__main__':
     x_train = x_train.reshape(60000, 784)
     x_test = x_test.reshape(10000, 784)
 
-    batch_size = 64
+    mnist = tf.keras.datasets.mnist
+    (x_train, y_train), (x_test, y_test) = mnist.load_data()
+    x_train, x_test = x_train / 255.0, x_test / 255.0
 
-    train_times = 0
-    model = MyModel()
+    x_train = x_train.reshape(60000, 784)
+    x_test = x_test.reshape(10000, 784)
+
+    model = MyModel(node=nodes, num_layers=layers)
 
     loss_object = tf.keras.losses.SparseCategoricalCrossentropy()
 
@@ -115,7 +133,13 @@ if __name__ == '__main__':
     test_loss = tf.keras.metrics.Mean(name='test_loss')
     test_accuracy = tf.keras.metrics.SparseCategoricalAccuracy(name='test_accuracy')
 
-    EPOCHS = 100
+    train_accuracy_list = []
+    train_loss_list = []
+    test_accuracy_list = []
+    test_loss_list = []
+
+    overall_average_batch_time = 0
+
     total = 0
     for epoch in range(EPOCHS):
         # Reset the metrics at the start of the next epoch
@@ -124,22 +148,54 @@ if __name__ == '__main__':
         test_loss.reset_states()
         test_accuracy.reset_states()
 
+        total_batch_time = 0
+        batches = 0
+
         a = time.time()
-        for batch in range(60000//batch_size):
-            train_step(x_train[batch*batch_size:(batch+1)*batch_size], y_train[batch*batch_size:(batch+1)*batch_size])
+        for batch in range(60000 // batch_size):
+            x = time.time()
+            train_step(x_train[batch * batch_size:(batch + 1) * batch_size],
+                       y_train[batch * batch_size:(batch + 1) * batch_size])
+            y = time.time()
+
+            total_batch_time += y - x
+            batches += 1
 
         test_step(x_test, y_test)
         b = time.time()
-        template = 'Epoch {}, Loss: {}, Accuracy: {}, Test Loss: {}, Test Accuracy: {}'
-        print(template.format(epoch + 1,
-                              train_loss.result(),
-                              train_accuracy.result() * 100,
-                              test_loss.result(),
-                              test_accuracy.result() * 100))
-        diff = b-a
+        print(f'Epoch {epoch + 1}, Loss: {train_loss.result()}, Accuracy: {train_accuracy.result() * 100},'
+              f'Test Loss: {test_loss.result()}, Test Accuracy: {test_accuracy.result() * 100}')
+
+        train_accuracy_list.append(train_accuracy.result())
+        train_loss_list.append(train_loss.result())
+        test_accuracy_list.append(test_accuracy.result())
+        test_loss_list.append(test_loss.result())
+
+        diff = b - a
         total += diff
         print(f'Time for Epoch:{diff}')
-        if epoch != 0:
-            print(f'Running Average: {total / epoch}\n')
-        train_times += total
-    print(f'Average time per Epoch:{total / EPOCHS}')
+        print(f'Average single batch time this epoch: {total_batch_time / batches}')
+        print(f'Running Average Epoch time: {total / (epoch + 1)}\n')
+
+        overall_average_batch_time += total_batch_time / batches
+
+    # write the performance lists to file
+    with open(f'{mm_algo}_layers{layers}_nodes{nodes}_epochs{EPOCHS}_bs{batch_size}_accuracy_and_loss.txt', 'wt') as file:
+        file.write('train_accuracy')
+        for i in train_accuracy_list:
+            file.write(f',{i}')
+
+        file.write('\ntrain_loss')
+        for i in train_loss_list:
+            file.write(f',{i}')
+
+        file.write('\ntest_accuracy')
+        for i in test_accuracy_list:
+            file.write(f',{i}')
+
+        file.write('\ntest_loss')
+        for i in test_loss_list:
+            file.write(f',{i}')
+
+    print(f'Average time per Batch: {overall_average_batch_time / EPOCHS}')
+    print(f'Average time per Epoch: {total / EPOCHS}')
