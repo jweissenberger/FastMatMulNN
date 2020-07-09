@@ -18,8 +18,6 @@ print( mkl_get_max_threads() )
 
 @tf.RegisterGradient("FastMatMul")
 def _Fast_MatMul_grad(op, grad):
-    # here I am using our classic matmul to pass the gradients back in backprop, I could use classic mat mul here as well
-    # must use ops in this, not normal tensorflow calls
     bt = array_ops.transpose(op.inputs[1])
     at = array_ops.transpose(op.inputs[0])
     grad_a = fast_mm_module.FastMatMul(a_matrix=grad, b_matrix=bt, epsilon=1e-2, steps=1)
@@ -29,7 +27,7 @@ def _Fast_MatMul_grad(op, grad):
 
 class Linear(layers.Layer):
 
-    def __init__(self, units=32, input_dim=32):
+    def __init__(self, units=32, input_dim=32, mm_algorithm='regular'):
         super(Linear, self).__init__()
         self.w = self.add_weight(shape=(input_dim, units),
                                  initializer='random_normal',
@@ -38,21 +36,27 @@ class Linear(layers.Layer):
                                  initializer='zeros',
                                  trainable=True)
 
+        self.mm = mm_algorithm
+
     def call(self, inputs):
-        # the important line:
-        return fast_mm_module.FastMatMul(a_matrix=inputs, b_matrix=self.w, epsilon=1e-2, steps=1) + self.b
+        # the important lines:
+        if self.mm == 'regular':
+            return tf.matmul(inputs, self.w) + self.b
+
+        else:
+            return fast_mm_module.FastMatMul(a_matrix=inputs, b_matrix=self.w, epsilon=1e-2, steps=1) + self.b
 
 
 class MyModel(Model):
-    def __init__(self, node, num_layers):
+    def __init__(self, node, num_layers, matmul_algo):
         super(MyModel, self).__init__()
 
         self.num_layers = num_layers
-        self.input_layer = Linear(input_dim=784, units=node)
-        self.output_layer = Linear(input_dim=node, units=10)
+        self.input_layer = Linear(input_dim=784, units=node, mm_algorithm=matmul_algo)
+        self.output_layer = Linear(input_dim=node, units=10, mm_algorithm=matmul_algo)
         self.hidden = {}
         for i in range(num_layers):
-            self.hidden[f'h{i}'] = Linear(input_dim=node, units=node)
+            self.hidden[f'h{i}'] = Linear(input_dim=node, units=node, mm_algorithm=matmul_algo)
 
     def call(self, x):
         x = self.input_layer(x)
@@ -121,7 +125,7 @@ if __name__ == '__main__':
     x_train = x_train.reshape(60000, 784)
     x_test = x_test.reshape(10000, 784)
 
-    model = MyModel(node=nodes, num_layers=layers)
+    model = MyModel(node=nodes, num_layers=layers, matmul_algo=mm_algo)
 
     loss_object = tf.keras.losses.SparseCategoricalCrossentropy()
 
