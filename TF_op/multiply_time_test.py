@@ -11,7 +11,7 @@ mkl_get_max_threads = mkl_rt.MKL_Get_Max_Threads
 print( mkl_get_max_threads() )
 #mkl_set_num_threads(1)
 
-algo_name = 'smirnov272'
+algo_name = 'bini'
 epsilon_ = 1e-1
 step_ = 1
 fast_mm_module = tf.load_op_library('obj/%s_mat_mul.so'%algo_name)

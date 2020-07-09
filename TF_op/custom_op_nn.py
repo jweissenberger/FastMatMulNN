@@ -177,12 +177,13 @@ if __name__ == '__main__':
         test_loss_list.append(test_loss.result())
 
         diff = b - a
-        total += diff
+        if epoch != 0:
+            # don't want to count the first epoch so that it'll count as a warm up
+            total += diff
+            overall_average_batch_time += total_batch_time / batches
         print(f'Time for Epoch:{diff}')
         print(f'Average single batch time this epoch: {total_batch_time / batches}')
         print(f'Running Average Epoch time: {total / (epoch + 1)}\n')
-
-        overall_average_batch_time += total_batch_time / batches
 
     # write the performance lists to file
     with open(f'{mm_algo}_layers{layers}_nodes{nodes}_epochs{EPOCHS}_bs{batch_size}_accuracy_and_loss.txt', 'wt') as file:
