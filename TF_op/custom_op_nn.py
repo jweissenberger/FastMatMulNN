@@ -109,7 +109,8 @@ if __name__ == '__main__':
     layers = args.layers
     mm_algo = args.mm
 
-    fast_mm_module = tf.load_op_library(f'obj/{mm_algo}.so')
+    if mm_algo != 'regular':
+        fast_mm_module = tf.load_op_library(f'obj/{mm_algo}.so')
 
     mnist = tf.keras.datasets.mnist
     (x_train, y_train), (x_test, y_test) = mnist.load_data()
