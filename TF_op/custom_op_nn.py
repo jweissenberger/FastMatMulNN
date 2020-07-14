@@ -12,7 +12,7 @@ mkl_set_num_threads = mkl_rt.MKL_Set_Num_Threads
 mkl_get_max_threads = mkl_rt.MKL_Get_Max_Threads
 
 print( mkl_get_max_threads() )
-mkl_set_num_threads(1)
+#mkl_set_num_threads(1)
 print( mkl_get_max_threads() )
 
 
@@ -38,13 +38,18 @@ class Linear(layers.Layer):
 
         self.mm = mm_algorithm
 
+        epsilon_values = {
+            'bini_mat_mul': 1e-2
+        }
+        self.epsilon = epsilon_values.get(self.mm, 1e-2)
+
     def call(self, inputs):
         # the important lines:
         if self.mm == 'regular':
             return tf.matmul(inputs, self.w) + self.b
 
         else:
-            return fast_mm_module.FastMatMul(a_matrix=inputs, b_matrix=self.w, epsilon=1e-2, steps=1) + self.b
+            return fast_mm_module.FastMatMul(a_matrix=inputs, b_matrix=self.w, epsilon=self.epsilon, steps=1) + self.b
 
 
 class MyModel(Model):
