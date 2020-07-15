@@ -1,15 +1,23 @@
 CC=g++
 CFLAGS=-fpermissive -std=c++11 -shared -fPIC -O3
 
-# tensorflow flags
-# TF_CFLAGS=( $(python -c 'import tensorflow as tf; print(" ".join(tf.sysconfig.get_compile_flags()))') )
-# TF_LFLAGS=( $(python -c 'import tensorflow as tf; print(" ".join(tf.sysconfig.get_link_flags()))') )
-# **TODO This look up needs to be dynamic because it is going to vary from use case to use case
+# check for MKLROOT environment variable for MKL
+# to set, run "source /opt/intel/mkl/bin/mklvars.sh intel64"
+ifndef MKLROOT
+$(error MKLROOT is undefined)
+endif
 
-TF_CFLAGS=-I/home/csuser/.conda/envs/new/lib/python3.7/site-packages/tensorflow_core/include -D_GLIBCXX_USE_CXX11_ABI=1
-TF_LFLAGS=-L/home/csuser/.conda/envs/new/lib/python3.7/site-packages/tensorflow_core -l:libtensorflow_framework.so.2
+# check for TF_CFLAGS and TF_LFLAGS environment variables for TensorFlow
+# to set, run "export TF_CFLAGS=$(python -c 'import tensorflow as tf; print(" ".join(tf.sysconfig.get_compile_flags()))')"
+ifndef TF_CFLAGS
+$(error TF_CFLAGS is undefined)
+endif
+# to set, run "export TF_LFLAGS=$(python -c 'import tensorflow as tf; print(" ".join(tf.sysconfig.get_link_flags()))')"
+ifndef TF_LFLAGS
+$(error TF_LFLAGS is undefined)
+endif
 
-# linking to parallel MKL (MKLROOT must be set)
+# compiling with and linking to parallel MKL
 MKL_FLAGS=-I$(MKLROOT)/include -L$(MKLROOT)/lib/intel64 -Wl,--no-as-needed -lmkl_intel_lp64 -lmkl_intel_thread -lmkl_core -liomp5 -lpthread -lm -ldl
 
 # path to fast matmul repo
