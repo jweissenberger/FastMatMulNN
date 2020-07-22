@@ -1,5 +1,5 @@
 CC=g++
-CFLAGS=-fpermissive -std=c++11 -shared -fPIC -O3
+CFLAGS=-fpermissive -std=c++11 -shared -fPIC -O3 -fopenmp
 
 # check for MKLROOT environment variable for MKL
 # to set, run "source /opt/intel/mkl/bin/mklvars.sh intel64"
@@ -32,10 +32,13 @@ FMM_FLAGS=-I$(FMMROOT)/linalg -I$(FMMROOT)/util -I$(FMMROOT)/algorithms $(PAR_FL
 CC_FILES = $(wildcard src/*.cc)
 OBJS = $(patsubst src/%.cc,obj/%.so,$(CC_FILES))
 
+all: $(OBJS) test_mkl
+
 obj/%.so: src/%.cc 
 	$(CC) $(CFLAGS) $< -o $@ $(TF_CFLAGS) $(TF_LFLAGS) $(FMM_FLAGS) $(MKL_FLAGS)
 
-all: $(OBJS)
+test_mkl: test_mkl.cpp
+	$(CC) $< -o $@ $(MKL_FLAGS) -fopenmp
 
 clean:
 	rm -f obj/*.so *~  
