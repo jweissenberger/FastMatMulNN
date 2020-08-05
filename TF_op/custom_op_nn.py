@@ -6,14 +6,14 @@ import time
 import argparse
 
 # to change MKL's threads at runtime
-import ctypes
-mkl_rt = ctypes.CDLL('libmkl_rt.so')
-mkl_set_num_threads = mkl_rt.MKL_Set_Num_Threads
-mkl_get_max_threads = mkl_rt.MKL_Get_Max_Threads
-
-print( mkl_get_max_threads() )
-#mkl_set_num_threads(1)
-print( mkl_get_max_threads() )
+# import ctypes
+# mkl_rt = ctypes.CDLL('libmkl_rt.so')
+# mkl_set_num_threads = mkl_rt.MKL_Set_Num_Threads
+# mkl_get_max_threads = mkl_rt.MKL_Get_Max_Threads
+#
+# print( mkl_get_max_threads() )
+# #mkl_set_num_threads(1)
+# print( mkl_get_max_threads() )
 
 
 @tf.RegisterGradient("FastMatMul")
