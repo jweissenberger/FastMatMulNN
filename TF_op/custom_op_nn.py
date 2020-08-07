@@ -6,14 +6,14 @@ import time
 import argparse
 
 # to change MKL's threads at runtime
-import ctypes
-mkl_rt = ctypes.CDLL('libmkl_rt.so')
-mkl_set_num_threads = mkl_rt.MKL_Set_Num_Threads
-mkl_get_max_threads = mkl_rt.MKL_Get_Max_Threads
-
-print( mkl_get_max_threads() )
-#mkl_set_num_threads(1)
-print( mkl_get_max_threads() )
+# import ctypes
+# mkl_rt = ctypes.CDLL('libmkl_rt.so')
+# mkl_set_num_threads = mkl_rt.MKL_Set_Num_Threads
+# mkl_get_max_threads = mkl_rt.MKL_Get_Max_Threads
+#
+# print( mkl_get_max_threads() )
+# #mkl_set_num_threads(1)
+# print( mkl_get_max_threads() )
 
 
 @tf.RegisterGradient("FastMatMul")
@@ -39,7 +39,8 @@ class Linear(layers.Layer):
         self.mm = mm_algorithm
 
         epsilon_values = {
-            'bini_mat_mul': 1e-2
+            'bini': 1e-2,
+
         }
         self.epsilon = epsilon_values.get(self.mm, 1e-2)
 
@@ -115,7 +116,7 @@ if __name__ == '__main__':
     mm_algo = args.mm
 
     if mm_algo != 'regular':
-        fast_mm_module = tf.load_op_library(f'obj/{mm_algo}.so')
+        fast_mm_module = tf.load_op_library(f'obj/{mm_algo}_mat_mul.so')
 
     mnist = tf.keras.datasets.mnist
     (x_train, y_train), (x_test, y_test) = mnist.load_data()
@@ -138,10 +139,10 @@ if __name__ == '__main__':
     optimizer = tf.keras.optimizers.Adam()
 
     train_loss = tf.keras.metrics.Mean(name='train_loss')
-    train_accuracy = tf.keras.metrics.SparseCategoricalAccuracy(name='train_accuracy')
+    train_accuracy = tf.keras.metrics.CategoricalAccuracy(name='train_accuracy')
 
     test_loss = tf.keras.metrics.Mean(name='test_loss')
-    test_accuracy = tf.keras.metrics.SparseCategoricalAccuracy(name='test_accuracy')
+    test_accuracy = tf.keras.metrics.CategoricalAccuracy(name='test_accuracy')
 
     train_accuracy_list = []
     train_loss_list = []
@@ -173,7 +174,7 @@ if __name__ == '__main__':
 
         test_step(x_test, y_test)
         b = time.time()
-        print(f'Epoch {epoch + 1}, Loss: {train_loss.result()}, Accuracy: {train_accuracy.result() * 100},'
+        print(f'Epoch {epoch + 1}, Loss: {train_loss.result()}, Train Accuracy: {train_accuracy.result() * 100},'
               f'Test Loss: {test_loss.result()}, Test Accuracy: {test_accuracy.result() * 100}')
 
         train_accuracy_list.append(train_accuracy.result())

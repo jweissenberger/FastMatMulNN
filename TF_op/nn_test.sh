@@ -2,7 +2,7 @@ outpath=./output_first
 mkdir $outpath
 
 
-for name in regular bini_mat_mul
+for name in regular bini
 do
 for layer in 4 16 #32 64 128
 do
