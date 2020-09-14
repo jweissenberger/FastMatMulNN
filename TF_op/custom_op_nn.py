@@ -1,7 +1,7 @@
 import tensorflow as tf
 from tensorflow.keras import layers
 from tensorflow.keras import Model
-from tensorflow.python.ops import array_ops
+from tensorflow.python.ops import array_ops, gen_math_ops
 import time
 import argparse
 
@@ -18,10 +18,12 @@ import argparse
 
 @tf.RegisterGradient("FastMatMul")
 def _Fast_MatMul_grad(op, grad):
-    bt = array_ops.transpose(op.inputs[1])
-    at = array_ops.transpose(op.inputs[0])
-    grad_a = fast_mm_module.FastMatMul(a_matrix=grad, b_matrix=bt, epsilon=1e-2, steps=1)
-    grad_b = fast_mm_module.FastMatMul(a_matrix=at, b_matrix=grad, epsilon=1e-2, steps=1)
+    #bt = array_ops.transpose(op.inputs[1])
+    #at = array_ops.transpose(op.inputs[0])
+    # grad_a = fast_mm_module.FastMatMul(a_matrix=grad, b_matrix=bt, epsilon=1e-2, steps=1)
+    # grad_b = fast_mm_module.FastMatMul(a_matrix=at, b_matrix=grad, epsilon=1e-2, steps=1)
+    grad_a = gen_math_ops.mat_mul(grad, b, transpose_b=True)
+    grad_b = gen_math_ops.mat_mul(a, grad, transpose_a=True)
     return grad_a, grad_b
 
 
@@ -117,13 +119,6 @@ if __name__ == '__main__':
 
     if mm_algo != 'regular':
         fast_mm_module = tf.load_op_library(f'obj/{mm_algo}_mat_mul.so')
-
-    mnist = tf.keras.datasets.mnist
-    (x_train, y_train), (x_test, y_test) = mnist.load_data()
-    x_train, x_test = x_train / 255.0, x_test / 255.0
-
-    x_train = x_train.reshape(60000, 784)
-    x_test = x_test.reshape(10000, 784)
 
     mnist = tf.keras.datasets.mnist
     (x_train, y_train), (x_test, y_test) = mnist.load_data()
