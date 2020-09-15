@@ -54,7 +54,8 @@ class Linear(layers.Layer):
             return tf.matmul(inputs, self.w) + self.b
 
         else:
-            return fast_mm_module.FastMatMul(a_matrix=inputs, b_matrix=self.w, epsilon=self.epsilon, steps=1) + self.b
+            # epsilon=self.epsilon,
+            return fast_mm_module.FastMatMul(a_matrix=inputs, b_matrix=self.w,  steps=1) + self.b
 
 
 class MyModel(Model):
@@ -88,7 +89,6 @@ def train_step(images, labels):
     loss = loss_object(labels, predictions)
   gradients = tape.gradient(loss, model.trainable_variables)
   optimizer.apply_gradients(zip(gradients, model.trainable_variables))
-  print(model.trainable_variables)
 
   train_loss(loss)
   train_accuracy(labels, predictions)
