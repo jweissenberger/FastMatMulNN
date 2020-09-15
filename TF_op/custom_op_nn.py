@@ -88,6 +88,7 @@ def train_step(images, labels):
     loss = loss_object(labels, predictions)
   gradients = tape.gradient(loss, model.trainable_variables)
   optimizer.apply_gradients(zip(gradients, model.trainable_variables))
+  print(model.trainable_variables)
 
   train_loss(loss)
   train_accuracy(labels, predictions)
@@ -121,6 +122,8 @@ if __name__ == '__main__':
 
     if mm_algo != 'regular':
         fast_mm_module = tf.load_op_library(f'obj/{mm_algo}_mat_mul.so')
+
+    tf.random.set_seed(100)
 
     mnist = tf.keras.datasets.mnist
     (x_train, y_train), (x_test, y_test) = mnist.load_data()
