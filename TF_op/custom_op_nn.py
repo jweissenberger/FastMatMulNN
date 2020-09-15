@@ -22,6 +22,7 @@ def _Fast_MatMul_grad(op, grad):
     #at = array_ops.transpose(op.inputs[0])
     # grad_a = fast_mm_module.FastMatMul(a_matrix=grad, b_matrix=bt, epsilon=1e-2, steps=1)
     # grad_b = fast_mm_module.FastMatMul(a_matrix=at, b_matrix=grad, epsilon=1e-2, steps=1)
+    print(op.get_attr("transpose_a"), op.get_attr("transpose_b"))
     a = math_ops.conj(op.inputs[0])
     b = math_ops.conj(op.inputs[1])
     grad_a = gen_math_ops.mat_mul(grad, b, transpose_b=True)
