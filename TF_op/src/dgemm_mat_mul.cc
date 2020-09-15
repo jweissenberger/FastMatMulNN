@@ -68,7 +68,7 @@ public:
     Tensor* output = NULL;
     OP_REQUIRES_OK(context, context->allocate_output(0, output_shape, &output));
 
-    const CBLAS_LAYOUT layout = CblasColMajor;
+    const CBLAS_LAYOUT layout = CblasRowMajor;
     const CBLAS_TRANSPOSE transa = CblasNoTrans;
     const CBLAS_TRANSPOSE transb = CblasNoTrans;
     const MKL_INT m = output_shape.dim_size(0);
