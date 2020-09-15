@@ -12,7 +12,7 @@ print( mkl_get_max_threads() )
 #mkl_set_num_threads(1)
 
 algo_name = 'bini'
-epsilon_ = 1e-1
+epsilon_ = 1e-3
 step_ = 1
 fast_mm_module = tf.load_op_library('obj/%s_mat_mul.so'%algo_name)
 
@@ -34,7 +34,7 @@ for i in range(loops):
     b = tf.Variable(tf.random.uniform(shape=(dim, dim)), dtype=tf.float32)
 
     t1 = time.time()
-    op = fast_mm_module.FastMatMul(a_matrix=b, b_matrix=a, epsilon=epsilon_, steps=step_)
+    op = fast_mm_module.FastMatMul(a_matrix=a, b_matrix=b, epsilon=epsilon_, steps=step_)
     t2 = time.time()
 
     t3 = time.time()

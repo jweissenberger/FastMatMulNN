@@ -18,11 +18,6 @@ def main():
         raise Exception("USAGE: python opgen.py in_file out_file")
 
     with open(out_file,"w") as header:
-        write_line(header,0,'// To compile:')
-        write_line(header,0,'//TF_CFLAGS=( $(python -c \'import tensorflow as tf; print(" ".join(tf.sysconfig.get_compile_flags()))\') )')
-        write_line(header,0,'//TF_LFLAGS=( $(python -c \'import tensorflow as tf; print(" ".join(tf.sysconfig.get_link_flags()))\') )')
-        write_line(header,0,'// if on a mac add this to the end of the final command: -undefined dynamic_lookup')
-        write_line(header,0,'// note: it must be tensorflow 2.0')
         write_break(header)
 
         write_line(header,0,'#include "tensorflow/core/framework/op_kernel.h"')
@@ -116,9 +111,9 @@ def main():
         write_line(header,2,'const float* a = static_cast<const float *>(DMAHelper::base(&A_matrix));')
         write_line(header,2,'const float* b = static_cast<const float *>(DMAHelper::base(&B_matrix));')
         write_line(header,2,'float* c = static_cast<float *>(DMAHelper::base(output));')
-        write_line(header,2,'Matrix<float> A = Matrix<float>(a, A_shape.dim_size(0), A_shape.dim_size(0), A_shape.dim_size(1));')
-        write_line(header,2,'Matrix<float> B = Matrix<float>(b, B_shape.dim_size(0), B_shape.dim_size(0), B_shape.dim_size(1));')
-        write_line(header,2,'Matrix<float> C = Matrix<float>(c, output->dim_size(0), output->dim_size(0), output->dim_size(1));')
+        write_line(header,2,'Matrix<float> A = Matrix<float>(b, B_shape.dim_size(1), B_shape.dim_size(1), B_shape.dim_size(0));')
+        write_line(header,2,'Matrix<float> B = Matrix<float>(a, A_shape.dim_size(1), A_shape.dim_size(1), A_shape.dim_size(0));')
+        write_line(header,2,'Matrix<float> C = Matrix<float>(c, output->dim_size(1), output->dim_size(1), output->dim_size(0));')
         write_break(header)
 
         write_line(header,2,'// call %s\'s matmul' % algo_name)
