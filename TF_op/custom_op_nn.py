@@ -1,7 +1,7 @@
 import tensorflow as tf
 from tensorflow.keras import layers
 from tensorflow.keras import Model
-from tensorflow.python.ops import array_ops, gen_math_ops
+from tensorflow.python.ops import array_ops, gen_math_ops, math_ops
 import time
 import argparse
 
@@ -22,6 +22,8 @@ def _Fast_MatMul_grad(op, grad):
     #at = array_ops.transpose(op.inputs[0])
     # grad_a = fast_mm_module.FastMatMul(a_matrix=grad, b_matrix=bt, epsilon=1e-2, steps=1)
     # grad_b = fast_mm_module.FastMatMul(a_matrix=at, b_matrix=grad, epsilon=1e-2, steps=1)
+    a = math_ops.conj(op.inputs[0])
+    b = math_ops.conj(op.inputs[1])
     grad_a = gen_math_ops.mat_mul(grad, b, transpose_b=True)
     grad_b = gen_math_ops.mat_mul(a, grad, transpose_a=True)
     return grad_a, grad_b
