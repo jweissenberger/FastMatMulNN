@@ -54,7 +54,7 @@ class Linear(layers.Layer):
             return tf.matmul(inputs, self.w) + self.b
 
         else:
-            return fast_mm_module.FastMatMul(a_matrix=self.w, b_matrix=inputs, epsilon=self.epsilon, steps=1) + self.b
+            return fast_mm_module.FastMatMul(a_matrix=inputs, b_matrix=self.w, epsilon=self.epsilon, steps=1) + self.b
 
 
 class MyModel(Model):
