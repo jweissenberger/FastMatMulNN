@@ -7,7 +7,7 @@
 
 // include arbenson-fast-matmul stuff
 #include "linalg.hpp"
-#include "bini322_10_52_approx.hpp"
+#include "bini_mat_mul.cc"
 
 using namespace tensorflow;
 
@@ -35,8 +35,8 @@ REGISTER_OP("FastMatMul")
 
 class FastMatMulOp : public OpKernel {
 public:
-    /// rief Constructor.
-    /// \param context
+    /// brief Constructor.
+    /// param context
     explicit FastMatMulOp(OpKernelConstruction* context) : OpKernel(context) {
         // get attrs
 
@@ -78,8 +78,8 @@ public:
         Matrix<float> B = Matrix<float>(a, A_shape.dim_size(1), A_shape.dim_size(1), A_shape.dim_size(0));
         Matrix<float> C = Matrix<float>(c, output->dim_size(1), output->dim_size(1), output->dim_size(0));
 
-        // call bini322's matmul
-        bini322_10_52_approx::FastMatmul(A, B, C, numsteps_, epsilon_);
+        // call bini's matmul
+        bini_mat_mul::FastMatmul(A, B, C, numsteps_, epsilon_);
 
 //    const float* ptr = reinterpret_cast<const float*>(output->tensor_data().data());
 //    std::cout<< ptr[0] <<std::endl;

@@ -1,4 +1,4 @@
-import sys
+
 
 def write_line(header, num_indent, code):
     header.write(' ' * 4 * num_indent + code + '\n')
@@ -6,10 +6,8 @@ def write_line(header, num_indent, code):
 def write_break(header, num_breaks = 1):
     header.write('\n' * num_breaks)
 
-def main():
+def main(in_file, out_file):
     try:
-        in_file = sys.argv[1]
-        out_file = sys.argv[2]
         in_file = in_file.split('/')[-1]
         namespace_name = in_file.split('.')[0]
         algo_name = namespace_name.split('_')[0]
@@ -63,8 +61,8 @@ def main():
 
         write_line(header,0,'class FastMatMulOp : public OpKernel {')
         write_line(header,0,'public:')
-        write_line(header,1,'/// \brief Constructor.')
-        write_line(header,1,'/// \param context')
+        write_line(header,1,'/// brief Constructor.')
+        write_line(header,1,'/// param context')
         write_line(header,1,'explicit FastMatMulOp(OpKernelConstruction* context) : OpKernel(context) {')
         write_line(header,2,'// get attrs')
         write_break(header)
@@ -142,7 +140,3 @@ def main():
 
         write_line(header,0,'REGISTER_KERNEL_BUILDER(Name("FastMatMul").Device(DEVICE_CPU), FastMatMulOp);')
 
-
-
-if __name__ == "__main__":
-    main()
