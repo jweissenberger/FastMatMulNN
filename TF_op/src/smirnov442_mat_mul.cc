@@ -7,7 +7,7 @@
 
 // include arbenson-fast-matmul stuff
 #include "linalg.hpp"
-#include "strassen_mat_mul.cc"
+#include "smirnov442_24_180_approx.hpp"
 
 using namespace tensorflow;
 
@@ -78,8 +78,8 @@ public:
         Matrix<float> B = Matrix<float>(a, A_shape.dim_size(1), A_shape.dim_size(1), A_shape.dim_size(0));
         Matrix<float> C = Matrix<float>(c, output->dim_size(1), output->dim_size(1), output->dim_size(0));
 
-        // call strassen's matmul
-        strassen_mat_mul::FastMatmul(A, B, C, numsteps_, epsilon_);
+        // call smirnov442's matmul
+        smirnov442_24_180_approx::FastMatmul(A, B, C, numsteps_, epsilon_);
 
 //    const float* ptr = reinterpret_cast<const float*>(output->tensor_data().data());
 //    std::cout<< ptr[0] <<std::endl;

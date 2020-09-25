@@ -6,7 +6,7 @@ def write_line(header, num_indent, code):
 def write_break(header, num_breaks = 1):
     header.write('\n' * num_breaks)
 
-def main(in_file, out_file):
+def writer(in_file, out_file):
     try:
         in_file = in_file.split('/')[-1]
         namespace_name = in_file.split('.')[0]
@@ -139,4 +139,23 @@ def main(in_file, out_file):
         write_break(header)
 
         write_line(header,0,'REGISTER_KERNEL_BUILDER(Name("FastMatMul").Device(DEVICE_CPU), FastMatMulOp);')
+
+
+if __name__ == "__main__":
+
+    in_files = ['bini322_10_52_approx.hpp', "schonhage333_21_117_approx.hpp", "smirnov224_13_91_approx.hpp",
+                "smirnov225_16_124_approx.hpp", "smirnov272_22_198_approx.hpp", "smirnov323_14_108_approx.hpp",
+                "smirnov333_20_182_approx.hpp", "smirnov334_27_202_approx.hpp", "smirnov442_24_180_approx.hpp",
+                "smirnov444_46_352_approx.hpp", "smirnov552_37_262_approx.hpp", "smirnov555_90_710_approx.hpp",
+                "strassen.hpp"]
+
+    for i in in_files:
+        if i == "strassen.hpp":
+            outfile = 'strassen_mat_mul.cc'
+        else:
+            outfile = f'src/{i.split("_")[0]}_mat_mul.cc'
+
+        writer(in_file=i, out_file=outfile)
+
+
 

@@ -5,9 +5,7 @@
 #include "tensorflow/core/framework/shape_inference.h"
 #include "tensorflow/core/common_runtime/dma_helper.h"
 
-// include arbenson-fast-matmul stuff
-#include "linalg.hpp"
-#include "dgemm_mat_mul.cc"
+#include "mkl.h"
 
 using namespace tensorflow;
 

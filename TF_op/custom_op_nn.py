@@ -190,6 +190,8 @@ if __name__ == '__main__':
         print(f'Average single batch time this epoch: {total_batch_time / batches}')
         print(f'Running Average Epoch time: {total / (epoch + 1)}\n')
 
+    # TODO output should be a single json object not multiple files with different information
+
     # write the performance lists to file
     with open(f'{mm_algo}_layers{layers}_nodes{nodes}_epochs{EPOCHS}_bs{batch_size}_accuracy_and_loss.txt', 'wt') as file:
         file.write('train_accuracy')
