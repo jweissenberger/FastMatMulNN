@@ -68,16 +68,21 @@ public:
         Tensor* output = NULL;
         OP_REQUIRES_OK(context, context->allocate_output(0, output_shape, &output));
 
-        // cast tensor data as Matrix (class defined by arbenson)
+        const CBLAS_LAYOUT layout = CblasRowMajor;
+        const CBLAS_TRANSPOSE transa = CblasNoTrans;
+        const CBLAS_TRANSPOSE transb = CblasNoTrans;
+        const MKL_INT m = output_shape.dim_size(0);
+        const MKL_INT n = output_shape.dim_size(1);
+        const MKL_INT k = A_shape.dim_size(1);
+        const MKL_INT lda = A_shape.dim_size(1);
+        const MKL_INT ldb = B_shape.dim_size(1);
+        const MKL_INT ldc = output_shape.dim_size(1);
+        const float alpha = 1.0;
+        const float beta = 0.0;
         const float* a = static_cast<const float *>(DMAHelper::base(&A_matrix));
         const float* b = static_cast<const float *>(DMAHelper::base(&B_matrix));
         float* c = static_cast<float *>(DMAHelper::base(output));
-        Matrix<float> A = Matrix<float>(b, B_shape.dim_size(1), B_shape.dim_size(1), B_shape.dim_size(0));
-        Matrix<float> B = Matrix<float>(a, A_shape.dim_size(1), A_shape.dim_size(1), A_shape.dim_size(0));
-        Matrix<float> C = Matrix<float>(c, output->dim_size(1), output->dim_size(1), output->dim_size(0));
-
-        // call dgemm's matmul
-        dgemm_mat_mul::FastMatmul(A, B, C, numsteps_, epsilon_);
+        cblas_sgemm(layout, transa, transb, m, n, k, alpha, a, lda, b, ldb, beta, c, ldc);
 
 //    const float* ptr = reinterpret_cast<const float*>(output->tensor_data().data());
 //    std::cout<< ptr[0] <<std::endl;
