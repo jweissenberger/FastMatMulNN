@@ -62,8 +62,8 @@ class MyModel(Model):
         super(MyModel, self).__init__()
 
         self.num_layers = num_layers
-        self.input_layer = Linear(input_dim=784, units=node, mm_algorithm=matmul_algo)
-        self.output_layer = Linear(input_dim=node, units=10, mm_algorithm=matmul_algo)
+        self.input_layer = Linear(input_dim=784, units=node, mm_algorithm='regular')
+        self.output_layer = Linear(input_dim=node, units=10, mm_algorithm='regular')
         self.hidden = {}
         for i in range(num_layers):
             self.hidden[f'h{i}'] = Linear(input_dim=node, units=node, mm_algorithm=matmul_algo)
