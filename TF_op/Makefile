@@ -23,9 +23,9 @@ MKL_FLAGS=-I$(MKLROOT)/include -L$(MKLROOT)/lib/intel64 -Wl,--no-as-needed -lmkl
 # path to fast matmul repo
 FMMROOT=/home/ballard/gballard-fast-matmul
 # toggle fast matmul parallel strategy
-PAR_FLAGS=-fopenmp -D_PARALLEL_=1 # for DFS strategy (always call parallel MKL)
+#PAR_FLAGS=-fopenmp -D_PARALLEL_=1 # for DFS strategy (always call parallel MKL)
 #PAR_FLAGS=-fopenmp -D_PARALLEL_=2 # for BFS strategy (always call sequential MKL, currently gives incorrect answer)
-#PAR_FLAGS=-fopenmp -D_PARALLEL_=3 # for hybrid strategy (currently seg faults)
+PAR_FLAGS=-fopenmp -D_PARALLEL_=3 # for hybrid strategy (currently seg faults)
 FMM_FLAGS=-I$(FMMROOT)/linalg -I$(FMMROOT)/util -I$(FMMROOT)/algorithms $(PAR_FLAGS)
 
 # get names of all object files to build
