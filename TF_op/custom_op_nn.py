@@ -18,14 +18,14 @@ import argparse
 
 @tf.RegisterGradient("FastMatMul")
 def _Fast_MatMul_grad(op, grad):
-    #bt = array_ops.transpose(op.inputs[1])
-    #at = array_ops.transpose(op.inputs[0])
-    # grad_a = fast_mm_module.FastMatMul(a_matrix=grad, b_matrix=bt, epsilon=1e-2, steps=1)
-    # grad_b = fast_mm_module.FastMatMul(a_matrix=at, b_matrix=grad, epsilon=1e-2, steps=1)
-    a = math_ops.conj(op.inputs[0])
-    b = math_ops.conj(op.inputs[1])
-    grad_a = gen_math_ops.mat_mul(grad, b, transpose_b=True)
-    grad_b = gen_math_ops.mat_mul(a, grad, transpose_a=True)
+    bt = array_ops.transpose(op.inputs[1])
+    at = array_ops.transpose(op.inputs[0])
+    grad_a = fast_mm_module.FastMatMul(a_matrix=grad, b_matrix=bt, epsilon=1e-2, steps=1)
+    grad_b = fast_mm_module.FastMatMul(a_matrix=at, b_matrix=grad, epsilon=1e-2, steps=1)
+    # a = math_ops.conj(op.inputs[0])
+    # b = math_ops.conj(op.inputs[1])
+    # grad_a = gen_math_ops.mat_mul(grad, b, transpose_b=True)
+    # grad_b = gen_math_ops.mat_mul(a, grad, transpose_a=True)
     return grad_a, grad_b
 
 
