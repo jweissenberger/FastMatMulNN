@@ -186,9 +186,9 @@ if __name__ == '__main__':
             # don't want to count the first epoch so that it'll count as a warm up
             total += diff
             overall_average_batch_time += total_batch_time / batches
+            print(f'Running Average Epoch time: {total / epoch}\n')
         print(f'Time for Epoch:{diff}')
         print(f'Average single batch time this epoch: {total_batch_time / batches}')
-        print(f'Running Average Epoch time: {total / (epoch + 1)}\n')
 
     # TODO output should be a single json object not multiple files with different information
 
@@ -210,5 +210,5 @@ if __name__ == '__main__':
         for i in test_loss_list:
             file.write(f',{i}')
 
-    print(f'Average time per Batch: {overall_average_batch_time / EPOCHS}')
-    print(f'Average time per Epoch: {total / EPOCHS}')
+    print(f'Average time per Batch: {overall_average_batch_time / EPOCHS-1}')
+    print(f'Average time per Epoch: {total / EPOCHS-1}')
