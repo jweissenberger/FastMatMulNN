@@ -6,21 +6,21 @@ import time
 import argparse
 
 # to change MKL's threads at runtime
-import ctypes
-mkl_rt = ctypes.CDLL('libmkl_rt.so')
-mkl_set_num_threads = mkl_rt.MKL_Set_Num_Threads
-mkl_get_max_threads = mkl_rt.MKL_Get_Max_Threads
+#import ctypes
+#mkl_rt = ctypes.CDLL('libmkl_rt.so')
+#mkl_set_num_threads = mkl_rt.MKL_Set_Num_Threads
+#mkl_get_max_threads = mkl_rt.MKL_Get_Max_Threads
 
-print( "MKL num threads default: ", mkl_get_max_threads() )
-mkl_set_num_threads(12)
-print( "MKL num threads set to: ", mkl_get_max_threads() )
+#print( "MKL num threads default: ", mkl_get_max_threads() )
+#mkl_set_num_threads(12)
+#print( "MKL num threads set to: ", mkl_get_max_threads() )
 
 # to change TensorFlow's threads at runtime
-tf.config.threading.set_intra_op_parallelism_threads(12)
-tf.config.threading.set_inter_op_parallelism_threads(1)
+#tf.config.threading.set_intra_op_parallelism_threads(12)
+#tf.config.threading.set_inter_op_parallelism_threads(1)
 
-print( "TF num threads within op set to:", tf.config.threading.get_intra_op_parallelism_threads() )
-print( "TF num threads across op set to:", tf.config.threading.get_inter_op_parallelism_threads() )
+#print( "TF num threads within op set to:", tf.config.threading.get_intra_op_parallelism_threads() )
+#print( "TF num threads across op set to:", tf.config.threading.get_inter_op_parallelism_threads() )
 
 @tf.RegisterGradient("FastMatMul")
 def _Fast_MatMul_grad(op, grad):
@@ -216,5 +216,5 @@ if __name__ == '__main__':
         for i in test_loss_list:
             file.write(f',{i}')
 
-    print(f'Average time per Batch: {overall_average_batch_time / EPOCHS-1}')
-    print(f'Average time per Epoch: {total / EPOCHS-1}')
+    print(f'Average time per Batch: {overall_average_batch_time / (EPOCHS-1)}')
+    print(f'Average time per Epoch: {total / (EPOCHS-1)}')
