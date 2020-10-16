@@ -4,11 +4,11 @@ import tensorflow as tf
 import time
 
 # to change MKL's threads at runtime
-import ctypes
-mkl_rt = ctypes.CDLL('libmkl_rt.so')
-mkl_set_num_threads = mkl_rt.MKL_Set_Num_Threads
-mkl_get_max_threads = mkl_rt.MKL_Get_Max_Threads
-print( mkl_get_max_threads() )
+#import ctypes
+#mkl_rt = ctypes.CDLL('libmkl_rt.so')
+#mkl_set_num_threads = mkl_rt.MKL_Set_Num_Threads
+#mkl_get_max_threads = mkl_rt.MKL_Get_Max_Threads
+#print( mkl_get_max_threads() )
 #mkl_set_num_threads(1)
 
 algo_name = 'bini322'
@@ -21,16 +21,13 @@ regular_time = 0
 
 
 # to change TensorFlow's threads at runtime
-tf.config.threading.set_intra_op_parallelism_threads(12)
-tf.config.threading.set_inter_op_parallelism_threads(1)
+#tf.config.threading.set_intra_op_parallelism_threads(1)
+#tf.config.threading.set_inter_op_parallelism_threads(1)
 
 diff = 0
 
-dim = 6000
-loops = 300
-dim1 = 1000
-dim2 = 784
-dim3 = 1000
+dim = 4096 
+loops = 3 
 for i in range(loops):
 
     a = tf.Variable(tf.random.uniform(shape=(dim1, dim2)), dtype=tf.float32)

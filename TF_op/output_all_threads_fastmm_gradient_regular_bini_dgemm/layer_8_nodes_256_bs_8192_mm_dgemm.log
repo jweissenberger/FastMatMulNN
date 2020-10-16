@@ -1,0 +1,25 @@
+Epoch 1, Loss: 2.2446866035461426, Train Accuracy: 16.40799331665039,Test Loss: 1.996259331703186, Test Accuracy: 25.5
+Time for Epoch:4.8983354568481445
+Average single batch time this epoch: 0.6288218157632011
+Epoch 2, Loss: 1.7836335897445679, Train Accuracy: 39.33977508544922,Test Loss: 1.474057912826538, Test Accuracy: 53.1099967956543
+Running Average Epoch time: 3.338170289993286
+
+Time for Epoch:3.338170289993286
+Average single batch time this epoch: 0.44723377908979145
+Epoch 3, Loss: 1.203649640083313, Train Accuracy: 58.52748107910156,Test Loss: 0.9716074466705322, Test Accuracy: 64.19000244140625
+Running Average Epoch time: 3.3777023553848267
+
+Time for Epoch:3.417234420776367
+Average single batch time this epoch: 0.46119989667619976
+Epoch 4, Loss: 0.8793104887008667, Train Accuracy: 68.05419921875,Test Loss: 0.7358139753341675, Test Accuracy: 72.48999786376953
+Running Average Epoch time: 3.371464808781942
+
+Time for Epoch:3.358989715576172
+Average single batch time this epoch: 0.4485931396484375
+Epoch 5, Loss: 0.6825794577598572, Train Accuracy: 77.24784088134766,Test Loss: 0.5546300411224365, Test Accuracy: 82.56000518798828
+Running Average Epoch time: 3.301040530204773
+
+Time for Epoch:3.0897676944732666
+Average single batch time this epoch: 0.4112773282187326
+Average time per Batch: 0.4420760359082903
+Average time per Epoch: 3.301040530204773
