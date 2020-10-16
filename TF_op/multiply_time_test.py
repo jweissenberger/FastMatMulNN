@@ -11,7 +11,7 @@ mkl_get_max_threads = mkl_rt.MKL_Get_Max_Threads
 print( mkl_get_max_threads() )
 #mkl_set_num_threads(1)
 
-algo_name = 'bini'
+algo_name = 'bini322'
 epsilon_ = 1e-3
 step_ = 1
 fast_mm_module = tf.load_op_library('obj/%s_mat_mul.so'%algo_name)
@@ -27,11 +27,14 @@ tf.config.threading.set_inter_op_parallelism_threads(1)
 diff = 0
 
 dim = 6000
-loops = 3
+loops = 300
+dim1 = 1000
+dim2 = 784
+dim3 = 1000
 for i in range(loops):
 
-    a = tf.Variable(tf.random.uniform(shape=(dim, dim)), dtype=tf.float32)
-    b = tf.Variable(tf.random.uniform(shape=(dim, dim)), dtype=tf.float32)
+    a = tf.Variable(tf.random.uniform(shape=(dim1, dim2)), dtype=tf.float32)
+    b = tf.Variable(tf.random.uniform(shape=(dim2, dim3)), dtype=tf.float32)
 
     t1 = time.time()
     op = fast_mm_module.FastMatMul(a_matrix=a, b_matrix=b, epsilon=epsilon_, steps=step_)
@@ -49,7 +52,7 @@ for i in range(loops):
 avg_custom = custom_time/loops
 avg_reg = regular_time/loops
 print(f'\n\nNumber of loops: {loops}')
-print(f'Matrix size: {dim}X{dim}')
+print(f'Matrix size: {dim1}X{dim2}X{dim3}')
 print(f'Epsilon: {epsilon_}')
 print(f'Steps: {step_}')
 print(f'Algorithm tested:{algo_name}')

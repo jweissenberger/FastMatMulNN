@@ -210,5 +210,5 @@ if __name__ == '__main__':
         for i in test_loss_list:
             file.write(f',{i}')
 
-    print(f'Average time per Batch: {overall_average_batch_time / EPOCHS-1}')
-    print(f'Average time per Epoch: {total / EPOCHS-1}')
+    print(f'Average time per Batch: {overall_average_batch_time / (EPOCHS-1)}')
+    print(f'Average time per Epoch: {total / (EPOCHS-1)}')
