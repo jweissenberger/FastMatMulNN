@@ -8,7 +8,7 @@ for name in regular bini322 dgemm
 do
 
 python custom_op_nn.py --layers 4 --nodes ${size} --epochs 5 --bs ${size} --mm ${name} \
-                       > ${outpath}/layer_${layer}_nodes_${node}_bs_${bs}_mm_${name}.log
+                       > ${outpath}/layer_${4}_nodes_${size}_bs_${size}_mm_${name}.log
 
 done
 done
