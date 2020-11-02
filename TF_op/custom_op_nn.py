@@ -157,6 +157,8 @@ if __name__ == '__main__':
     overall_average_batch_time = 0
 
     total = 0
+
+    tf.profiler.experimental.start('logdir')
     for epoch in range(EPOCHS):
         # Reset the metrics at the start of the next epoch
         train_loss.reset_states()
@@ -196,7 +198,9 @@ if __name__ == '__main__':
         print(f'Time for Epoch:{diff}')
         print(f'Average single batch time this epoch: {total_batch_time / batches}')
 
-    # TODO output should be a single json object not multiple files with different information
+    tf.profiler.experimental.stop()
+
+    # TODO output should be a single json object not multiple files with different information (take epoch and batch time from print statements)
 
     # write the performance lists to file
     with open(f'{mm_algo}_layers{layers}_nodes{nodes}_epochs{EPOCHS}_bs{batch_size}_accuracy_and_loss.txt', 'wt') as file:
