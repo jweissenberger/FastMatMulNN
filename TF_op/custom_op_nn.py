@@ -6,21 +6,21 @@ import time
 import argparse
 
 # to change MKL's threads at runtime
-#import ctypes
-#mkl_rt = ctypes.CDLL('libmkl_rt.so')
-#mkl_set_num_threads = mkl_rt.MKL_Set_Num_Threads
-#mkl_get_max_threads = mkl_rt.MKL_Get_Max_Threads
+import ctypes
+mkl_rt = ctypes.CDLL('libmkl_rt.so')
+mkl_set_num_threads = mkl_rt.MKL_Set_Num_Threads
+mkl_get_max_threads = mkl_rt.MKL_Get_Max_Threads
 
-#print( "MKL num threads default: ", mkl_get_max_threads() )
-#mkl_set_num_threads(12)
-#print( "MKL num threads set to: ", mkl_get_max_threads() )
+print( "MKL num threads default: ", mkl_get_max_threads() )
+mkl_set_num_threads(1)
+print( "MKL num threads set to: ", mkl_get_max_threads() )
 
 # to change TensorFlow's threads at runtime
-#tf.config.threading.set_intra_op_parallelism_threads(12)
-#tf.config.threading.set_inter_op_parallelism_threads(1)
+tf.config.threading.set_intra_op_parallelism_threads(1)
+tf.config.threading.set_inter_op_parallelism_threads(1)
 
-#print( "TF num threads within op set to:", tf.config.threading.get_intra_op_parallelism_threads() )
-#print( "TF num threads across op set to:", tf.config.threading.get_inter_op_parallelism_threads() )
+print( "TF num threads within op set to:", tf.config.threading.get_intra_op_parallelism_threads() )
+print( "TF num threads across op set to:", tf.config.threading.get_inter_op_parallelism_threads() )
 
 @tf.RegisterGradient("FastMatMul")
 def _Fast_MatMul_grad(op, grad):
@@ -157,6 +157,8 @@ if __name__ == '__main__':
     overall_average_batch_time = 0
 
     total = 0
+
+    tf.profiler.experimental.start('logdir')
     for epoch in range(EPOCHS):
         # Reset the metrics at the start of the next epoch
         train_loss.reset_states()
@@ -196,7 +198,9 @@ if __name__ == '__main__':
         print(f'Time for Epoch:{diff}')
         print(f'Average single batch time this epoch: {total_batch_time / batches}')
 
-    # TODO output should be a single json object not multiple files with different information
+    tf.profiler.experimental.stop()
+
+    # TODO output should be a single json object not multiple files with different information (take epoch and batch time from print statements)
 
     # write the performance lists to file
     with open(f'{mm_algo}_layers{layers}_nodes{nodes}_epochs{EPOCHS}_bs{batch_size}_accuracy_and_loss.txt', 'wt') as file:

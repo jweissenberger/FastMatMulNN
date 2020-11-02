@@ -25,38 +25,38 @@ regular_time = 0
 #tf.config.threading.set_inter_op_parallelism_threads(1)
 
 diff = 0
+dims = [512, 1024, 2048, 4096, 8192]
+for dim in dims:
+    loops = 3
+    for i in range(loops):
 
-dim = 4096 
-loops = 3 
-for i in range(loops):
+        a = tf.Variable(tf.random.uniform(shape=(dim, dim)), dtype=tf.float32)
+        b = tf.Variable(tf.random.uniform(shape=(dim, dim)), dtype=tf.float32)
 
-    a = tf.Variable(tf.random.uniform(shape=(dim, dim)), dtype=tf.float32)
-    b = tf.Variable(tf.random.uniform(shape=(dim, dim)), dtype=tf.float32)
+        t1 = time.time()
+        op = fast_mm_module.FastMatMul(a_matrix=a, b_matrix=b, epsilon=epsilon_, steps=step_)
+        t2 = time.time()
 
-    t1 = time.time()
-    op = fast_mm_module.FastMatMul(a_matrix=a, b_matrix=b, epsilon=epsilon_, steps=step_)
-    t2 = time.time()
+        t3 = time.time()
+        regular = tf.matmul(a, b)
+        t4 = time.time()
 
-    t3 = time.time()
-    regular = tf.matmul(a, b)
-    t4 = time.time()
+        custom_time += t2-t1
+        regular_time += t4-t3
 
-    custom_time += t2-t1
-    regular_time += t4-t3
+        diff += tf.norm(op - regular)/ tf.norm(regular)
 
-    diff += tf.norm(op - regular)/ tf.norm(regular)
-
-avg_custom = custom_time/loops
-avg_reg = regular_time/loops
-print(f'\n\nNumber of loops: {loops}')
-print(f'Matrix size: {dim}X{dim}')
-print(f'Epsilon: {epsilon_}')
-print(f'Steps: {step_}')
-print(f'Algorithm tested:{algo_name}')
-print(f'Average custom time: {avg_custom}')
-print(f'Average regular time: {avg_reg}')
-print(f'Times faster: {avg_reg/avg_custom}')
-print(f'Average relative error: {diff/loops}')
+    avg_custom = custom_time/loops
+    avg_reg = regular_time/loops
+    print(f'\n\nNumber of loops: {loops}')
+    print(f'Matrix size: {dim}X{dim}')
+    print(f'Epsilon: {epsilon_}')
+    print(f'Steps: {step_}')
+    print(f'Algorithm tested:{algo_name}')
+    print(f'Average custom time: {avg_custom}')
+    print(f'Average regular time: {avg_reg}')
+    print(f'Times faster: {avg_reg/avg_custom}')
+    print(f'Average relative error: {diff/loops}')
 
 '''
 for 1 step of schonhage
