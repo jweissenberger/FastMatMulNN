@@ -118,6 +118,7 @@ if __name__ == '__main__':
     parser.add_argument("--bs", type=int)
     parser.add_argument("--epochs", type=int)
     parser.add_argument("--mm", type=str)  # name of the matrix multiplication algorithm
+    parser.add_argument("--logdir", type=str)
 
     args = parser.parse_args()
     batch_size = args.bs
@@ -125,6 +126,7 @@ if __name__ == '__main__':
     nodes = args.nodes
     layers = args.layers
     mm_algo = args.mm
+    logdir = args.logdir
 
     if mm_algo != 'regular':
         fast_mm_module = tf.load_op_library(f'obj/{mm_algo}_mat_mul.so')
@@ -158,7 +160,7 @@ if __name__ == '__main__':
     overall_average_batch_time = 0
 
     profiler.warmup()
-    profiler.start(logdir='logdir')
+    profiler.start(logdir=logdir)
 
     total = 0
     for epoch in range(EPOCHS):

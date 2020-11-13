@@ -7,7 +7,7 @@ do
 for name in regular bini322 dgemm
 do
 
-python custom_op_nn.py --layers 4 --nodes ${size} --epochs 5 --bs ${size} --mm ${name} \
+python tensorboard_test.py --layers 4 --nodes ${size} --epochs 5 --bs ${size} --mm ${name} --logdir ${name}${size}\
                        > ${outpath}/layer_4_nodes_${size}_bs_${size}_mm_${name}.log
 
 done

@@ -158,6 +158,7 @@ if __name__ == '__main__':
 
     total = 0
 
+    tf.profiler.experimental.warmup()
     tf.profiler.experimental.start('logdir')
     for epoch in range(EPOCHS):
         # Reset the metrics at the start of the next epoch
