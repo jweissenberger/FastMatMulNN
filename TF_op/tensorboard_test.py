@@ -13,11 +13,11 @@ mkl_set_num_threads = mkl_rt.MKL_Set_Num_Threads
 mkl_get_max_threads = mkl_rt.MKL_Get_Max_Threads
 
 print( "MKL num threads default: ", mkl_get_max_threads() )
-mkl_set_num_threads(12)
+mkl_set_num_threads(1)
 print( "MKL num threads set to: ", mkl_get_max_threads() )
 
 # to change TensorFlow's threads at runtime
-tf.config.threading.set_intra_op_parallelism_threads(12)
+tf.config.threading.set_intra_op_parallelism_threads(1)
 tf.config.threading.set_inter_op_parallelism_threads(1)
 
 #print( "TF num threads within op set to:", tf.config.threading.get_intra_op_parallelism_threads() )
