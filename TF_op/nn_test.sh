@@ -7,7 +7,7 @@ do
 for name in bini322
 do
 
-python tensorboard_test.py --layers 4 --nodes ${size} --epochs 5 --bs ${size} --mm ${name} --logdir oneThread_${name}${size}\
+python tensorboard_test.py --layers 4 --nodes ${size} --epochs 5 --bs ${size} --mm ${name} --logdir FIXEDoneThread_${name}${size}\
                        > ${outpath}/layer_4_nodes_${size}_bs_${size}_mm_${name}.log
 
 done
