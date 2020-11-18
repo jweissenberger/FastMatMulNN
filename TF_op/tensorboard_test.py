@@ -20,8 +20,8 @@ print( "MKL num threads set to: ", mkl_get_max_threads() )
 tf.config.threading.set_intra_op_parallelism_threads(1)
 tf.config.threading.set_inter_op_parallelism_threads(1)
 
-#print( "TF num threads within op set to:", tf.config.threading.get_intra_op_parallelism_threads() )
-#print( "TF num threads across op set to:", tf.config.threading.get_inter_op_parallelism_threads() )
+import os
+os.environ['OMP_NUM_THREADS'] = 1
 
 @tf.RegisterGradient("FastMatMul")
 def _Fast_MatMul_grad(op, grad):
