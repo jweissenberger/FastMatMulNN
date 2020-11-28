@@ -1,7 +1,7 @@
 outpath=./output_12_thread_fastmm_gradient_regular_bini_dgemm
 mkdir $outpath
 
-export OMP_NUM_THREADS='12'
+export OMP_NUM_THREADS=12
 
 for size in 512 1024 2048 4096 8192
 do
