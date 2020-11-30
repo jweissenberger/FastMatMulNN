@@ -10,4 +10,4 @@ python -u custom_op_nn.py --layers 2 --nodes 30 --epochs 5 --bs 64 --mm ${name} 
 
 done
 
-#python -u custom_op_nn.py --layers 2 --nodes 30 --epochs 5 --bs 64 --mm bini
+#python -u custom_op_nn.py --layers 2 --nodes 512 --epochs 5 --bs 512 --mm bini322

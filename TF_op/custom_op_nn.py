@@ -11,6 +11,9 @@ mkl_rt = ctypes.CDLL('libmkl_rt.so')
 mkl_set_num_threads = mkl_rt.MKL_Set_Num_Threads
 mkl_get_max_threads = mkl_rt.MKL_Get_Max_Threads
 
+import os
+os.environ['OMP_NUM_THREADS'] = 1
+
 print( "MKL num threads default: ", mkl_get_max_threads() )
 mkl_set_num_threads(1)
 print( "MKL num threads set to: ", mkl_get_max_threads() )
@@ -158,6 +161,7 @@ if __name__ == '__main__':
 
     total = 0
 
+    tf.profiler.experimental.warmup()
     tf.profiler.experimental.start('logdir')
     for epoch in range(EPOCHS):
         # Reset the metrics at the start of the next epoch
