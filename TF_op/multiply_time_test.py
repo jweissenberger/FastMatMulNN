@@ -2,16 +2,34 @@
 
 import tensorflow as tf
 import time
+import argparse
+from openmpext import controlOMP
 
+
+parser = argparse.ArgumentParser()
+parser.add_argument("--tf", type=int)
+parser.add_argument("--omp", type=int)
+parser.add_argument("--mkl", type=int)
+parser.add_argument("--mm", type=str)
+
+args = parser.parse_args()
+#ompNum = args.ompNumThread
+
+# to change TensorFlow's threads at runtime
+tf.config.threading.set_intra_op_parallelism_threads(args.tf)
+tf.config.threading.set_inter_op_parallelism_threads(1)
+
+print(controlOMP(args.omp))
 # to change MKL's threads at runtime
 import ctypes
 mkl_rt = ctypes.CDLL('libmkl_rt.so')
 mkl_set_num_threads = mkl_rt.MKL_Set_Num_Threads
 mkl_get_max_threads = mkl_rt.MKL_Get_Max_Threads
-print( mkl_get_max_threads() )
-#mkl_set_num_threads(1)
 
-algo_name = 'bini322'
+mkl_set_num_threads(args.mkl)
+print( mkl_get_max_threads() )
+
+algo_name = args.mm
 epsilon_ = 1e-3
 step_ = 1
 fast_mm_module = tf.load_op_library('obj/%s_mat_mul.so'%algo_name)
@@ -20,12 +38,11 @@ custom_time = 0
 regular_time = 0
 
 
-# to change TensorFlow's threads at runtime
-#tf.config.threading.set_intra_op_parallelism_threads(1)
-#tf.config.threading.set_inter_op_parallelism_threads(1)
+
+
 
 diff = 0
-dims = [512, 1024, 2048, 4096, 8192]
+dims = [4096] #[512, 1024, 2048, 4096, 8192]
 for dim in dims:
     loops = 3
     for i in range(loops):
