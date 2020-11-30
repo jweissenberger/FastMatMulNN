@@ -5,6 +5,11 @@ from tensorflow.python.ops import array_ops, gen_math_ops, math_ops
 import time
 import argparse
 from tensorflow.python.profiler import profiler_v2 as profiler
+from openmpext import controlOMP
+
+
+# To change OMP num threads
+print(controlOMP(1))
 
 # to change MKL's threads at runtime
 import ctypes
@@ -16,7 +21,7 @@ print( "MKL num threads default: ", mkl_get_max_threads() )
 mkl_set_num_threads(12)
 print( "MKL num threads set to: ", mkl_get_max_threads() )
 
-# to change TensorFlow's threads at runtime
+# To change TensorFlow's threads at runtime
 tf.config.threading.set_intra_op_parallelism_threads(12)
 tf.config.threading.set_inter_op_parallelism_threads(1)
 
