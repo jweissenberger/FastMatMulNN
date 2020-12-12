@@ -8,7 +8,7 @@ if __name__ == '__main__':
                        'smirnov333', 'smirnov334', 'smirnov442', 'smirnov444', 'smirnov552', 'smirnov555'
                        ]
 
-    matrix_sizes = [512, 1024, 2048, 4096, 8129]
+    matrix_sizes = [512, 1024, 2048, 4096, 8192]
 
     for algo in algorithm_names:
         for mat_size in matrix_sizes:
