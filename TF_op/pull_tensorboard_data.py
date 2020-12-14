@@ -1,12 +1,15 @@
 import os
 import gzip
 import json
+import argparse
 
 if __name__ == '__main__':
 
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--folder", type=str)
+    args = parser.parse_args()
+    folder = args.folder
 
-
-    folder = f""
     algo = "regular"
     mat_size = "8192"
     experiment_name = os.listdir(f'./{folder}/plugins/profile/')[0]
@@ -29,7 +32,7 @@ if __name__ == '__main__':
         if 'FastMatMul' in event['name'] and 'ReadVariableOp' not in event['name']:
             fastmm_time += event['dur']
     print('\n*************************************************')
-    print(f"Algorithm: {algo}, Size: {mat_size}")
+    #print(f"Algorithm: {algo}, Size: {mat_size}")
     print(f"linear2_mat_mul_dur: {linear2_mat_mul_dur}")
     print(f"Total FastMM time: {fastmm_time}")
     print('*************************************************')
