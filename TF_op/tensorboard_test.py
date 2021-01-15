@@ -188,8 +188,8 @@ if __name__ == '__main__':
 
         test_step(x_test, y_test)
         b = time.time()
-        print(f'Epoch {epoch + 1}, Loss: {train_loss.result()}, Train Accuracy: {train_accuracy.result() * 100},'
-              f'Test Loss: {test_loss.result()}, Test Accuracy: {test_accuracy.result() * 100}')
+        # print(f'Epoch {epoch + 1}, Loss: {train_loss.result()}, Train Accuracy: {train_accuracy.result() * 100},'
+        #       f'Test Loss: {test_loss.result()}, Test Accuracy: {test_accuracy.result() * 100}')
 
         train_accuracy_list.append(train_accuracy.result())
         train_loss_list.append(train_loss.result())
@@ -201,9 +201,9 @@ if __name__ == '__main__':
             # don't want to count the first epoch so that it'll count as a warm up
             total += diff
             overall_average_batch_time += total_batch_time / batches
-            print(f'Running Average Epoch time: {total / epoch}\n')
-        print(f'Time for Epoch:{diff}')
-        print(f'Average single batch time this epoch: {total_batch_time / batches}')
+        #     print(f'Running Average Epoch time: {total / epoch}\n')
+        # print(f'Time for Epoch:{diff}')
+        # print(f'Average single batch time this epoch: {total_batch_time / batches}')
 
     # TODO output should be a single json object not multiple files with different information
 
@@ -225,8 +225,12 @@ if __name__ == '__main__':
         for i in test_loss_list:
             file.write(f',{i}')
 
-    print(f'Average time per Batch: {overall_average_batch_time / (EPOCHS-1)}')
-    print(f'Average time per Epoch: {total / (EPOCHS-1)}')
+    # print(f'Average time per Batch: {overall_average_batch_time / (EPOCHS-1)}')
+    # print(f'Average time per Epoch: {total / (EPOCHS-1)}')
+
+    print(f"Algorithm: {mm_algo}")
+    print(f"Total time: {total}")
+    print(f"Matrix size: {batch_size}")  # this is assuming that bs and number of nodes is the same size
 
 
     profiler.stop()

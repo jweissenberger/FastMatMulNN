@@ -1,6 +1,7 @@
 import os
 import gzip
 import json
+import pandas as pd
 
 
 if __name__ == '__main__':
@@ -10,6 +11,9 @@ if __name__ == '__main__':
                        ]
     matrix_sizes = [512, 1024, 2048, 4096, 8192]
 
+    output = []
+
+    # parse the tensorboard data
     for mat_size in matrix_sizes:
         for algo in algorithm_names:
 
@@ -33,8 +37,14 @@ if __name__ == '__main__':
                     linear2_mat_mul_dur += event['dur']
                 if 'FastMatMul' in event['name'] and 'ReadVariableOp' not in event['name']:
                     fastmm_time += event['dur']
-            print('\n*************************************************')
-            print(f"Algorithm: {algo}, Size: {mat_size}")
-            print(f"linear2_mat_mul_dur: {linear2_mat_mul_dur}")
-            print(f"Total FastMM time: {fastmm_time}")
-            print('*************************************************')
+
+            row = {'Algorithm': algo,
+                   'Matrix_Size': mat_size,
+                   'Layer_2_matmul_time': linear2_mat_mul_dur,
+                   'Total_fastmm_time': fastmm_time}
+            output.append(row)
+
+    # TODO: then parse the std out file which contains the overall times for each run
+    output = pd.Dataframe(output)
+
+    output.to_csv('output_name.csv', index=False)
