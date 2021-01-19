@@ -17,7 +17,7 @@ if __name__ == '__main__':
     for mat_size in matrix_sizes:
         for algo in algorithm_names:
 
-            folder = f"all_threads_{algo}{mat_size}"
+            folder = f"FINAL_ALL_THREADS_{algo}{mat_size}"
             experiment_name = os.listdir(f'./{folder}/plugins/profile/')[0]
 
             path_to_zip_file = f'./{folder}/plugins/profile/{experiment_name}/householder.trace.json.gz'
