@@ -47,4 +47,4 @@ if __name__ == '__main__':
     # TODO: then parse the std out file which contains the overall times for each run
     output = pd.Dataframe(output)
 
-    output.to_csv('output_name.csv', index=False)
+    output.to_csv('all_threads_time.csv', index=False)
