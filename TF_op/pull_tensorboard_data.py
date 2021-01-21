@@ -74,6 +74,7 @@ if __name__ == '__main__':
 
         if "Matrix size:" in line:
             mat_size = line.split('Matrix size: ')[-1]
+            print("matrix size", mat_size)
             output = find_algorithm(dataset=output, algo=algorithm, size=mat_size, time=total_time)
             # clear them all out again so that if one is missing its filled with null instead of
             algorithm = ''
