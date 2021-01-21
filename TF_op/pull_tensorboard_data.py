@@ -6,8 +6,8 @@ import pandas as pd
 
 def find_algorithm(dataset, algo, size, time):
     for index in range(len(dataset)):
-        #print(f"algo: {algo}, size {size}, dataset[index]['Algorithm'] {dataset[index]['Algorithm']}, dataset[index]['Matrix_Size']: {dataset[index]['Matrix_Size']}")
-        if dataset[index]['Algorithm'] == algo and dataset[index]['Matrix_Size'] == size:
+        if dataset[index]['Algorithm'] == algo and int(dataset[index]['Matrix_Size']) == int(size):
+            print(f"algo: {algo}, size {size}, dataset[index]['Algorithm'] {dataset[index]['Algorithm']}, dataset[index]['Matrix_Size']: {dataset[index]['Matrix_Size']}")
             dataset[index]['Total_time'] = time
 
     return dataset
