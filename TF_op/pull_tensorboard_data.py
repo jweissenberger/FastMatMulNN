@@ -5,7 +5,7 @@ import pandas as pd
 
 
 def find_algorithm(dataset, algo, size, time):
-    for index in range(dataset):
+    for index in range(len(dataset)):
         if dataset[index]['Algorithm'] == algo and dataset[index]['Matrix_size'] == size:
             dataset[index]['Total_time'] = time
 
