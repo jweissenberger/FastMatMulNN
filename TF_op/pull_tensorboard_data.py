@@ -4,6 +4,14 @@ import json
 import pandas as pd
 
 
+def find_algorithm(dataset, algo, size, time):
+    for index in range(dataset):
+        if dataset[index]['Algorithm'] == algo and dataset[index]['Matrix_size'] == size:
+            dataset[index]['Total_time'] = time
+
+    return dataset
+
+
 if __name__ == '__main__':
 
     algorithm_names = ['dgemm', 'bini322', 'schonhage333', 'smirnov224', 'smirnov225', 'smirnov272', 'smirnov323',
@@ -11,13 +19,17 @@ if __name__ == '__main__':
                        ]
     matrix_sizes = [512, 1024, 2048, 4096, 8192]
 
+    tensorboard_folders_prefix = 'FINAL_ALL_THREADS_'
+
+    total_time_log_file_name = "allThreadTimes.log"
+
     output = []
 
     # parse the tensorboard data
     for mat_size in matrix_sizes:
         for algo in algorithm_names:
 
-            folder = f"FINAL_ALL_THREADS_{algo}{mat_size}"
+            folder = f"{tensorboard_folders_prefix}{algo}{mat_size}"
             experiment_name = os.listdir(f'./{folder}/plugins/profile/')[0]
 
             path_to_zip_file = f'./{folder}/plugins/profile/{experiment_name}/householder.trace.json.gz'
@@ -44,7 +56,23 @@ if __name__ == '__main__':
                    'Total_fastmm_time': fastmm_time}
             output.append(row)
 
-    # TODO: then parse the std out file which contains the overall times for each run
+    file = open(total_time_log_file_name)
+    algorithm = ''
+    total_time = ''
+    mat_size = ''
+    for line in file.readlines():
+        if "Algorithm:" in line:
+            algorithm = line.split('Algorithm: ')[-1]
+
+        if "Total time:" in line:
+            total_time = line.split('Total time: ')[-1]
+
+        if "Matrix size:" in line:
+            mat_size = line.split('Matrix size: ')[-1]
+            output = find_algorithm(dataset=output, algo=algorithm, size=mat_size, time=total_time)
+
+    file.close()
+
     output = pd.DataFrame(output)
 
     output.to_csv('all_threads_time.csv', index=False)
