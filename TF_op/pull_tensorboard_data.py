@@ -7,6 +7,7 @@ import pandas as pd
 def find_algorithm(dataset, algo, size, time):
     for index in range(len(dataset)):
         if dataset[index]['Algorithm'] == algo and dataset[index]['Matrix_size'] == size:
+            print(algo, size)
             dataset[index]['Total_time'] = time
 
     return dataset
@@ -22,6 +23,8 @@ if __name__ == '__main__':
     tensorboard_folders_prefix = 'FINAL_ALL_THREADS_'
 
     total_time_log_file_name = "allThreadTimes.log"
+
+    output_file_name = 'all_threads_time.csv'
 
     output = []
 
@@ -63,16 +66,22 @@ if __name__ == '__main__':
     for line in file.readlines():
         if "Algorithm:" in line:
             algorithm = line.split('Algorithm: ')[-1]
+            print('algorithm', algorithm)
 
         if "Total time:" in line:
             total_time = line.split('Total time: ')[-1]
+            print('time', time)
 
         if "Matrix size:" in line:
             mat_size = line.split('Matrix size: ')[-1]
             output = find_algorithm(dataset=output, algo=algorithm, size=mat_size, time=total_time)
+            # clear them all out again so that if one is missing its filled with null instead of
+            algorithm = ''
+            total_time = ''
+            mat_size = ''
 
     file.close()
 
     output = pd.DataFrame(output)
 
-    output.to_csv('all_threads_time.csv', index=False)
+    output.to_csv(output_file_name, index=False)
