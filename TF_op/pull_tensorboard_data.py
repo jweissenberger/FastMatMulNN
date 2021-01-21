@@ -6,7 +6,7 @@ import pandas as pd
 
 def find_algorithm(dataset, algo, size, time):
     for index in range(len(dataset)):
-        print(f"algo: {algo}, size {size}, dataset[index]['Algorithm'] {dataset[index]['Algorithm']}, dataset[index]['Matrix_Size']: {dataset[index]['Matrix_Size']}")
+        #print(f"algo: {algo}, size {size}, dataset[index]['Algorithm'] {dataset[index]['Algorithm']}, dataset[index]['Matrix_Size']: {dataset[index]['Matrix_Size']}")
         if dataset[index]['Algorithm'] == algo and dataset[index]['Matrix_Size'] == size:
             dataset[index]['Total_time'] = time
 
@@ -65,13 +65,13 @@ if __name__ == '__main__':
     mat_size = ''
     for line in file.readlines():
         if "Algorithm:" in line:
-            algorithm = line.split('Algorithm: ')[-1]
+            algorithm = line.split('Algorithm: ')[-1].replace('\n', '').replace(' ', '')
 
         if "Total time:" in line:
-            total_time = line.split('Total time: ')[-1]
+            total_time = line.split('Total time: ')[-1].replace('\n', '').replace(' ', '')
 
         if "Matrix size:" in line:
-            mat_size = line.split('Matrix size: ')[-1]
+            mat_size = line.split('Matrix size: ')[-1].replace('\n', '').replace(' ', '')
             output = find_algorithm(dataset=output, algo=algorithm, size=mat_size, time=total_time)
             # clear them all out again so that if one is missing its filled with null instead of
             algorithm = ''
