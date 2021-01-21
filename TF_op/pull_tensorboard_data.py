@@ -70,7 +70,7 @@ if __name__ == '__main__':
 
         if "Total time:" in line:
             total_time = line.split('Total time: ')[-1]
-            print('time', time)
+            print('time', total_time)
 
         if "Matrix size:" in line:
             mat_size = line.split('Matrix size: ')[-1]
