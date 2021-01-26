@@ -297,8 +297,9 @@ if __name__ == '__main__':
 
             row = {'Algorithm': algo,
                    'Matrix_Size': size,
-                   'Layer_2_matmul_time': times[size]['Layer_2_matmul_time'],
-                   'Total_fastmm_time': times[size].get('Total_time')}
+                   'Layer_2_matmul_time': times[size]['Layer_2_matmul_time'][algo],
+                   'Total_fastmm_time': times[size]['Total_fastmm_time'][algo],
+                   'Total_time': times[size]['Total_time'].get(algo)}
 
             rows.append(row)
 
