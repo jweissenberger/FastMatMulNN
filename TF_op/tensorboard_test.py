@@ -141,7 +141,8 @@ if __name__ == '__main__':
     x_train, x_test = x_train / 255.0, x_test / 255.0
 
     x_train = x_train.reshape(60000, 784)
-    x_test = x_test.reshape(10000, 784)
+    x_train = x_train[:32768, :]
+    #x_test = x_test.reshape(10000, 784)
 
     model = MyModel(node=nodes, num_layers=layers, matmul_algo=mm_algo)
 
@@ -152,13 +153,13 @@ if __name__ == '__main__':
     train_loss = tf.keras.metrics.Mean(name='train_loss')
     train_accuracy = tf.keras.metrics.SparseCategoricalAccuracy(name='train_accuracy')
 
-    test_loss = tf.keras.metrics.Mean(name='test_loss')
-    test_accuracy = tf.keras.metrics.SparseCategoricalAccuracy(name='test_accuracy')
+    #test_loss = tf.keras.metrics.Mean(name='test_loss')
+    #test_accuracy = tf.keras.metrics.SparseCategoricalAccuracy(name='test_accuracy')
 
     train_accuracy_list = []
     train_loss_list = []
-    test_accuracy_list = []
-    test_loss_list = []
+    #test_accuracy_list = []
+    #test_loss_list = []
 
     overall_average_batch_time = 0
 
@@ -170,8 +171,8 @@ if __name__ == '__main__':
         # Reset the metrics at the start of the next epoch
         train_loss.reset_states()
         train_accuracy.reset_states()
-        test_loss.reset_states()
-        test_accuracy.reset_states()
+        # test_loss.reset_states()
+        # test_accuracy.reset_states()
 
         total_batch_time = 0
         batches = 0
@@ -186,15 +187,15 @@ if __name__ == '__main__':
             total_batch_time += y - x
             batches += 1
 
-        test_step(x_test, y_test)
+        # test_step(x_test, y_test)
         b = time.time()
         # print(f'Epoch {epoch + 1}, Loss: {train_loss.result()}, Train Accuracy: {train_accuracy.result() * 100},'
         #       f'Test Loss: {test_loss.result()}, Test Accuracy: {test_accuracy.result() * 100}')
 
         train_accuracy_list.append(train_accuracy.result())
         train_loss_list.append(train_loss.result())
-        test_accuracy_list.append(test_accuracy.result())
-        test_loss_list.append(test_loss.result())
+        # test_accuracy_list.append(test_accuracy.result())
+        # test_loss_list.append(test_loss.result())
 
         diff = b - a
         if epoch != 0:
@@ -217,13 +218,13 @@ if __name__ == '__main__':
         for i in train_loss_list:
             file.write(f',{i}')
 
-        file.write('\ntest_accuracy')
-        for i in test_accuracy_list:
-            file.write(f',{i}')
-
-        file.write('\ntest_loss')
-        for i in test_loss_list:
-            file.write(f',{i}')
+        # file.write('\ntest_accuracy')
+        # for i in test_accuracy_list:
+        #     file.write(f',{i}')
+        #
+        # file.write('\ntest_loss')
+        # for i in test_loss_list:
+        #     file.write(f',{i}')
 
     # print(f'Average time per Batch: {overall_average_batch_time / (EPOCHS-1)}')
     # print(f'Average time per Epoch: {total / (EPOCHS-1)}')
