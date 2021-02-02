@@ -19,7 +19,7 @@ args = parser.parse_args()
 tf.config.threading.set_intra_op_parallelism_threads(args.tf)
 tf.config.threading.set_inter_op_parallelism_threads(1)
 
-print(controlOMP(args.omp))
+#print(controlOMP(args.omp))
 # to change MKL's threads at runtime
 import ctypes
 mkl_rt = ctypes.CDLL('libmkl_rt.so')
@@ -42,24 +42,26 @@ regular_time = 0
 
 
 diff = 0
-dims = [4096] #[512, 1024, 2048, 4096, 8192]
+dims = [8196] #[512, 1024, 2048, 4096, 8192]
 for dim in dims:
-    loops = 3
+    loops = 5
     for i in range(loops):
 
         a = tf.Variable(tf.random.uniform(shape=(dim, dim)), dtype=tf.float32)
         b = tf.Variable(tf.random.uniform(shape=(dim, dim)), dtype=tf.float32)
 
         t1 = time.time()
-        op = fast_mm_module.FastMatMul(a_matrix=a, b_matrix=b, epsilon=epsilon_, steps=step_)
+        op = fast_mm_module.FastMatMul(a_matrix=a, b_matrix=b, epsilon=epsilon_, steps=step_, numthreads=args.omp)
         t2 = time.time()
 
         t3 = time.time()
         regular = tf.matmul(a, b)
+        #regular = op + 1
         t4 = time.time()
 
         custom_time += t2-t1
         regular_time += t4-t3
+        #regular_time = custom_time + 1
 
         diff += tf.norm(op - regular)/ tf.norm(regular)
 
