@@ -36,6 +36,7 @@ def writer(in_file, out_file):
         write_line(header,0,'REGISTER_OP("FastMatMul")')
         write_line(header,1,'.Attr("epsilon: float")')
         write_line(header,1,'.Attr("steps: int")')
+        write_line(header,1,'.Attr("numthreads: int")')
         write_line(header,1,'.Input("a_matrix: float")')
         write_line(header,1,'.Input("b_matrix: float")')
         write_line(header,1,'.Output("fast_mat_mul: float")')
@@ -69,6 +70,7 @@ def writer(in_file, out_file):
 
         write_line(header,2,'OP_REQUIRES_OK(context, context->GetAttr("steps", &numsteps_));')
         write_line(header,2,'OP_REQUIRES_OK(context,context->GetAttr("epsilon", &epsilon_));')
+        write_line(header,2,'OP_REQUIRES_OK(context,context->GetAttr("numthreads", &numthreads_));')
         write_line(header,1,'}')
         write_break(header)
 
@@ -115,7 +117,7 @@ def writer(in_file, out_file):
         write_break(header)
 
         write_line(header,2,'// call %s\'s matmul' % algo_name)
-        write_line(header,2,'%s::FastMatmul(A, B, C, numsteps_, epsilon_);' % namespace_name)
+        write_line(header,2,'%s::FastMatmul(A, B, C, numsteps_, epsilon_, numthreads_);' % namespace_name)
         write_break(header)
 
         write_line(header,0,'//    const float* ptr = reinterpret_cast<const float*>(output->tensor_data().data());')
@@ -133,6 +135,7 @@ def writer(in_file, out_file):
         write_line(header,1,'private:')
         write_line(header,2,'int numsteps_;')
         write_line(header,2,'float epsilon_;')
+        write_line(header,2,'int numthreads_;')
         write_break(header)
 
         write_line(header,1,'};')
