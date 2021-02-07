@@ -8,3 +8,6 @@ python tensorboard_test.py --layers 4 --nodes ${size} --epochs 5 --bs ${size} --
 
 done
 done
+
+
+#python tensorboard_test.py --layers 4 --nodes 512 --epochs 5 --bs 512 --mm smirnov442 --logdir test
