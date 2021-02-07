@@ -14,6 +14,7 @@ using namespace tensorflow;
 REGISTER_OP("FastMatMul")
     .Attr("epsilon: float")
     .Attr("steps: int")
+    .Attr("numthreads: int")
     .Input("a_matrix: float")
     .Input("b_matrix: float")
     .Output("fast_mat_mul: float")
@@ -42,6 +43,7 @@ public:
 
         OP_REQUIRES_OK(context, context->GetAttr("steps", &numsteps_));
         OP_REQUIRES_OK(context,context->GetAttr("epsilon", &epsilon_));
+        OP_REQUIRES_OK(context,context->GetAttr("numthreads", &numthreads_));
     }
 
     void Compute(OpKernelContext* context) override {
@@ -79,7 +81,7 @@ public:
         Matrix<float> C = Matrix<float>(c, output->dim_size(1), output->dim_size(1), output->dim_size(0));
 
         // call smirnov552's matmul
-        smirnov552_37_262_approx::FastMatmul(A, B, C, numsteps_, epsilon_);
+        smirnov552_37_262_approx::FastMatmul(A, B, C, numsteps_, epsilon_, numthreads_);
 
 //    const float* ptr = reinterpret_cast<const float*>(output->tensor_data().data());
 //    std::cout<< ptr[0] <<std::endl;
@@ -93,6 +95,7 @@ public:
     private:
         int numsteps_;
         float epsilon_;
+        int numthreads_;
 
     };
 
