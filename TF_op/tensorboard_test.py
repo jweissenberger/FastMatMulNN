@@ -31,8 +31,8 @@ def _Fast_MatMul_grad(op, grad):
     #'''
     bt = array_ops.transpose(op.inputs[1])
     at = array_ops.transpose(op.inputs[0])
-    grad_a = fast_mm_module.FastMatMul(a_matrix=grad, b_matrix=bt, epsilon=1e-2, steps=1, numthreads=12)
-    grad_b = fast_mm_module.FastMatMul(a_matrix=at, b_matrix=grad, epsilon=1e-2, steps=1, numthreads=12)
+    grad_a = fast_mm_module.FastMatMul(a_matrix=grad, b_matrix=bt, epsilon=1e-2, steps=1) # , numthreads=12
+    grad_b = fast_mm_module.FastMatMul(a_matrix=at, b_matrix=grad, epsilon=1e-2, steps=1) # numthreads=12
     '''
     a = math_ops.conj(op.inputs[0])
     b = math_ops.conj(op.inputs[1])
@@ -68,7 +68,7 @@ class Linear(layers.Layer):
             return tf.matmul(inputs, self.w) + self.b
 
         else:
-            return fast_mm_module.FastMatMul(a_matrix=inputs, b_matrix=self.w, epsilon=self.epsilon, steps=1, numthreads=12) + self.b
+            return fast_mm_module.FastMatMul(a_matrix=inputs, b_matrix=self.w, epsilon=self.epsilon, steps=1,) + self.b #  numthreads=12
         '''
         return tf.matmul(inputs, self.w) + self.b
         #'''
