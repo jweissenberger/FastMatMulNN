@@ -18,11 +18,11 @@ mkl_set_num_threads = mkl_rt.MKL_Set_Num_Threads
 mkl_get_max_threads = mkl_rt.MKL_Get_Max_Threads
 
 print( "MKL num threads default: ", mkl_get_max_threads() )
-mkl_set_num_threads(12)
+mkl_set_num_threads(1)
 print( "MKL num threads set to: ", mkl_get_max_threads() )
 
 # To change TensorFlow's threads at runtime
-tf.config.threading.set_intra_op_parallelism_threads(12)
+tf.config.threading.set_intra_op_parallelism_threads(1)
 tf.config.threading.set_inter_op_parallelism_threads(1)
 
 
@@ -30,8 +30,8 @@ tf.config.threading.set_inter_op_parallelism_threads(1)
 def _Fast_MatMul_grad(op, grad):
     bt = array_ops.transpose(op.inputs[1])
     at = array_ops.transpose(op.inputs[0])
-    grad_a = fast_mm_module.FastMatMul(a_matrix=grad, b_matrix=bt, epsilon=1e-2, steps=1, numthreads=24)
-    grad_b = fast_mm_module.FastMatMul(a_matrix=at, b_matrix=grad, epsilon=1e-2, steps=1, numthreads=24)
+    grad_a = fast_mm_module.FastMatMul(a_matrix=grad, b_matrix=bt, epsilon=1e-2, steps=1, numthreads=12)
+    grad_b = fast_mm_module.FastMatMul(a_matrix=at, b_matrix=grad, epsilon=1e-2, steps=1, numthreads=12)
     # a = math_ops.conj(op.inputs[0])
     # b = math_ops.conj(op.inputs[1])
     # grad_a = gen_math_ops.mat_mul(grad, b, transpose_b=True)
@@ -64,7 +64,8 @@ class Linear(layers.Layer):
             return tf.matmul(inputs, self.w) + self.b
 
         else:
-            return fast_mm_module.FastMatMul(a_matrix=inputs, b_matrix=self.w, epsilon=self.epsilon, steps=1, numthreads=24) + self.b
+            return fast_mm_module.FastMatMul(a_matrix=inputs, b_matrix=self.w, epsilon=self.epsilon, steps=1, numthreads=12) + self.b
+
 
 
 class MyModel(Model):
@@ -109,8 +110,8 @@ def test_step(images, labels):
   predictions = model(images)
   t_loss = loss_object(labels, predictions)
 
-  test_loss(t_loss)
-  test_accuracy(labels, predictions)
+  #test_loss(t_loss)
+  #test_accuracy(labels, predictions)
 
 
 if __name__ == '__main__':
