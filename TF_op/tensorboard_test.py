@@ -9,7 +9,7 @@ from openmpext import controlOMP
 
 
 # To change OMP num threads
-print(controlOMP(12))
+#print(controlOMP(12))
 
 # to change MKL's threads at runtime
 import ctypes
@@ -26,12 +26,32 @@ tf.config.threading.set_intra_op_parallelism_threads(1)
 tf.config.threading.set_inter_op_parallelism_threads(1)
 
 
+parser = argparse.ArgumentParser()
+parser.add_argument("--layers", type=int)
+parser.add_argument("--nodes", type=int)
+parser.add_argument("--bs", type=int)
+parser.add_argument("--epochs", type=int)
+parser.add_argument("--mm", type=str)  # name of the matrix multiplication algorithm
+parser.add_argument("--logdir", type=str)
+parser.add_argument("--num_threads", type=int)
+
+args = parser.parse_args()
+batch_size = args.bs
+EPOCHS = args.epochs
+nodes = args.nodes
+layers = args.layers
+mm_algo = args.mm
+logdir = args.logdir
+num_threads = args.num_threads
+
+
+
 @tf.RegisterGradient("FastMatMul")
 def _Fast_MatMul_grad(op, grad):
     bt = array_ops.transpose(op.inputs[1])
     at = array_ops.transpose(op.inputs[0])
-    grad_a = fast_mm_module.FastMatMul(a_matrix=grad, b_matrix=bt, epsilon=1e-2, steps=1, numthreads=12)
-    grad_b = fast_mm_module.FastMatMul(a_matrix=at, b_matrix=grad, epsilon=1e-2, steps=1, numthreads=12)
+    grad_a = fast_mm_module.FastMatMul(a_matrix=grad, b_matrix=bt, epsilon=1e-2, steps=1, numthreads=num_threads)
+    grad_b = fast_mm_module.FastMatMul(a_matrix=at, b_matrix=grad, epsilon=1e-2, steps=1, numthreads=num_threads)
     # a = math_ops.conj(op.inputs[0])
     # b = math_ops.conj(op.inputs[1])
     # grad_a = gen_math_ops.mat_mul(grad, b, transpose_b=True)
@@ -64,7 +84,7 @@ class Linear(layers.Layer):
             return tf.matmul(inputs, self.w) + self.b
 
         else:
-            return fast_mm_module.FastMatMul(a_matrix=inputs, b_matrix=self.w, epsilon=self.epsilon, steps=1, numthreads=12) + self.b
+            return fast_mm_module.FastMatMul(a_matrix=inputs, b_matrix=self.w, epsilon=self.epsilon, steps=1, numthreads=num_threads) + self.b
 
 
 
@@ -115,22 +135,6 @@ def test_step(images, labels):
 
 
 if __name__ == '__main__':
-
-    parser = argparse.ArgumentParser()
-    parser.add_argument("--layers", type=int)
-    parser.add_argument("--nodes", type=int)
-    parser.add_argument("--bs", type=int)
-    parser.add_argument("--epochs", type=int)
-    parser.add_argument("--mm", type=str)  # name of the matrix multiplication algorithm
-    parser.add_argument("--logdir", type=str)
-
-    args = parser.parse_args()
-    batch_size = args.bs
-    EPOCHS = args.epochs
-    nodes = args.nodes
-    layers = args.layers
-    mm_algo = args.mm
-    logdir = args.logdir
 
     if mm_algo != 'regular':
         fast_mm_module = tf.load_op_library(f'obj/{mm_algo}_mat_mul.so')
