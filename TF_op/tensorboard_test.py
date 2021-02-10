@@ -39,7 +39,7 @@ args = parser.parse_args()
 batch_size = args.bs
 EPOCHS = args.epochs
 nodes = args.nodes
-layers = args.layers
+num_layers = args.layers
 mm_algo = args.mm
 logdir = args.logdir
 num_threads = args.num_threads
@@ -148,7 +148,7 @@ if __name__ == '__main__':
     x_train = x_train.reshape(60000, 784)
     x_test = x_test.reshape(10000, 784)
 
-    model = MyModel(node=nodes, num_layers=layers, matmul_algo=mm_algo)
+    model = MyModel(node=nodes, num_layers=num_layers, matmul_algo=mm_algo)
 
     loss_object = tf.keras.losses.SparseCategoricalCrossentropy()
 
@@ -213,7 +213,7 @@ if __name__ == '__main__':
     # TODO output should be a single json object not multiple files with different information
 
     # write the performance lists to file
-    with open(f'{mm_algo}_layers{layers}_nodes{nodes}_epochs{EPOCHS}_bs{batch_size}_accuracy_and_loss.txt', 'wt') as file:
+    with open(f'{mm_algo}_layers{num_layers}_nodes{nodes}_epochs{EPOCHS}_bs{batch_size}_accuracy_and_loss.txt', 'wt') as file:
         file.write('train_accuracy')
         for i in train_accuracy_list:
             file.write(f',{i}')
