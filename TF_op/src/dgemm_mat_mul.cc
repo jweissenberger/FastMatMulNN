@@ -46,6 +46,9 @@ public:
 
     void Compute(OpKernelContext* context) override {
 
+        // set mkl num threads, should take priority over omp num threads
+        mkl_set_num_threads_local(numthreads_);
+        
         // get the inputs
         const Tensor& A_matrix = context->input(0);
         const Tensor& B_matrix = context->input(1);
