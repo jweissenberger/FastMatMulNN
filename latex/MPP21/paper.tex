@@ -9,6 +9,7 @@
 \usepackage{xcolor}
 \usepackage{hyperref}
 \usepackage{cleveref}
+\usepackage{tikz,pgfplots}
 
 % for subfigures
 \usepackage[caption=false,font=footnotesize]{subfig}
@@ -141,12 +142,15 @@ component, formatting, style, styling, insert
 
 \begin{figure}
 \subfloat[One thread]{
+\centering
 \renewcommand{\datafile}{data/NNtime_1t.dat}
 \input{plots/reltime}
 \label{fig:NNreltime_seq}}
-\hfill
+\\
 \subfloat[Twelve threads]{
-csv files should have columns n,DGEMM,Bini,... and row for each dim
+\centering
+\renewcommand{\datafile}{data/NNtime_12t.dat}
+\input{plots/reltime}
 \label{fig:NNreltime_par}}
 \caption{Network training time relative to using classical matrix multiplication}
 \label{fig:NNreltime}
