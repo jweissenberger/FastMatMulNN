@@ -10,6 +10,9 @@
 \usepackage{hyperref}
 \usepackage{cleveref}
 
+% for subfigures
+\usepackage[caption=false,font=footnotesize]{subfig}
+
 % for scientific notation like 1e-8
 \usepackage{siunitx}
 \sisetup{output-exponent-marker=\ensuremath{\mathrm{e}}}
@@ -19,6 +22,8 @@
 
 \newcommand*{\email}[1]{\href{mailto:#1}{\nolinkurl{#1}} } 
 \newcommand{\dims}[1]{\langle #1 \rangle}
+
+\newcommand{\datafile}{}
 
 \newcommand{\GB}[1]{\textcolor{red}{\textbf{GB}: #1}}
 \newcommand{\JW}[1]{\textcolor{blue}{\textbf{JW}: #1}}
@@ -37,10 +42,10 @@ Winston Salem, NC, USA \\
 \email{ballard@wfu.edu}}
 \and
 \IEEEauthorblockN{Jack Weissenberger}
-\IEEEauthorblockA{\textit{dept. name of organization (of Aff.) \GB{?}} \\
-\textit{Capital One \GB{?}}\\
-Richmond, VA \\
-email address or ORCID}
+\IEEEauthorblockA{\textit{Department of Computer Science} \\
+\textit{Wake Forest University}\\
+Winston Salem, NC, USA \\
+\email{jack.weissenberger@gmail.com}}
 \and
 \IEEEauthorblockN{Luoping\GB{?} Zhang}
 \IEEEauthorblockA{\textit{Department of Computer Science} \\
@@ -133,6 +138,21 @@ component, formatting, style, styling, insert
 	\item perf results for growing dim (maybe for serial and 12-threads separately)
 	\item parallel speedup results
 \end{enumerate}
+
+\begin{figure}
+\subfloat[One thread]{
+\renewcommand{\datafile}{data/NNtime_1t.dat}
+\input{plots/reltime}
+\label{fig:NNreltime_seq}}
+\hfill
+\subfloat[Twelve threads]{
+csv files should have columns n,DGEMM,Bini,... and row for each dim
+\label{fig:NNreltime_par}}
+\caption{Network training time relative to using classical matrix multiplication}
+\label{fig:NNreltime}
+\end{figure}
+
+
 
 \section{Conclusion}
 
