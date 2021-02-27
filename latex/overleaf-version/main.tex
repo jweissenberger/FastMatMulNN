@@ -1,0 +1,241 @@
+\documentclass{article}
+\usepackage[utf8]{inputenc}
+
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{amsthm}
+\usepackage{cite}
+
+\newtheorem{theorem}[]{Theorem}
+
+\title{APA-FMM Algorithms}
+\author{}
+\date{}
+
+\begin{document}
+
+\maketitle
+
+\section{Introduction}
+
+\section{Divide and Conquer}
+For a matrix multiplication, we have $A\cdot B = C$, where $A$ is a $n$ by $m$ matrix, and $B$ is a $m$ by $k$ matrix, then C is to be $n$ by $k$. Thus, there should be $nm + mk + nk$ entries.\\
+Before we use any fast matrix multiplication algorithm, we know that the if we implement the classic algorithm into Divide and Conquer form, we will have $nmk$ recursive calls in each iteration by Master Theorem. We want to find recursive algorithms that have less than $nmk$ recursive calls each iteration.\\
+
+\section{Strassen's Algorithm}
+Strassen's Algorithm deals with 2 by 2 matrix multiplies 2 by 2 matrix, denoted as $(2,2,2)$. By Master Theorem, we want the recursive calls to be less than $2*2*2 = 8$. Strassen provides us an algorithm of 7 recurisve calls.\\
+We can think of the recursive calls as a mapping from a table of parameter to $r$ recursive calls with different entries from the matrices and their parameters. In each recursive call, we only select a few entries from the original matrices and add a parameter on it (in this case, the parameter is only 1 or -1). If an entry does not appear on the call, we can think its parameter is 0. So we can construct a table with parameter for each entry of the matrices and each recursive call. (UVW Notation)\\
+For Strassen's Algorithm, we know that there are $nm+mk+nk = 4+4+4 = 12$ entries and 7 recursive calls, so the table should be 12 by 7.
+\begin{eqnarray*}
+M_1 &=& (A_{11} + A_{22}) \cdot (B_{11} + B_{22}) \\
+M_2 &=& (A_{21} + A_{22})\cdot  B_{11} \\
+M_3 &=& A_{11}\cdot(B_{12} - B_{22}) \\
+M_4 &=&        A_{22}\cdot (B_{21} -B_{11}) \\
+M_5 &=& (A_{11}+ A_{12}) \cdot B_{22} \\
+M_6 &=& (A_{21} - A_{11}) \cdot (B_{11} + B_{12}) \\
+M_7 &=& (A_{12}- A_{22}) \cdot (B_{21} + B_{22}) \\\\
+C_{11} &=& M_1 + M_4 - M_5 + M_7 \\
+C_{12} &=& M_3 + M_5 \\
+C_{21} &=& M_2 + M_4 \\
+C_{22} &=& M_1 - M_2 + M_3 + M_6\\
+\end{eqnarray*}
+By Master Theory, the time complexity of Strassen's Algorithm is $O(n^{\log\limits_27}) = O(n^{2.807355})$.\\
+
+
+\section{APA Algorithm}
+In Strassen's Algorithm, all the parameter in the table are integers. To get a faster algorithm, we want to reduce the precision of the calculation small enough so that the speedup is much more significant.\\
+We will add a variable $\varepsilon$ (denoted as $e$ below in the recursive equation), we want to choose an appropriate value for $\varepsilon$ so that the error of the APA algorithm will the smallest.\\
+But here's a trade-off of the value of $\varepsilon$. Theoretically, when $\varepsilon \to 0$, error of the algorithm $\to 0$. Thus, we want $\varepsilon$ to be small.\\
+However, practically, when computers are making floating point calculation, they have precision of certain amount of bits. If $\varepsilon$ is chosen too small, computers cannot calculate the correct answer, so we want $\varepsilon$ to be big enough.
+
+\section{UVW Notation}
+In the section of Strassen's Algorithm, we provide a table that could store parameters for any matrix mutiplication algorithm,  and now we want to formalize the table so that it is easy to understand. The UVW Notation divides the rows into 3 parts: the row for matrix $A$, the row for matrix $B$, and the row for matrix $C$, where $A\cdot B = C$. So the original table $nm+mk+nk$ by $r$ becomes three tables with same number of columns: $U \rightarrow (nm,r), V\rightarrow(mk,r), W\rightarrow(nk,r)$.\\
+To retrieve recursive calls, we can just do a UVW table lookup. For the Divide part, each column represents a recursive call, and the 2 variables of the recursive call $i$ are the linear combination of the entries in matrix $A$ for corresponding column $r_i$ in U table, and the linear combination of the entries in matrix $B$ for corresponding column $r_i$ in V table. For the Conquer part, we take each row of table W, the linear combination between each recursive call and their parameters represents the corresponding entries.
+
+
+\section{Bini's Algorithm \cite{BCRL79}}
+
+\begin{eqnarray*}
+M_1 &=& (A_{11} + A_{22}) \cdot (eB_{11} + B_{22}) \\
+M_2 &=& A_{22}\cdot  (-B_{21} - B_{22}) \\
+M_3 &=& A_{11}\cdot B_{22} \\
+M_4 &=& (eA_{12} + A_{22})\cdot (-eB_{11} + B_{21}) \\
+M_5 &=& (A_{11} + eA_{12}) \cdot (eB_{12} + B_{22}) \\
+M_6 &=& (A_{21} + A_{32}) \cdot (B_{11} + eB_{22}) \\
+M_7 &=& A_{21} \cdot (-B_{11} - B_{12}) \\
+M_8 &=& A_{32} \cdot B_{11}\\
+M_9 &=& (A_{21} + eA_{31}) \cdot (B_{12} - eB_{22})\\
+M_{10} &=& (eA_{31} + A_{32}) \cdot (B_{12} - eB_{22})\\\\
+C_{11} &=& (M_1 + M_2 - M_3 + M_4)/e \\
+C_{12} &=& (-M_3 + M_5)/e \\
+C_{21} &=& M_4 + M_6 - M_{10}\\
+C_{22} &=& M_1 - M_5 + M_9\\
+C_{31} &=& (-M_8 + M_{10})/e \\
+C_{32} &=& (M_6 + M_7 - M_8 + M_9)/e\\
+\end{eqnarray*}
+By Master Theorem, the time complexity of Bini's Algorithm is $O(n^{\log\limits_{3*2*2}10^3}) = O(n^{\log\limits_{12}1000}) = O(n^{2.779885})$.
+\section{Schonhage's Algorithm \cite{Schonhage81}}
+
+\begin{eqnarray*}
+M_{11} &=& (A_{11} + e^2A_{12})\cdot (e^2B_{11} + B_{21})\\
+M_{22} &=& (A_{21} + e^2A_{22})\cdot (e^2B_{12} + B_{22})\\ 
+M_{33} &=& (A_{31} + e^2A_{32})\cdot (e^2B_{13} + B_{23})\\
+N_{11} &=& (A_{11} + e^2A_{13})\cdot B_{31}\\
+N_{22} &=& (A_{21} + e^2A_{23})\cdot B_{32}\\
+N_{33} &=& (A_{31} + e^2A_{33})\cdot B_{33}\\
+O_1 &=& A_{11}\cdot (B_{21} + B_{31})\\
+O_2 &=& A_{21}\cdot (B_{22} + B_{32})\\
+O_3 &=& A_{31}\cdot (B_{23} + B_{33})\\
+M_{12} &=& (A_{11} + e^2A_{22})\cdot (B_{21} - eB_{12})\\
+M_{13} &=& (A_{11} + e^2A_{32})\cdot (B_{21} - eB_{13})\\
+M_{23} &=& (A_{21} + e^2A_{32})\cdot (B_{22} - eB_{13})\\
+M_{21} &=& (A_{21} + e^2A_{12})\cdot (B_{22} - eB_{11})\\
+M_{31} &=& (A_{31} + e^2A_{12})\cdot (B_{23} - eB_{11})\\
+M_{32} &=& (A_{31} + e^2A_{22})\cdot (B_{23} - eB_{12})\\
+N_{12} &=& (A_{11} + e^2A_{23})\cdot (B_{31} + eB_{12})\\
+N_{13} &=& (A_{11} + e^2A_{33})\cdot (B_{31} + eB_{13})\\
+N_{23} &=& (A_{21} + e^2A_{33})\cdot (B_{32} + eB_{13})\\
+N_{21} &=& (A_{21} + e^2A_{13})\cdot (B_{32} + eB_{11})\\
+N_{31} &=& (A_{31} + e^2A_{13})\cdot (B_{33} + eB_{11})\\
+N_{32} &=& (A_{31} + e^2A_{23})\cdot (B_{33} + eB_{12})\\\\
+C'_{11} &=& (M_{11} + N_{11} - O_1)/e^2\\
+C'_{22} &=& (M_{22} + N_{22} - O_2)/e^2\\
+C'_{33} &=& (M_{33} + N_{33} - O_3)/e^2\\
+C'_{12} &=& (M_{21} + N_{21} - O_2)/e^2 + (N_{12} - N_{11})/e\\
+C'_{13} &=& (M_{31} + N_{31} - O_3)/e^2 + (N_{13} - N_{11})/e\\
+C'_{23} &=& (M_{32} + N_{32} - O_3)/e^2 + (N_{23} - N_{22})/e\\
+C'_{21} &=& (M_{12} + N_{12} - O_1)/e^2 + (N_{21} - N_{22})/e\\
+C'_{31} &=& (M_{13} + N_{13} - O_1)/e^2 + (N_{31} - N_{33})/e\\
+C'_{32} &=& (M_{23} + N_{23} - O_2)/e^2 + (N_{32} - N_{33})/e\\
+\end{eqnarray*}
+By Master Theorem, the time complexity of Schonhage's Algorithm is $O(n^{\log\limits_321}) = O(n^{2.77124})$.
+
+
+\section{Smirnov's 323 Algorithm \cite{Smirnov13}}
+
+\begin{eqnarray*}
+M_1 &=& (e^{-1}A_{12} + eA_{21}) \cdot e^{-1}B_{12}\\
+M_2 &=& (e^{-1}A_{12} + e^2A_{31} - A_{32}) \cdot e^{-1}B_{11}\\
+M_3 &=& (-e^{-1}A_{11} + (1+e^2)A_{31}) \cdot (e^{-1}B_{11} + eB_{13} - eB_{23})\\
+M_4 &=& A_{21} \cdot (B_{11} + B_{12} + eB_{13})\\
+M_5 &=& (-e^{-1}A_{11} - e^{-1}A_{12} + A_{31} + A_{32}) \cdot (-e^{-1}B_{11} + eB_{23})\\
+M_6 &=& (-e^{-1}A_{12} - eA_{21} - e^2A_{31} + A_{32}) \cdot (-e^{-1}B_{11} + B_{22})\\
+M_7 &=& (-e^{-1}A_{12} + e^3A_{21} + A_{32}) \cdot (e^{-1}B_{11} + eB_{21})\\
+M_8 &=& -e^{-1}A_{12} \cdot (-e^{-1}B_{12} + e^{-1}B_{21})\\
+M_9 &=& (e^{-1}A_{12} + eA_{21} - A_{22} + e^2A_{31} - A_{32}) \cdot B_{22}\\
+M_{10} &=& e^{-1}A_{11} \cdot (e^{-1}B_{12} + eB_{13} - eB_{23})\\
+M_{11} &=& (e^{-1}A_{11} + e^{-1}A_{12} + eA_{21}) \cdot (-e^{-1}B_{12} + eB_{23})\\
+M_{12} &=& (e^{-1}A_{12} + eA_{22}) \cdot e^{-1}B_{21}\\
+M_{13} &=& (e^{-1}A_{12} + (e+e^2)A_{21} + e^2A_{31}) \cdot (e^{-1}B_{12} + eB_{22})\\
+M_{14} &=& A_{22} \cdot (-B_{21} - B_{22} + eB_{23})\\\\
+C_{11} &=& eM_2 - e^2M_3 + eM_7 + (e^2+e^3)M_{12}\\
+C_{12} &=& -M_1 + e^2M_{10} + M_{13}\\
+C_{13} &=& M_1 - e^2M_2 + e^2M_3 + e^2M_5 + M_{10} + M_{11}\\
+C_{21} &=& -M_1 + M_4 + M_8 + M_{12}\\
+C_{22} &=& M_1 - M_8 - M_{12} - M_{14}\\
+C_{23} &=& -e^{-1}M_1 + e^{-1}M_2 + e^{-1}M_4 - e^{-1}M_6 + e^{-1}M_8 - e^{-1}M_9 + e^{-1}M_{12} + e^{-1}M_{14}\\
+C_{31} &=& eM_1 + e^{-1}M_2 - eM_4 + e^{-1}M_7 - eM_8\\
+C_{32} &=& -e^{-1}M_1 - M_2 - M_4 + M_6 + e^{-1}M_{13}\\
+C_{33} &=& e^{-1}M_1 - e^{-1}M_2 + e^{-1}M_3 + e^{-1}M_5 + e^{-1}M_{10} + e^{-1}M_{11}\\
+\end{eqnarray*}
+By Master Theorem, the time complexity of Smirnov's 323 Algorithm is $O(n^{\log\limits_{3*2*3}14^3}) = O(n^{\log\limits_{18}2744}) = O(n^{2.73915})$.
+
+
+\section{Smirnov's 333 Algorithm \cite{Smirnov13}}
+\begin{eqnarray*}
+M_1 &=& (eA_{11}-e^3A_{13}+e^{-1}A_{31}+e^{-2}A_{33})\cdot(B_{11}+eB_{12}+e^{-1}B_{}21)+e^{-2}B_{31}+2e^3B_{33}\\
+M_2 &=& (e^3A_{13}+e^{-2}A_{21}-e^{-1}A_{22}-eA_{33})\cdot(e^3B_{23}+e^{-1}B_{33})\\
+M_3 &=& (-e^{-1}A_{21}+A_{22}-e^{-2}A_{32})\cdot(e^{-1}B_{21}+B_{22}-e^2B_{23})\\
+M_4 &=& (-A_{11}+eA_{12}-e^{-2}A_{31}+e^{-1}A_{32})\cdot(eB_{11}+B_{21}+e^{-1}B_{31})\\
+M_5 &=& (-e^3A_{13}+e^{-2}A_{21}+e^{-2}A_{33})\cdot(B_{11}+eB_{12}+e^{-1}B_{21}e^{-2}B_{31}+e^{-1}B_{32}+e^3B_{33})\\
+M_6 &=& (e^{-2}A_{31}-e^{-1}A_{32})\cdot(e^2B_{13}+e^{-2}B_{21})\\
+M_7 &=& (eA_{11}-2e^2A_{12}+e^{-2}A_{31}-e^{-1}A_{32})\cdot(eB_{11}+e^3B_{13}+e^{-1}B_{21})\\
+M_8 &=& (eA_{11}-e^3A_{13}-e^{-2}A_{21}+A_{23}+e^{-1}A_{31})\cdot()eB_{13}+e^{-2}B_{31}\\
+M_9 &=& (-e_{-2}A_{21}+e^{-1}A_{22})\cdot(eB_{22}+e^{-1}B_{33})\\
+M_{10} &=& e^{-2}\cdot(e^3B_{13}+e^{-1}B_{21}+B_{22})\\
+M_{11} &=& (e^{-2}A_{21}-A_{23})\cdot(eB_{13}+B_{23}+B_{32})\\
+M_{12} &=& (e^2A_{12}-e^{-2}A_{21}+A_{23}+A_{32})\cdot(-B_{23}+e^{-2}B_{31})\\
+M_{13} &=& (-A_{21}+eA_{22}+e^{-2}A_{31}-e^{-1}A_{32})\cdot e^{-2}B_{21}\\
+M_{14} &=& (-A_{11}+eA_{12}+e^2A_{13}-e^{-2}A_{31}+e^{-1}A_{32})\cdot e^{-1}B_{31}\\
+M_{15} &=& e^{-2}A_{33}\cdot(e^{-2}B_{32}-e^2B_{33})\\
+M_{16} &=& (-e^2A_{12}+e^{-2}A_{21}-A_{32})\cdot(B_{11}+e^{-1}B_{21}-B_{22}+e^{-2}B_{31})\\
+M_{17} &=& e^{-1}A_{31}\cdot(-eB_{12}+e^3B_{13}+e^{-1}B_{21}-2e^{3}B_{33})\\
+M_{18} &=& (-e^{-1}A_{21}+A_{22}+eA_{23})\cdot(B_{23}+e^{-1}B_{33})\\
+M_{19} &=& (-A_{21}+e^2A_{23}+e^{-2}A_{33})\cdot e^{-2}B_{32}\\
+M_{20} &=& e^{-2}A_{21}\cdot(eB_{12}+B_{22}+e^{-1}B_{32}+e^3B_{33})\\\\
+C_{11} &=& -eM_2+eM_3-e^{-1}M_4+M_6-e^{-1}M_7-eM_9-eM_{13}+e^{-1}M_{14}\\
+C_{12} &=& e^{-2}M_1+e^{-2}M_4-e^{-2}M_5-M_6-M_{10}+e^{-1}M_{15}+e^{-2}M_{16}+e^{-2}M_{17}+e^{-2}M_{20}\\
+C_{13} &=& e^{-2}M_2-e^{-2}M_3-e^{-2}M_6+e^{-2}M_8+e^{-2}M_9-e^{-2}M_{10}+e^{-2}M_{11}-e^{-2}M_{12}+e^{-2}M_{13}e^{-2}M_{14}-e^{-2}M_{15}+e^{-2}M_{16}+e^{-2}M_{17}+e^{-2}M_{20}\\
+C_{21} &=& -e^2M_1-eM_2+(e-e^4)M_3+e^2M_5+(-e+e^2)M_8-eM_9+eM_{10}-eM_{11}+eM_{12}+e^4M_{13}-eM_{14}-e^3m_{15}\\
+C_{22} &=& M_2+(1-e^3)M_9-M_{15}+e^2M_{18}+m_{19}+eM_{20}\\
+C_{23} &=& eM_2+eM_{11}-eM_{15}+eM_{19}\\
+C_{31} &=& e^4M_1+e^4M_4+(-e^2-e^3)M_6+eM_7+eM_{17}\\
+C_{32} &=& e^2M_6+e^2M_{10}+e^4M_{15}-M_{17}\\
+C_{33} &=& -M_2+M_3+M_6-M_9+M_{10}-M_{13}\\
+\end{eqnarray*}
+By Master Theorem, the time complexity of Smirnov's 333 Algorithm is $O(n^{\log\limits_320}) = O(n^{2.726833})$.
+
+
+
+
+
+
+\section{Error Analysis \cite{BLR80}} 
+
+\begin{theorem}[Bini]
+The error produced by an APA-algorithm, is $O(2^{-d/\omega})$, where $\omega = 1 + \varphi/\sigma$ is a stability parameter depending on the border basis.
+Where $O(\varepsilon^{-\varphi})$ is the largest infinite triads of the basis, i.e., $$\varphi = max\{z|u^{(r)}_i(\varepsilon)v^{(r)}_j(\varepsilon)w^{(r)}_s(\varepsilon)=O(\varepsilon^{-z}),i=1,2,...,m,j=1,2,...,n,s=1,2,...,p,r=1,2,...,t_B\}$$
+and $O(\varepsilon^\sigma)$ is the slowest infinitesimal in $E(\varepsilon)$, i.e., $$\sigma = min\{z|e^{(s)}_{ij}=O(\varepsilon^z),i=1,2,...,m,j=1,2,...,n,s=1,2,...,p\}$$
+The order of the error is minimized as above when $\varepsilon (d) = 2^{-d/(\varphi + \sigma)}$.
+\end{theorem}
+$d$ here represents the precision of the computer architecture. Single precision gives 23 bits precision and double gives 52 bits (without the hidden bit).
+
+
+\section{Numerical Accuracy Calculation}
+verify2.py is a file that could generate parameters $\sigma, \varphi$ which helps us to determinate the accuracy of each algorithm. \\
+It will return 2 numbers sigma and phi, corresponding to $\sigma$ and $\varphi$ above. We can get $\sigma$ by searching all the error entries, and pick the minimum number of the exponent of the most dominate $\epsilon$ term from each entry of the error tensor $e_{ij}^{(s)}$. Notice that since $\epsilon < 1$, then the less the exponent of $\epsilon$ is, the more dominate it is. Thus, $\sigma \geq 1$ since negative term are cancelled. And $\varphi$ is the dominant term of $\epsilon$ in each slice of the tensor, which equals to the number of recursive calls in each iteration, in the UVW notation it is the $r$ dimension. Since $\epsilon < 1$, the most negative exponential term is the dominant one, which has the maximum absolute value.\\
+Therefore, to get a better precision, we want the error to be as small as possible, which means we want $O(2^{-d/\omega})$ to be small. Since $d$ is decided by computer architecture, we want $\omega = 1+\varphi / \sigma$ to be as small as possible. Then we want $\varphi$ to be small, $\sigma$ to be large.\\
+In Bini's paper, he didn't mention the case that if we apply the algorithm for multiple steps. Here we have the conclusion that $\sigma$ for any number of steps are the same, but the $\varphi$ for $s$ steps $\varphi_s = s * \varphi$. Thus, the error is $O(2^{-d\sigma/(s\varphi + \sigma)})$, and $\varepsilon (d,s) = O(2^{-d/(s\varphi + \sigma)})$.\\
+Notice that in the table below, $-d/\omega$ equals the bits of error, and assuming single precision. 
+\begin{center}
+ \begin{tabular}{||c c c c c c c c||} 
+ \hline
+ Algorithm & $\sigma$ & $\varphi$ & \textit{error} bits & \textit{error} digits & $\varepsilon$ digits & $\varepsilon$ digits & speedup \\
+  & & & (base 2) & (base 10) & (1 step) & (2 steps) & $(m*n*k)/r$\\ [0.5ex] 
+ \hline\hline
+ Bini & 1 & 1 & -11.5 & -3.46 & -3.46 & -2.31 & 1.2\\
+ \hline
+ Schonhage & 1 & 2 & -7.67 & -2.31 & -2.31 & -1.38 & 1.286\\
+ \hline
+ Smirnov 224 & 1 & 2 & -7.67 & -2.31 & -2.31 & -1.38 & 1.231\\
+ \hline
+ Smirnov 225 & 1 & 3 & -5.75 & -1.73 & -1.73 & -0.99 & 1.25\\
+ \hline
+ Smirnov 323 & 1 & 3 & -5.75 & -1.73 & -1.73 & -0.99 & 1.286\\
+ \hline
+ Smirnov 334 & 1 & 3 & -5.75 & -1.73 & -1.73 & -0.99 & 1.333\\
+ \hline
+ Smirnov 442 & 1 & 3 & -5.75 & -1.73 & -1.73 & -0.99 & 1.333\\
+ \hline
+ Smirnov 444 & 1 & 3 & -5.75 & -1.73 & -1.73 & -0.99 & 1.391\\
+ \hline
+ Smirnov 552 & 1 & 3 & -5.75 & -1.73 & -1.73 & -0.99 & 1.351\\
+ \hline
+ Smirnov 555 & 1 & 3 & -5.75 & -1.73 & -1.73 & -0.99 & 1.389\\
+ \hline
+ Smirnov 272 & 1 & 5 & -3.83 & -1.15 & -1.15 & -0.63 & 1.273\\
+ \hline
+ Smirnov 333 & 1 & 6 & -3.29 & -0.99 & -0.99 & -0.53 & 1.35\\ [1ex] 
+ \hline
+\end{tabular}
+\end{center}
+Also, this file will generate the indexes of corresponding entries from each matrix.
+
+\bibliographystyle{alpha}
+
+\bibliography{refs}
+
+
+\end{document}
+
+

@@ -1,4 +1,7 @@
+*.bbl
+*.blg
 *.aux
 *.out
 *.synctex.gz
+main.pdf
 paper.pdf
