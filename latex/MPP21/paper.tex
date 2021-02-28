@@ -69,16 +69,42 @@ component, formatting, style, styling, insert
 
 \section{Introduction}
 
-\GB{motivate importance of matmul in NN}
 
-\GB{emphasize unseen potential of APA algorithms}
 
-\GB{find references for low-precision arithmetic inside NN}
+\emph{Fast} matrix multiplication algorithms are those that perform fewer than the $2n^3+O(n^2)$ flops performed by the classical algorithm.
+For example, Strassen's original fast matrix multiplication algorithm performs $O(n^{\log_2 7})$ flops, where $\log_27 \approx 2.81$ \cite{Strassen69}.
+The true complexity of matrix multiplication, typically measured as the exponent $\omega$ for complexity $O(n^\omega)$ is an open question, but the current tightest upper bound is 2.37286 \cite{AW21}.
+Upper bounds in this range correspond to theoretical algorithms that are not expected to be practical.
 
-\GB{reference this paper: \url{https://ieeexplore.ieee.org/stamp/stamp.jsp?arnumber=1675476} as example use of APA algorithms in practice}
+One of the reasons such algorithms are impractical is that they are based on so-called \emph{Arbitrary Precision Approximating} (APA) algorithms, which we describe in detail in \cref{sec:APA}.
+In exact arithmetic, these algorithms compute an approximation of the correct result, where the error is polynomial in a nonzero parameter of the algorithm \cite{BLR80}.
+That is, in exact arithmetic, the error can be made arbitrarily small.
+In floating point arithmetic, however, there is a lower bound on the approximation error that depends on the working precision and properties of the algorithm.
+In theory, APA algorithms can be converted to exact algorithms at the cost of an extra logarithmic factor of $n$, which is typically hidden by an arbitrarily small increase in the exponent \cite{Bini80}.
+In practice, however, $n$ is not large enough to ignore the logarithmic factor, and floating point error plagues the conversion method, so APA algorithms are considered approximate algorithms with insufficient accuracy for most applications.
+Thus, APA algorithms are largely overlooked as practical tools despite their performance potential \cite{BB15}.
 
+Our goal in this paper is to demonstrate that APA algorithms can offer practical performance improvements for applications that are tolerant to error in matrix multiplications, notably the training phase of neural networks.
+Training large neural networks is computationally expensive and the cost has spurred a surge of research into more efficient hardware, better algorithms, and techniques for trading off accuracy for performance.
+For instance, low-precision arithmetic has been shown to decrease running time with little to no effect on the ultimate learning task \cite{GAGN15,HCSEB17}, and new floating point formats have been developed and supported in hardware to implement highly efficient low- and mixed-precision computation \cite{KM+19,YWC20}.
+
+Matrix multiplication in particular is a bottleneck computation for many neural networks... \GB{continue here, make the case that matmul is bottleneck}
+
+\GB{reference this paper \cite{KAA20} as using Strassen-Winograd in a single-layer feed-forward network on a GPU}
+
+\GB{reference this paper \cite{NPOV15} for tensorizing large fully-connected layers, including layers with dimensions 25K x 4K and 4K x 4K}
+
+\GB{list of contributions:}
+
+\begin{enumerate}
+	\item curating a collection of recently discovered practical APA algorithms
+	\item extending the framework of \cite{BB15} to generate efficient multithreaded code for a more general set of APA algorithms
+	\item demonstrating the robustness of learning accuracy to approximate matrix multiplications
+	\item presenting multithreaded performance improvements of a synthetic MLP of up to $Y\times$
+\end{enumerate}
 
 \section{Arbitrary Precision Approximating Algorithms}
+\label{sec:APA}
 
 \begin{enumerate}
 	\item complexity of matmul discussion
@@ -87,6 +113,10 @@ component, formatting, style, styling, insert
 	\item table of 12 algorithms
 	\item accuracy plot?
 \end{enumerate}
+
+
+
+\GB{cite \cite{Bini80} for conversion of APA algorithm to exact algorithm}
 
 \begin{table}
 \centering
