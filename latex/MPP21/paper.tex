@@ -58,18 +58,10 @@ Winston Salem, NC, USA \\
 \maketitle
 
 \begin{abstract}
-This document is a model and instructions for \LaTeX.
-This and the IEEEtran.cls file define the components of your paper [title, text, heads, etc.]. *CRITICAL: Do Not Use Symbols, Special Characters, Footnotes, 
-or Math in Paper Title or Abstract.
+\GB{TBD}
 \end{abstract}
 
-\begin{IEEEkeywords}
-component, formatting, style, styling, insert
-\end{IEEEkeywords}
-
 \section{Introduction}
-
-
 
 \emph{Fast} matrix multiplication algorithms are those that perform fewer than the $2n^3+O(n^2)$ flops performed by the classical algorithm.
 For example, Strassen's original fast matrix multiplication algorithm performs $O(n^{\log_2 7})$ flops, where $\log_27 \approx 2.81$ \cite{Strassen69}.
@@ -80,9 +72,7 @@ One of the reasons such algorithms are impractical is that they are based on so-
 In exact arithmetic, these algorithms compute an approximation of the correct result, where the error is polynomial in a nonzero parameter of the algorithm \cite{BLR80}.
 That is, in exact arithmetic, the error can be made arbitrarily small.
 In floating point arithmetic, however, there is a lower bound on the approximation error that depends on the working precision and properties of the algorithm.
-In theory, APA algorithms can be converted to exact algorithms at the cost of an extra logarithmic factor of $n$, which is typically hidden by an arbitrarily small increase in the exponent \cite{Bini80}.
-In practice, however, $n$ is not large enough to ignore the logarithmic factor, and floating point error plagues the conversion method, so APA algorithms are considered approximate algorithms with insufficient accuracy for most applications.
-Thus, APA algorithms are largely overlooked as practical tools despite their performance potential and ability to outperform their exact counterparts \cite{BB15}.
+Thus, APA algorithms are often considered to have insufficient accuracy for most applications and have largely been overlooked as practical tools despite their performance potential and ability to outperform their exact counterparts \cite{BB15}.
 
 Our goal in this paper is to demonstrate that APA algorithms can offer practical performance improvements for applications that are tolerant to error in matrix multiplications, notably the training phase of neural networks.
 Training large neural networks is computationally expensive and the cost has spurred a surge of research into more efficient hardware, better algorithms, and techniques for trading off accuracy for performance.
@@ -106,7 +96,7 @@ In particular we
 
 \GB{\cite{NPOV15} uses a network including layers with dimensions 25K x 4K and 4K x 4K}
 
-\section{Arbitrary Precision Approximating Algorithms}
+\section{Practical Arbitrary Precision Approximating Matrix Multiplication Algorithms}
 \label{sec:APA}
 
 \begin{enumerate}
@@ -117,9 +107,99 @@ In particular we
 	\item accuracy plot?
 \end{enumerate}
 
+\subsection{Fast Matrix Multiplication}
 
+Nearly all fast matrix multiplication algorithms are based a rule for multiplying matrices of fixed size, and the reduction in asymptotic complexity stems from using the rule recursively on general matrices.
+For example, Strassen's algorithm is specified by a rule for multiplying two $2\times2$ matrices (denoted $\dims{2,2,2}$) using 7 multiplications instead of the classical algorithm's 8 multiplications.
+Applying the rule to $n\times n$ matrices, we split each matrix into quadrants, and the 7 multiplications are multiplications of $(n/2)\times (n/2)$ matrices.
+For even better efficiency, we can consider larger fixed sizes and find rules that require a lower percentage of multiplications compared to the classical rule.
+The number of multiplications in a rule is known as the \emph{rank}, so Strassen's is a rank-7 algorithm.
+Algorithms have been derived both analytically and computationally, and there exists a vast set of improvements leading to the current world record \cite{Pan84,CW87,Williams12,AW21}.
 
-\GB{cite \cite{Bini80} for conversion of APA algorithm to exact algorithm}
+\subsection{APA Algorithms}
+
+A key characteristic of matrix multiplication, first demonstrated by Bini et al.~\cite{BCRL79}, is that it can be approximated to arbitrary accuracy more efficiently than being computed exactly.
+An APA algorithm is one that takes as input $A$, $B$, and a parameter $0<\lambda<1$ and computes 
+\begin{equation}
+\label{eq:APAapprox}
+\hat C = A\cdot B + \lambda E + O(\lambda^2).
+\end{equation}
+Thus, in exact arithmetic, letting $\lambda \rightarrow 0$ achieves arbitrarily small approximation error.
+In floating point arithmetic, choosing too small a value for $\lambda$ leads to accumulation of roundoff error that exceeds the approximation error.
+We discuss optimizing $\lambda$ in \cref{sec:APAerr}.
+
+In theory, APA algorithms can be converted to exact algorithms at the cost of an extra logarithmic factor of $n$, which is typically hidden by an arbitrarily small increase in the exponent \cite{Bini80}.
+In practice, $n$ is not large enough to ignore the logarithmic factor, so we consider each APA algorithm as is.
+
+For a concrete example, we reproduce the rule for the algorithm developed by Bini et al.~\cite{BCRL79} for the $\dims{3,2,2}$ case (multiplying a $3\times 2$ matrix $A$ by a $2\times 2$ matrix $B$), where we use the following notation for input and output matrices:
+$$\begin{bmatrix} C_{11} & C_{12} \\ C_{21} & C_{22} \\ C_{31} & C_{32} \end{bmatrix} = 
+\begin{bmatrix} A_{11} & A_{12} \\ A_{21} & A_{22} \\ A_{31} & A_{32}  \end{bmatrix} \cdot
+\begin{bmatrix} B_{11} & B_{12} \\ B_{21} & B_{22} \end{bmatrix}.$$
+Bini's rule is given by
+\begin{align*}
+M_1 =& (A_{11} + A_{22}) \cdot (\lambda B_{11} + B_{22}) \\
+M_2 =& A_{22}\cdot  (-B_{21} - B_{22}) \\
+M_3 =& A_{11}\cdot B_{22} \\
+M_4 =& (\lambda A_{12} + A_{22})\cdot (-\lambda B_{11} + B_{21}) \\
+M_5 =& (A_{11} + \lambda A_{12}) \cdot (\lambda B_{12} + B_{22}) \\
+M_6 =& (A_{21} + A_{32}) \cdot (B_{11} + \lambda B_{22}) \\
+M_7 =& A_{21} \cdot (-B_{11} - B_{12}) \\
+M_8 =& A_{32} \cdot B_{11}\\
+M_9 =& (A_{21} + \lambda A_{31}) \cdot (B_{12} - \lambda B_{22})\\
+M_{10} =& (\lambda A_{31} + A_{32}) \cdot (B_{12} - \lambda B_{22})\\
+\end{align*}
+\begin{align*}
+C_{11} =& \lambda^{-1} (M_1 + M_2 - M_3 + M_4) \\
+C_{12} =& \lambda^{-1} (-M_3 + M_5) \\
+C_{21} =& M_4 + M_6 - M_{10}\\
+C_{22} =& M_1 - M_5 + M_9\\
+C_{31} =& \lambda^{-1} (-M_8 + M_{10}) \\
+C_{32} =& \lambda^{-1} (M_6 + M_7 - M_8 + M_9).\\
+\end{align*}
+
+We highlight several properties of the rule which are common across all APA algorithms we consider.
+First, the rule requires fewer multiplications than the classical one (rank 10 instead of 12 for $\dims{3,2,2}$ here).
+Next, each multiplication is between a linear combination of entries of $A$ and a linear combination of entries of $B$, each output entry is computed as a linear combination of the outputs of the multiplications, and each coefficient in the linear combinations is a (Laurent) polynomial in $\lambda$.
+The coefficients include both positive and negative powers of $\lambda$, which explains why small values of $\lambda$ can lead to significant roundoff error.
+For Bini's algorithm all coefficients are monomial with degree between $-1$ and $1$.
+
+Because of this general pattern, we can encode APA and other fast algorithms succinctly by their linear combination coefficients.
+For example, encoding the first multiplication $M_1$ in Bini's algorithm can be done using a triplet of matrices:
+\begin{equation}
+\label{eq:triplet}
+\begin{bmatrix} 1 & 0 \\ 0 & 1 \\ 0 & 0 \end{bmatrix}, \hfill
+\begin{bmatrix} \lambda & 0 \\ 0 & 1 \end{bmatrix}, \hfill
+\begin{bmatrix} \lambda^{-1} & 0 \\ 0 & 1 \\ 0 & 0 \end{bmatrix}.
+\end{equation}
+The first two matrices specify the linear combinations taken of entries of $A$ and $B$, and the third matrix specifies the contributions of $M_1$ to the entries of $C$.
+Ten such triplets completely specify Bini's algorithm.
+
+\subsection{Numerical Error of APA Algorithms}
+\label{sec:APAerr}
+
+\GB{TBD...}
+\begin{enumerate}
+	\item define working precision $2^{-d}$
+	\item define $\varphi$ and $\sigma$ and give intuition
+	\item define optimal $\lambda=O(2^{-d/(\varphi+\sigma)})$
+	\item define error given optimal $\lambda$: $O(2^{-d\sigma/(\varphi+\sigma)})$
+\end{enumerate}
+
+\subsection{Practical Algorithms}
+
+We are particularly interested in algorithms with rules for \emph{small} fixed sizes because they have more promise for practical performance.
+This is because larger fixed sizes result in multiplications of small submatrices, and matrix multiplication performance degrades for smaller dimensions.
+For instance, consider a rule for dimensions $\dims{4,4,4}$ applied to matrices of reasonable size, less than dimension $10{,}000$.
+After one recursive call, the submatrices are of size less than 2500, and after two recursive calls, the dimension is less than 625.
+At this size, the reduction in number of flops is offset by a reduction in performance, which may result in longer running time.
+
+Instead of focusing on the exponent of the asymptotic complexity of fast algorithms, for practical algorithms we are more interested in the constant reduction in flops of a single recursive level (a single use of the rule of the algorithm).
+This is because in practice, for reasonable matrix dimensions (no more than 10,000, say), only 1 or 2 recursive levels will yield performance improvement \cite{BB15}.
+We also prefer algorithms with fewer nonzero coefficients in the linear combinations, because while less costly than multiplications, the matrix additions are less efficient (they are memory bandwidth bound) and prevent achieving the ideal speedup given by the reduction in multiplications.
+For dimensions $\dims{m,n,k}$ and rank $r$, the ideal speedup for a single recursive step is given by $mnk/r$, and two recursive steps would enable a possible speedup of $(mnk/r)^2$.
+These speedups are typically not attained because of degradation in performance for smaller matrix dimensions and the overhead of matrix additions.
+
+\subsection{APA Algorithm Properties}
 
 \begin{table}
 \centering
@@ -147,7 +227,7 @@ In particular we
 \end{tabular}
 \end{table}
 
-\GB{specify formula for speedup and error values...}
+
 
 \section{Parallel Fast Matrix Multiplication}
 
