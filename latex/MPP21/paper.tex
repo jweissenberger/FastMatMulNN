@@ -82,26 +82,29 @@ That is, in exact arithmetic, the error can be made arbitrarily small.
 In floating point arithmetic, however, there is a lower bound on the approximation error that depends on the working precision and properties of the algorithm.
 In theory, APA algorithms can be converted to exact algorithms at the cost of an extra logarithmic factor of $n$, which is typically hidden by an arbitrarily small increase in the exponent \cite{Bini80}.
 In practice, however, $n$ is not large enough to ignore the logarithmic factor, and floating point error plagues the conversion method, so APA algorithms are considered approximate algorithms with insufficient accuracy for most applications.
-Thus, APA algorithms are largely overlooked as practical tools despite their performance potential \cite{BB15}.
+Thus, APA algorithms are largely overlooked as practical tools despite their performance potential and ability to outperform their exact counterparts \cite{BB15}.
 
 Our goal in this paper is to demonstrate that APA algorithms can offer practical performance improvements for applications that are tolerant to error in matrix multiplications, notably the training phase of neural networks.
 Training large neural networks is computationally expensive and the cost has spurred a surge of research into more efficient hardware, better algorithms, and techniques for trading off accuracy for performance.
 For instance, low-precision arithmetic has been shown to decrease running time with little to no effect on the ultimate learning task \cite{GAGN15,HCSEB17}, and new floating point formats have been developed and supported in hardware to implement highly efficient low- and mixed-precision computation \cite{KM+19,YWC20}.
 
-Matrix multiplication in particular is a bottleneck computation for many neural networks... \GB{continue here, make the case that matmul is bottleneck}
+Matrix multiplication in particular is a bottleneck computation for many neural networks.
+Forward and backward propagation in training the weights of fully connected layers is a matrix multiplication with dimensions given by the sizes of the layers and the size of the batch.
+Training convolutional and other types of layers can also be cast as matrix multiplication, either via monolithic multiplications or batches of smaller multiplications \cite{CW+14,GB+19}.
+In this paper we focus on Multi-Layer Perceptron (MLP) networks that rely on a sequence of fully connected layers \cite{HSW89}.
+Because the sizes of the layers in MLP networks continue to grow, various techniques have been used to reduce the computational demands of the training phase.
+For example, low-rank tensor approximation of the weights can reduce both memory and computation \cite{NPOV15}, and fast matrix multiplication (the Strassen-Winograd algorithm) has been applied to the bottleneck matrix multiplications \cite{KAA20}.
 
-\GB{reference this paper \cite{KAA20} as using Strassen-Winograd in a single-layer feed-forward network on a GPU}
-
-\GB{reference this paper \cite{NPOV15} for tensorizing large fully-connected layers, including layers with dimensions 25K x 4K and 4K x 4K}
-
-\GB{list of contributions:}
-
+Our contribution is the use of APA matrix multiplication algorithms to address this problem and accelerate training.
+In particular we
 \begin{enumerate}
-	\item curating a collection of recently discovered practical APA algorithms
-	\item extending the framework of \cite{BB15} to generate efficient multithreaded code for a more general set of APA algorithms
-	\item demonstrating the robustness of learning accuracy to approximate matrix multiplications
-	\item presenting multithreaded performance improvements of a synthetic MLP of up to $Y\times$
+	\item curate a collection of well-established and recently discovered practical APA algorithms;
+	\item extend the framework of \cite{BB15} to generate efficient multithreaded code for all of them;
+	\item demonstrate the robustness of learning accuracy to approximate matrix multiplications; and
+	\item present multithreaded performance improvements of a synthetic MLP of up to \GB{$Y\times$}.
 \end{enumerate}
+
+\GB{\cite{NPOV15} uses a network including layers with dimensions 25K x 4K and 4K x 4K}
 
 \section{Arbitrary Precision Approximating Algorithms}
 \label{sec:APA}
