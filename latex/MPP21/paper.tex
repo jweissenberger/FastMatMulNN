@@ -99,14 +99,6 @@ In particular we
 \section{Practical Arbitrary Precision Approximating Matrix Multiplication Algorithms}
 \label{sec:APA}
 
-\begin{enumerate}
-	\item complexity of matmul discussion
-	\item describe nature of approximation
-	\item give explicit algorithm (Bini?)
-	\item table of 12 algorithms
-	\item accuracy plot?
-\end{enumerate}
-
 \subsection{Fast Matrix Multiplication}
 
 Nearly all fast matrix multiplication algorithms are based a rule for multiplying matrices of fixed size, and the reduction in asymptotic complexity stems from using the rule recursively on general matrices.
@@ -176,6 +168,8 @@ Ten such triplets completely specify Bini's algorithm.
 
 \subsection{Numerical Error of APA Algorithms}
 \label{sec:APAerr}
+
+\GB{should we add an accuracy plot in this section?}
 
 In floating point arithmetic, the lower bound on the numerical error of APA algorithms depends on the working precision and two parameters of the algorithm \cite{BLR80}.
 The working precision, also referred to as machine precision, is the upper bound on relative error incurred by basic operations in a given floating point format and depends on the number of fractional bits used in the format.
