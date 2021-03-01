@@ -7,8 +7,16 @@
 \usepackage{graphicx}
 \usepackage{textcomp}
 \usepackage{xcolor}
+\usepackage{ifthen}
+
+% cleveref
 \usepackage{hyperref}
-\usepackage{cleveref}
+\usepackage[nameinlink]{cleveref}
+\crefname{section}{\S}{Sections}
+\crefname{figure}{Fig.}{Figs.}
+\crefname{table}{Table}{Tables}
+
+% tikz
 \usepackage{tikz,pgfplots}
 \usetikzlibrary{positioning}
 
@@ -25,7 +33,9 @@
 \newcommand*{\email}[1]{\href{mailto:#1}{\nolinkurl{#1}} } 
 \newcommand{\dims}[1]{\langle #1 \rangle}
 
+% macros for plots
 \newcommand{\datafile}{}
+\newcommand{\threads}{}
 
 \newcommand{\GB}[1]{\textcolor{red}{\textbf{GB}: #1}}
 \newcommand{\JW}[1]{\textcolor{blue}{\textbf{JW}: #1}}
@@ -59,7 +69,13 @@ Winston Salem, NC, USA \\
 \maketitle
 
 \begin{abstract}
-\GB{TBD}
+Matrix multiplication is one of the bottleneck computations for training the weights within deep neural networks.
+To speed up the training phase, we propose to use faster algorithms for matrix multiplication known as Arbitrary Precision Approximating (APA) algorithms.
+APA algorithms perform asymptotically fewer arithmetic operations than the classical algorithm, but they compute an approximate result with an error that can be made arbitrarily small in exact arithmetic.
+Practical APA algorithms provide significant reduction in computation time and still provide enough accuracy for many applications like neural network training.
+We demonstrate that APA algorithms can be efficiently implemented and parallelized for shared-memory platforms to obtain up to \GB{Z\%} speedups over the fastest implementation of the classical algorithm.
+Furthermore, using these algorithms to train a Multi-Layer Perceptron (MLP) network yields no signification reduction in the training or testing error.
+Our performance results on a large MLP network show overall performance improvements of up to \GB{W\%}.
 \end{abstract}
 
 \section{Introduction}
@@ -80,7 +96,7 @@ Training large neural networks is computationally expensive and the cost has spu
 For instance, low-precision arithmetic has been shown to decrease running time with little to no effect on the ultimate learning task \cite{GAGN15,HCSEB17}, and new floating point formats have been developed and supported in hardware to implement highly efficient low- and mixed-precision computation \cite{KM+19,YWC20}.
 
 Matrix multiplication in particular is a bottleneck computation for many neural networks.
-Forward and backward propagation in training the weights of fully connected layers is a matrix multiplication with dimensions given by the sizes of the layers and the size of the batch.
+Forward and backward propagation in training the weights of fully connected layers requires matrix multiplication with dimensions given by the sizes of the layers and number of batch samples.
 Training convolutional and other types of layers can also be cast as matrix multiplication, either via monolithic multiplications or batches of smaller multiplications \cite{CW+14,GB+19}.
 In this paper we focus on Multi-Layer Perceptron (MLP) networks that rely on a sequence of fully connected layers \cite{HSW89}.
 Because the sizes of the layers in MLP networks continue to grow, various techniques have been used to reduce the computational demands of the training phase.
@@ -92,7 +108,7 @@ In particular we
 	\item curate a collection of well-established and recently discovered practical APA algorithms;
 	\item extend the framework of \cite{BB15} to generate efficient multithreaded code for all of them;
 	\item demonstrate the robustness of learning accuracy to approximate matrix multiplications; and
-	\item present multithreaded performance improvements of a synthetic MLP of up to \GB{$Y\times$}.
+	\item present multithreaded performance improvements of a synthetic MLP of up to \GB{$Y\times$} over the use of classical matrix multiplication.
 \end{enumerate}
 
 \GB{\cite{NPOV15} uses a network including layers with dimensions 25K x 4K and 4K x 4K}
@@ -171,8 +187,6 @@ Ten such triplets completely specify Bini's algorithm.
 \subsection{Numerical Error of APA Algorithms}
 \label{sec:APAerr}
 
-\GB{should we add an accuracy plot in this section?}
-
 In floating point arithmetic, the lower bound on the numerical error of APA algorithms depends on the working precision and two parameters of the algorithm \cite{BLR80}.
 The working precision, also referred to as machine precision, is the upper bound on relative error incurred by basic operations in a given floating point format and depends on the number of fractional bits used in the format.
 We use the notation $2^{-d}$ for working precision, where $d=52$ for double and $d=23$ for single precision (note that $2^{-52}\approx 10^{-16}$ and $2^{-23}\approx 10^{-7}$).
@@ -229,7 +243,7 @@ Each row corresponds to an algorithm, and the first row includes the classical a
 For all algorithms, we assume only 1 recursive step is used, though the speedup and error for more steps can be readily calculated from the parameters.
 The first column gives the reference where the algorithm was first specified.
 The second block column demonstrates the possible performance improvement, where speedup is calculated as $(mnk/r - 1)\cdot100\%$ for $\dims{m,n,k}$ and rank $r$.
-The third block column shows error parameters, with error calculated as $2^{-d\cdot\sigma/(\sigma+\varphi)}$ with $d=23$, corresponding to single precision.
+The third block column shows error parameters, and the error is calculated as $2^{-d\cdot\sigma/(\sigma+\varphi)}$ with $d=23$, corresponding to single precision.
 
 \begin{table}
 \centering
@@ -293,9 +307,27 @@ The hybrid strategy also perfectly load balances the computation across threads,
 
 \GB{add sequential performance results for all 12 algorithms, compared to \texttt{gemm}}
 
+\begin{figure}
+\centering
+\renewcommand{\datafile}{data/matmul_seq.dat}
+\renewcommand{\threads}{1}
+\input{plots/matmul_perf}
+\caption{Single-threaded matrix multiplication performance}
+\label{fig:matmul_seq}
+\end{figure}
+
 \subsection{Parallel Performance}
 
 \GB{add parallel performance results for all 12 algorithms, compared to \texttt{gemm}}
+
+\begin{figure}
+\centering
+\renewcommand{\datafile}{data/matmul_par.dat}
+\renewcommand{\threads}{12}
+\input{plots/matmul_perf}
+\caption{Multithreaded matrix multiplication performance}
+\label{fig:matmul_seq}
+\end{figure}
 
 \section{Neural Network Accuracy}
 

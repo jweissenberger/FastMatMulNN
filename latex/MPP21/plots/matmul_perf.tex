@@ -1,0 +1,12 @@
+%!TEX root = ../paper.tex
+
+\begin{tikzpicture}
+\begin{axis}[
+	width=.45\textwidth,
+	xlabel=Dimension, 
+	ylabel=Effective GFLOPS \ifthenelse{\equal{\threads}{12}}{/ core}{},
+]
+\addplot[color=black] table[x=n, y=gemm]{\datafile}; \addlegendentry{SGEMM}
+\addplot table[x=n, y=322]{\datafile}; \addlegendentry{Bini}
+\end{axis}
+\end{tikzpicture}
