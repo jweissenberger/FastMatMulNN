@@ -49,7 +49,7 @@ Winston Salem, NC, USA \\
 Winston Salem, NC, USA \\
 \email{jack.weissenberger@gmail.com}}
 \and
-\IEEEauthorblockN{Luoping\GB{?} Zhang}
+\IEEEauthorblockN{Luoping Zhang}
 \IEEEauthorblockA{\textit{Department of Computer Science} \\
 \textit{Wake Forest University}\\
 Winston Salem, NC, USA \\
@@ -194,6 +194,17 @@ As shown by Bini, Lotti, and Romani \cite{BLR80}, the optimal $\lambda$ should b
 Using this value of $\lambda$, the numerical error incurred by the algorithm will be bounded by $O(2^{-d\sigma/(\sigma+\varphi)})$.
 Taking Bini's algorithm as an example, we have $\sigma=\varphi=1$, so the error is $O(2^{-d/2})$, or the square root of working precision.
 Note that if multiple recursive steps are used, then $\varphi$ increases proportional to the number of steps, so straightforward optimization of $\lambda$ results in error of $O(2^{-d\sigma/(\sigma+s\varphi)})$ for $s$ recursive steps.
+The parameters and minimum error for the algorithms we consider are presented in \cref{sec:APAprops}.
+We show empirical error results for uniform random inputs of varying dimension in \cref{fig:accuracy}, as compared to the classical algorithm.
+\GB{add more details on experiment here...}
+
+\begin{figure}
+\centering
+\renewcommand{\datafile}{data/accuracy.dat}
+\input{plots/accuracy}
+\caption{Relative Frobenius norm error for APA algorithms on random inputs.}
+\label{fig:accuracy}
+\end{figure}
 
 \subsection{Practical Algorithms}
 
@@ -211,6 +222,7 @@ These speedups are typically not fully attained because of degradation in perfor
 In the experimental results of this work, we use only 1 recursive step for all algorithms.
 
 \subsection{APA Algorithm Properties}
+\label{sec:APAprops}
 
 \Cref{tab:algs} shows the key performance and accuracy properties of the APA algorithms we consider.
 Each row corresponds to an algorithm, and the first row includes the classical algorithm for comparison.

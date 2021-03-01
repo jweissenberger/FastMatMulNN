@@ -1,0 +1,15 @@
+%!TEX root = ../paper.tex
+
+\begin{tikzpicture}
+\begin{axis}[
+        width=.45\textwidth,
+        ymode=log,
+        xlabel=Dimension, 
+        ylabel=Relative Error,
+]
+\addplot[color=black] table[x=n, y=gemm]{\datafile}; \addlegendentry{GEMM}
+\addplot table[x=n, y=322]{\datafile}; \addlegendentry{Bini}
+\addplot table[x=n, y=333-21]{\datafile}; \addlegendentry{Schonhage}
+\addplot table[x=n, y=333-20]{\datafile}; \addlegendentry{Smirnov333}
+\end{axis}
+\end{tikzpicture}
