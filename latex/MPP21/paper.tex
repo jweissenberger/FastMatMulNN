@@ -109,6 +109,7 @@ The number of multiplications in a rule is known as the \emph{rank}, so Strassen
 Algorithms have been derived both analytically and computationally, and there exists a vast set of improvements leading to the current world record \cite{Pan84,CW87,Williams12,AW21}.
 
 \subsection{APA Algorithms}
+\label{sec:APAalgs}
 
 A key characteristic of matrix multiplication, first demonstrated by Bini et al.~\cite{BCRL79}, is that it can be approximated to arbitrary accuracy more efficiently than being computed exactly.
 An APA algorithm is one that takes as input $A$, $B$, and a parameter $0<\lambda<1$ and computes 
@@ -247,12 +248,40 @@ The third block column shows error parameters, with error calculated as $2^{-d\c
 
 \section{Parallel Fast Matrix Multiplication}
 
-\GB{reference PPoPP paper: \cite{BB15}}
+We exploit the common algorithmic structure across APA (and exact) algorithms to develop a unified strategy of high performance multithreaded implementation using C++/OpenMP.
+We build upon the work of Benson and Ballard \cite{BB15}, using code generation to apply the strategy to each algorithm.
 
-\begin{enumerate}
-	\item describe code generation and hybrid parallelization
-	\item give performance plots (sequential and parallel)
-\end{enumerate}
+\subsection{Hybrid Parallelization Strategy}
+
+As described in \cref{sec:APAalgs}, each algorithm can be encoded by a set of triplets of coefficient matrices.
+From this representation, we generate recursive code that computes the linear combinations for the inputs to each multiplication and combines the outputs.
+The linear combinations are computed using a ``write-once'' strategy that was found to be most efficient in terms of memory bandwidth and performance.
+The multiplications are either computed recursively or via a call to \texttt{gemm}, the interface to a highly efficient BLAS implementation of the classical algorithm.
+Because we use only 1 recursive step in our experiments, there are no recursive calls, and every multiplication is performed by \texttt{gemm}.
+We note that the original code generation tool was designed primarily for exact algorithms, and we generalized it to apply to all of the APA algorithms we consider here.
+
+We adopt the ``hybrid'' parallelization strategy proposed by Benson and Ballard \cite{BB15}.
+All linear combinations are parallelized in a straightforward way, in order to maximize the memory bandwidth of the machine.
+The multiplications are parallelized as follows: given $r$ multiplications and $p$ threads, with $r=p\cdot q + \ell$ for integers $q$ and $\ell<r$, we assign each thread $q$ multiplications to be performed independently, and the remaining $\ell$ multiplications are performed by all threads using the multithreaded implementation of \texttt{gemm}.
+\Cref{fig:hybrid} shows the hybrid strategy for $r=10$ (Bini's algorithm) and $p=4$.
+
+\begin{figure}
+\input{figs/hybrid}
+\caption{Illustration of hybrid parallelization strategy for $r=10$ and 4 threads.}
+\label{fig:hybrid}
+\end{figure}
+
+The hybrid strategy is efficient because each thread can achieve close to the peak performance of a core when computing independent matrix multiplications, even for relatively small problems.
+The alternative strategy of employing multithreaded \texttt{gemm} for each of the $r$ multiplications (known as ``DFS'') suffers performance degradation for small problems, where the parallel implementation attains a smaller fraction of peak.
+The hybrid strategy also perfectly load balances the computation across threads, as opposed to the alternate strategy of assigning the $\ell$ remainder multiplications to $\ell$ different threads (known as ``BFS''), leaving the other $p-\ell$ threads idle.
+
+\subsection{Sequential Performance}
+
+\GB{add sequential performance results for all 12 algorithms, compared to \texttt{gemm}}
+
+\subsection{Parallel Performance}
+
+\GB{add parallel performance results for all 12 algorithms, compared to \texttt{gemm}}
 
 \section{Neural Network Accuracy}
 
