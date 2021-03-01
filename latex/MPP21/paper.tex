@@ -177,13 +177,27 @@ Ten such triplets completely specify Bini's algorithm.
 \subsection{Numerical Error of APA Algorithms}
 \label{sec:APAerr}
 
-\GB{TBD...}
-\begin{enumerate}
-	\item define working precision $2^{-d}$
-	\item define $\varphi$ and $\sigma$ and give intuition
-	\item define optimal $\lambda=O(2^{-d/(\varphi+\sigma)})$
-	\item define error given optimal $\lambda$: $O(2^{-d\sigma/(\varphi+\sigma)})$
-\end{enumerate}
+In floating point arithmetic, the lower bound on the numerical error of APA algorithms depends on the working precision and two parameters of the algorithm \cite{BLR80}.
+The working precision, also referred to as machine precision, is the upper bound on relative error incurred by basic operations in a given floating point format and depends on the number of fractional bits used in the format.
+We use the notation $2^{-d}$ for working precision, where $d=52$ for double and $d=23$ for single precision (note that $2^{-52}\approx 10^{-16}$ and $2^{-23}\approx 10^{-7}$).
+
+The two parameters of the APA algorithm specify the contribution of the approximation and roundoff errors, respectively.
+The first parameter, $\sigma$, is the smallest positive exponent of the error polynomial and represents the approximation error.
+\Cref{eq:APAapprox} shows the error as a polynomial of $\lambda$ whose leading term is linear in $\lambda$.
+If an algorithm satisfies \cref{eq:APAapprox} with $E\neq 0$, then $\sigma=1$.
+However, if $E=0$, then $\sigma>1$ is the degree of the leading monomial.
+Larger $\sigma$ implies smaller error due to the algorithm, though all of the APA algorithms we consider have $\sigma=1$.
+
+The second parameter, $\varphi$, is the largest (in absolute value) negative exponent of the algorithm, computed as the largest sum of negative exponents across all triplets of matrices.
+This parameter represents the effect of roundoff error caused by floating point arithmetic involving the largest intermediate values computed by the algorithm.
+For example, the triplet given in \cref{eq:triplet} yields a sum of negative exponents of $0+0+1=1$, and in the case of Bini's algorithm, no other triplet has a larger sum, so $\varphi=1$ for that algorithm.
+Smaller $\varphi$ implies smaller error due to roundoff, and the APA algorithms we consider exhibit a range of values.
+
+Given these two contributions to the numerical error, $\lambda$ can be optimized to balance the effects based on parameters $\sigma$ and $\varphi$ (and $d$).
+As shown by Bini, Lotti, and Romani \cite{BLR80}, the optimal $\lambda$ should be set to $\Theta(2^{-d/(\sigma+\varphi)})$.
+Using this value of $\lambda$, the numerical error incurred by the algorithm will be bounded by $O(2^{-d\sigma/(\sigma+\varphi)})$.
+Taking Bini's algorithm as an example, we have $\sigma=\varphi=1$, so the error is $O(2^{-d/2})$, or the square root of working precision.
+Note that if multiple recursive steps are used, then $\varphi$ increases proportional to the number of steps, so straightforward optimization of $\lambda$ results in error of $O(2^{-d\sigma/(\sigma+s\varphi)})$ for $s$ recursive steps.
 
 \subsection{Practical Algorithms}
 
@@ -197,9 +211,17 @@ Instead of focusing on the exponent of the asymptotic complexity of fast algorit
 This is because in practice, for reasonable matrix dimensions (no more than 10,000, say), only 1 or 2 recursive levels will yield performance improvement \cite{BB15}.
 We also prefer algorithms with fewer nonzero coefficients in the linear combinations, because while less costly than multiplications, the matrix additions are less efficient (they are memory bandwidth bound) and prevent achieving the ideal speedup given by the reduction in multiplications.
 For dimensions $\dims{m,n,k}$ and rank $r$, the ideal speedup for a single recursive step is given by $mnk/r$, and two recursive steps would enable a possible speedup of $(mnk/r)^2$.
-These speedups are typically not attained because of degradation in performance for smaller matrix dimensions and the overhead of matrix additions.
+These speedups are typically not fully attained because of degradation in performance for smaller matrix dimensions and the overhead of matrix additions.
+In the experimental results of this work, we use only 1 recursive step for all algorithms.
 
 \subsection{APA Algorithm Properties}
+
+\Cref{tab:algs} shows the key performance and accuracy properties of the APA algorithms we consider.
+Each row corresponds to an algorithm, and the first row includes the classical algorithm for comparison.
+For all algorithms, we assume only 1 recursive step is used, though the speedup and error for more steps can be readily calculated from the parameters.
+The first column gives the reference where the algorithm was first specified.
+The second block column demonstrates the possible performance improvement, where speedup is calculated as $(mnk/r - 1)\cdot100\%$ for $\dims{m,n,k}$ and rank $r$.
+The third block column shows error parameters, with error calculated as $2^{-d\cdot\sigma/(\sigma+\varphi)}$ with $d=23$, corresponding to single precision.
 
 \begin{table}
 \centering
