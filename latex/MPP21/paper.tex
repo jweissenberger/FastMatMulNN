@@ -10,6 +10,7 @@
 \usepackage{hyperref}
 \usepackage{cleveref}
 \usepackage{tikz,pgfplots}
+\usetikzlibrary{positioning}
 
 % for subfigures
 \usepackage[caption=false,font=footnotesize]{subfig}
@@ -266,8 +267,9 @@ The multiplications are parallelized as follows: given $r$ multiplications and $
 \Cref{fig:hybrid} shows the hybrid strategy for $r=10$ (Bini's algorithm) and $p=4$.
 
 \begin{figure}
+\centering
 \input{figs/hybrid}
-\caption{Illustration of hybrid parallelization strategy for $r=10$ and 4 threads.}
+\caption{Illustration of hybrid parallelization strategy for $r=10$ and 4 threads.  Each thread is assigned two multiplications to compute using single-threaded \texttt{gemm} and the two remaining multiplications are performed using multithreaded \texttt{gemm}.}
 \label{fig:hybrid}
 \end{figure}
 
