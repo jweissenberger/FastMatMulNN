@@ -9,11 +9,13 @@
         reverse legend,
         legend style={at={(1.02,.5)},anchor=west},
         ymax=1,
+        xtick={512,2048,4096,6144,8192},
+        /pgf/number format/.cd, 1000 sep={}
 ]
 \addplot[color=black] table[x=n, y=gemm]{\datafile}; \addlegendentry{Classical}
 \addplot table[x=n, y=322]{\datafile}; \addlegendentry{$\dims{3,2,2}$}
-\addplot table[x=n, y=422]{\datafile}; \addlegendentry{$\dims{4,2,2}$}
 \addplot table[x=n, y=333-21]{\datafile}; \addlegendentry{$\dims{3,3,3;21}$}
+\addplot table[x=n, y=422]{\datafile}; \addlegendentry{$\dims{4,2,2}$}
 \addplot table[x=n, y=332]{\datafile}; \addlegendentry{$\dims{3,3,2}$}
 \addplot table[x=n, y=522]{\datafile}; \addlegendentry{$\dims{5,2,2}$}
 \addplot table[x=n, y=442]{\datafile}; \addlegendentry{$\dims{4,4,2}$}

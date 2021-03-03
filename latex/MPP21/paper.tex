@@ -209,15 +209,10 @@ Using this value of $\lambda$, the numerical error incurred by the algorithm wil
 Taking Bini's algorithm as an example, we have $\sigma=\varphi=1$, so the error is $O(2^{-d/2})$, or the square root of working precision.
 Note that if multiple recursive steps are used, then $\varphi$ increases proportional to the number of steps, so straightforward optimization of $\lambda$ results in error of $O(2^{-d\sigma/(\sigma+s\varphi)})$ for $s$ recursive steps.
 The parameters and minimum error for the algorithms we consider are presented in \cref{sec:APAprops}.
-We show empirical error results for uniform random inputs of varying dimension in \cref{fig:accuracy}, as compared to the classical algorithm.
-\GB{add more details on experiment here...}
 
-\begin{enumerate}
-	\item confirmed that optimal lambda values are with a factor of 4 of theoretical (for these random inputs)
-	\item some errors were lower than expected (555 and 7222), we think this is because of fractions that appear in the coefficients of the largest negative powers of lambda
-	\item legend is ordered according to theoretical error
-	\item not much fluctuation over dimensions
-\end{enumerate}
+We show empirical error results for uniform random inputs of varying dimension in \cref{fig:accuracy}, as compared to the classical algorithm.
+We measure the relative Frobenius norm error, or $\|C-\hat C\|_F/\|C\|$, where $\hat C$ is computed by each algorithm and $C$ is computed using the classical algorithm in double precision.
+In order to choose the optimal $\lambda$ value for each algorithm, we tested the 5 powers of 2 closest to the theoretical optimal value and chose the best.
 
 \begin{figure}
 \centering
@@ -226,6 +221,14 @@ We show empirical error results for uniform random inputs of varying dimension i
 \caption{Relative Frobenius norm error for APA algorithms on random inputs.}
 \label{fig:accuracy}
 \end{figure}
+
+Overall, we see little fluctuation of the error over matrix dimension, and the theoretical error bound is an upper bound on all empirical errors.
+Note that the legend is ordered according to the error parameters, and the empirical error generally follows this ordering.
+The two most accurate APA algorithms are the least recently discovered: Bini's $\dims{3,2,2}$ and Schonhage's $\dims{3,3,3;21}$.
+Algorithms that offer more potential speedup tend to be less accurate.
+Two algorithms with smaller error than expected are $\dims{5,5,5}$ and ${7,2,2}$, which is explained by the coefficients of those algorithms including fraction pre-factors.
+While $\phi$ is computed using the exponents of the largest intermediate term of $\lambda$, the leading term of $\dims{5,5,5}$ has a constant of $1/4$, lessening its magnitude. 
+We study the effects of the matrix multiplication error on neural network training and test accuracy in \cref{sec:NNacc}.
 
 \subsection{Practical Algorithms}
 
@@ -337,6 +340,7 @@ The hybrid strategy also perfectly load balances the computation across threads,
 \end{figure}
 
 \section{Neural Network Accuracy}
+\label{sec:NNacc}
 
 \begin{enumerate}
 	\item describe network (MNIST?) and implementation details
@@ -344,6 +348,7 @@ The hybrid strategy also perfectly load balances the computation across threads,
 \end{enumerate}
 
 \section{Neural Network Performance}
+\label{sec:NNperf}
 
 \begin{enumerate}
 	\item describe synthetic network and implementation details
