@@ -21,7 +21,7 @@ if __name__ == '__main__':
 
     tensorboard_folders_prefix = 'FINAL_12_thread_'
 
-    total_time_log_file_name = "12ThreadTimes.log"
+    total_time_log_file_name = "nohup.out"
 
     output_file_name = '12_threads_time.csv'
 
@@ -58,26 +58,26 @@ if __name__ == '__main__':
                    'Total_fastmm_time': fastmm_time}
             output.append(row)
 
-    # file = open(total_time_log_file_name)
-    # algorithm = ''
-    # total_time = ''
-    # mat_size = ''
-    # for line in file.readlines():
-    #     if "Algorithm:" in line:
-    #         algorithm = line.split('Algorithm: ')[-1].replace('\n', '').replace(' ', '')
-    #
-    #     if "Total time:" in line:
-    #         total_time = line.split('Total time: ')[-1].replace('\n', '').replace(' ', '')
-    #
-    #     if "Matrix size:" in line:
-    #         mat_size = line.split('Matrix size: ')[-1].replace('\n', '').replace(' ', '')
-    #         output = find_algorithm(dataset=output, algo=algorithm, size=mat_size, time=total_time)
-    #         # clear them all out again so that if one is missing its filled with null instead of
-    #         algorithm = ''
-    #         total_time = ''
-    #         mat_size = ''
-    #
-    # file.close()
+    file = open(total_time_log_file_name)
+    algorithm = ''
+    total_time = ''
+    mat_size = ''
+    for line in file.readlines():
+        if "Algorithm:" in line:
+            algorithm = line.split('Algorithm: ')[-1].replace('\n', '').replace(' ', '')
+
+        if "Total time:" in line:
+            total_time = line.split('Total time: ')[-1].replace('\n', '').replace(' ', '')
+
+        if "Matrix size:" in line:
+            mat_size = line.split('Matrix size: ')[-1].replace('\n', '').replace(' ', '')
+            output = find_algorithm(dataset=output, algo=algorithm, size=mat_size, time=total_time)
+            # clear them all out again so that if one is missing its filled with null instead of
+            algorithm = ''
+            total_time = ''
+            mat_size = ''
+
+    file.close()
 
     output = pd.DataFrame(output)
 
