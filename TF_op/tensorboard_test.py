@@ -125,16 +125,18 @@ def train_step(images, labels):
 
 
 
-@tf.function
-def test_step(images, labels):
-  predictions = model(images)
-  t_loss = loss_object(labels, predictions)
-
-  #test_loss(t_loss)
-  #test_accuracy(labels, predictions)
+# @tf.function
+# def test_step(images, labels):
+#   predictions = model(images)
+#   t_loss = loss_object(labels, predictions)
+#
+#   #test_loss(t_loss)
+#   #test_accuracy(labels, predictions)
 
 
 if __name__ == '__main__':
+
+    start = time.time()
 
     if mm_algo != 'regular':
         fast_mm_module = tf.load_op_library(f'obj/{mm_algo}_mat_mul.so')
@@ -157,8 +159,8 @@ if __name__ == '__main__':
     train_loss = tf.keras.metrics.Mean(name='train_loss')
     train_accuracy = tf.keras.metrics.SparseCategoricalAccuracy(name='train_accuracy')
 
-    test_loss = tf.keras.metrics.Mean(name='test_loss')
-    test_accuracy = tf.keras.metrics.SparseCategoricalAccuracy(name='test_accuracy')
+    #test_loss = tf.keras.metrics.Mean(name='test_loss')
+    #test_accuracy = tf.keras.metrics.SparseCategoricalAccuracy(name='test_accuracy')
 
     train_accuracy_list = []
     train_loss_list = []
@@ -175,8 +177,8 @@ if __name__ == '__main__':
         # Reset the metrics at the start of the next epoch
         train_loss.reset_states()
         train_accuracy.reset_states()
-        test_loss.reset_states()
-        test_accuracy.reset_states()
+        #test_loss.reset_states()
+        #test_accuracy.reset_states()
 
         total_batch_time = 0
         batches = 0
@@ -191,15 +193,15 @@ if __name__ == '__main__':
             total_batch_time += y - x
             batches += 1
 
-        test_step(x_test, y_test)
+        #test_step(x_test, y_test)
         b = time.time()
-        print(f'Epoch {epoch + 1}, Loss: {train_loss.result()}, Train Accuracy: {train_accuracy.result() * 100},'
-              f'Test Loss: {test_loss.result()}, Test Accuracy: {test_accuracy.result() * 100}')
-
-        train_accuracy_list.append(train_accuracy.result())
-        train_loss_list.append(train_loss.result())
-        test_accuracy_list.append(test_accuracy.result())
-        test_loss_list.append(test_loss.result())
+        # print(f'Epoch {epoch + 1}, Loss: {train_loss.result()}, Train Accuracy: {train_accuracy.result() * 100},'
+        #       f'Test Loss: {test_loss.result()}, Test Accuracy: {test_accuracy.result() * 100}')
+        #
+        # train_accuracy_list.append(train_accuracy.result())
+        # train_loss_list.append(train_loss.result())
+        # test_accuracy_list.append(test_accuracy.result())
+        # test_loss_list.append(test_loss.result())
 
         diff = b - a
         if epoch != 0:
@@ -212,26 +214,36 @@ if __name__ == '__main__':
 
     # TODO output should be a single json object not multiple files with different information
 
-    # write the performance lists to file
-    with open(f'{mm_algo}_layers{num_layers}_nodes{nodes}_epochs{EPOCHS}_bs{batch_size}_accuracy_and_loss.txt', 'wt') as file:
-        file.write('train_accuracy')
-        for i in train_accuracy_list:
-            file.write(f',{i}')
+    # # write the performance lists to file
+    # with open(f'{mm_algo}_layers{num_layers}_nodes{nodes}_epochs{EPOCHS}_bs{batch_size}_accuracy_and_loss.txt', 'wt') as file:
+    #     file.write('train_accuracy')
+    #     for i in train_accuracy_list:
+    #         file.write(f',{i}')
+    #
+    #     file.write('\ntrain_loss')
+    #     for i in train_loss_list:
+    #         file.write(f',{i}')
+    #
+    #     file.write('\ntest_accuracy')
+    #     for i in test_accuracy_list:
+    #         file.write(f',{i}')
+    #
+    #     file.write('\ntest_loss')
+    #     for i in test_loss_list:
+    #         file.write(f',{i}')
 
-        file.write('\ntrain_loss')
-        for i in train_loss_list:
-            file.write(f',{i}')
-
-        file.write('\ntest_accuracy')
-        for i in test_accuracy_list:
-            file.write(f',{i}')
-
-        file.write('\ntest_loss')
-        for i in test_loss_list:
-            file.write(f',{i}')
+    end = time.time()
 
     print(f'Average time per Batch: {overall_average_batch_time / (EPOCHS-1)}')
     print(f'Average time per Epoch: {total / (EPOCHS-1)}')
+
+    print("batch size", batch_size)
+    print("epochs", EPOCHS)
+    print("nodes", nodes)
+    print("num layers", num_layers)
+    print("algorithm", mm_algo)
+    print("num threads", num_threads)
+    print("total time", end-start)
 
 
     profiler.stop()
