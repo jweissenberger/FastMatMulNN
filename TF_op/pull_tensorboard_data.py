@@ -21,7 +21,7 @@ if __name__ == '__main__':
 
     tensorboard_folders_prefix = 'PAPER_1_thread_'
 
-    total_time_log_file_name = "oneThreadTimes.log"
+    total_time_log_file_name = "oneTheadTimes.log"
 
     output_file_name = '1_thread_time.csv'
 
