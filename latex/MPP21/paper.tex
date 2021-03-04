@@ -216,7 +216,7 @@ In order to choose the optimal $\lambda$ value for each algorithm, we tested the
 
 \begin{figure}
 \centering
-\renewcommand{\datafile}{data/accuracy.dat}
+\renewcommand{\datafile}{data/matmul_acc.dat}
 \input{plots/accuracy}
 \caption{Relative Frobenius norm error for APA algorithms on random inputs.}
 \label{fig:accuracy}
@@ -332,10 +332,19 @@ The hybrid strategy also perfectly load balances the computation across threads,
 
 \begin{figure}
 \centering
-\renewcommand{\datafile}{data/matmul_par.dat}
+\renewcommand{\datafile}{data/matmul_par_6.dat}
+\renewcommand{\threads}{6}
+\input{plots/matmul_perf}
+\caption{Multithreaded matrix multiplication performance (6 threads)}
+\label{fig:matmul_seq}
+\end{figure}
+
+\begin{figure}
+\centering
+\renewcommand{\datafile}{data/matmul_par_12.dat}
 \renewcommand{\threads}{12}
 \input{plots/matmul_perf}
-\caption{Multithreaded matrix multiplication performance}
+\caption{Multithreaded matrix multiplication performance (12 threads)}
 \label{fig:matmul_seq}
 \end{figure}
 
