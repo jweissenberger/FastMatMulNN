@@ -36,6 +36,7 @@
 % macros for plots
 \newcommand{\datafile}{}
 \newcommand{\threads}{}
+\newcommand{\set}{}
 
 \newcommand{\GB}[1]{\textcolor{red}{\textbf{GB}: #1}}
 \newcommand{\JW}[1]{\textcolor{blue}{\textbf{JW}: #1}}
@@ -355,6 +356,24 @@ The hybrid strategy also perfectly load balances the computation across threads,
 	\item describe network (MNIST?) and implementation details
 	\item accuracy results in table or fig
 \end{enumerate}
+
+\begin{figure}
+\centering
+\renewcommand{\datafile}{data/NN_acc.dat}
+\renewcommand{\set}{train}
+\input{plots/NN_acc}
+\caption{MLP training accuracy for MNIST data set}
+\label{fig:matmul_seq}
+\end{figure}
+
+\begin{figure}
+\centering
+\renewcommand{\datafile}{data/NN_acc.dat}
+\renewcommand{\set}{test}
+\input{plots/NN_acc}
+\caption{MLP test accuracy for MNIST data set}
+\label{fig:matmul_seq}
+\end{figure}
 
 \section{Neural Network Performance}
 \label{sec:NNperf}
