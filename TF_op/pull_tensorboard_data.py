@@ -19,11 +19,11 @@ if __name__ == '__main__':
                        ]
     matrix_sizes = [512, 1024, 2048, 4096, 8192]
 
-    tensorboard_folders_prefix = 'FINAL_12_thread_'
+    tensorboard_folders_prefix = 'PAPER_1_thread_'
 
-    total_time_log_file_name = "nohup.out"
+    total_time_log_file_name = "oneThreadTimes.log"
 
-    output_file_name = '12_threads_time.csv'
+    output_file_name = '1_thread_time.csv'
 
     output = []
 
