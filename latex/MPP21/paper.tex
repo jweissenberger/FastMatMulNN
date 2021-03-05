@@ -75,7 +75,7 @@ Matrix multiplication is one of the bottleneck computations for training the wei
 To speed up the training phase, we propose to use faster algorithms for matrix multiplication known as Arbitrary Precision Approximating (APA) algorithms.
 APA algorithms perform asymptotically fewer arithmetic operations than the classical algorithm, but they compute an approximate result with an error that can be made arbitrarily small in exact arithmetic.
 Practical APA algorithms provide significant reduction in computation time and still provide enough accuracy for many applications like neural network training.
-We demonstrate that APA algorithms can be efficiently implemented and parallelized for shared-memory platforms to obtain up to \GB{Z\%} speedups over the fastest implementation of the classical algorithm.
+We demonstrate that APA algorithms can be efficiently implemented and parallelized for shared-memory platforms to obtain up to 28\% and 21\% speedups over the fastest implementation of the classical algorithm using one core and 12 cores, respectively.
 Furthermore, using these algorithms to train a Multi-Layer Perceptron (MLP) network yields no signification reduction in the training or testing error.
 Our performance results on a large MLP network show overall performance improvements of up to \GB{W\%}.
 \end{abstract}
@@ -108,12 +108,10 @@ Our contribution is the use of APA matrix multiplication algorithms to address t
 In particular we
 \begin{enumerate}
 	\item curate a collection of well-established and recently discovered practical APA algorithms;
-	\item extend the framework of \cite{BB15} to generate efficient multithreaded code for all of them;
+	\item extend the framework of \cite{BB15} to generate efficient multithreaded code for all of them, achieving up to 21\% performance improvement over the best parallel classical implementation,
 	\item demonstrate the robustness of learning accuracy to approximate matrix multiplications; and
 	\item present multithreaded performance improvements of a synthetic MLP of up to \GB{$Y\times$} over the use of classical matrix multiplication.
 \end{enumerate}
-
-\GB{\cite{NPOV15} uses a network including layers with dimensions 25K x 4K and 4K x 4K}
 
 \section{Practical Arbitrary Precision Approximating Matrix Multiplication Algorithms}
 \label{sec:APA}
@@ -131,7 +129,7 @@ Algorithms have been derived both analytically and computationally, and there ex
 \label{sec:APAalgs}
 
 A key characteristic of matrix multiplication, first demonstrated by Bini et al.~\cite{BCRL79}, is that it can be approximated to arbitrary accuracy more efficiently than being computed exactly.
-An APA algorithm is one that takes as input $A$, $B$, and a parameter $0<\lambda<1$ and computes 
+An APA algorithm is one that takes as input $A$, $B$, and a scalar parameter $0<\lambda<1$ and computes 
 \begin{equation}
 \label{eq:APAapprox}
 \hat C = A\cdot B + \lambda E + O(\lambda^2).
@@ -144,9 +142,10 @@ In theory, APA algorithms can be converted to exact algorithms at the cost of an
 In practice, $n$ is not large enough to ignore the logarithmic factor, so we consider each APA algorithm as is.
 
 For a concrete example, we reproduce the rule for the algorithm developed by Bini et al.~\cite{BCRL79} for the $\dims{3,2,2}$ case (multiplying a $3\times 2$ matrix $A$ by a $2\times 2$ matrix $B$), where we use the following notation for input and output matrices:
-$$\begin{bmatrix} C_{11} & C_{12} \\ C_{21} & C_{22} \\ C_{31} & C_{32} \end{bmatrix} = 
+$$
 \begin{bmatrix} A_{11} & A_{12} \\ A_{21} & A_{22} \\ A_{31} & A_{32}  \end{bmatrix} \cdot
-\begin{bmatrix} B_{11} & B_{12} \\ B_{21} & B_{22} \end{bmatrix}.$$
+\begin{bmatrix} B_{11} & B_{12} \\ B_{21} & B_{22} \end{bmatrix}=
+\begin{bmatrix} C_{11} & C_{12} \\ C_{21} & C_{22} \\ C_{31} & C_{32} \end{bmatrix} .$$
 Bini's rule is given by
 \begin{align*}
 M_1 =& (A_{11} + A_{22}) \cdot (\lambda B_{11} + B_{22}) \\
@@ -290,6 +289,14 @@ The third block column shows error parameters, and the error is calculated as $2
 We exploit the common algorithmic structure across APA (and exact) algorithms to develop a unified strategy of high performance multithreaded implementation using C++/OpenMP.
 We build upon the work of Benson and Ballard \cite{BB15}, using code generation to apply the strategy to each algorithm.
 
+\subsection{Experimental Platform}
+
+All experiments are performed on a dual-socket Intel Xeon E5-2620 (Sandy Bridge) server with 2 sockets each with 6 cores. 
+Each socket has a 15 MB L3 cache, and each core has a 256 KB L2 cache and 32 KB L1 data cache. 
+Each core has a clock rate of 2.00 GHz (with turbo boost disabled) and peak single precision flop rate of 32 GFLOPS. 
+Our code is compiled with GCC version 7.5.0, 
+and we use Intel's Math Kernel Library (MKL) version 2019.4.243.
+
 \subsection{Hybrid Parallelization Strategy}
 
 As described in \cref{sec:APAalgs}, each algorithm can be encoded by a set of triplets of coefficient matrices.
@@ -314,10 +321,6 @@ The multiplications are parallelized as follows: given $r$ multiplications and $
 The hybrid strategy is efficient because each thread can achieve close to the peak performance of a core when computing independent matrix multiplications, even for relatively small problems.
 The alternative strategy of employing multithreaded \texttt{gemm} for each of the $r$ multiplications (known as ``DFS'') suffers performance degradation for small problems, where the parallel implementation attains a smaller fraction of peak.
 The hybrid strategy also perfectly load balances the computation across threads, as opposed to the alternate strategy of assigning the $\ell$ remainder multiplications to $\ell$ different threads (known as ``BFS''), leaving the other $p-\ell$ threads idle.
-
-\subsection{Experimental Platform}
-
-\GB{add paragraph describing householder, listing versions of MKL, peak GFLOPS}
 
 \subsection{Sequential Performance}
 
@@ -435,7 +438,7 @@ Figure 6 plots the accuracy on the training data over each epoch and figure 7 pl
 \section{Conclusion}
 
 \begin{enumerate}
-	\item promising results for synthetic network, goal is to target costly networks bottlenecked by matmul
+	\item promising results for synthetic network, goal is to target costly networks bottlenecked by matmul (\GB{\cite{NPOV15} uses a network including layers with dimensions 25K x 4K and 4K x 4K})
 	\item can tune for matmul dimensions (not just square)
 	\item GPU implementation (cite Jianyu Huang's work)
 	\item mixed precision fast matmul (APA or otherwise)
