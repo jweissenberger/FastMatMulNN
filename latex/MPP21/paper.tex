@@ -76,8 +76,8 @@ To speed up the training phase, we propose to use faster algorithms for matrix m
 APA algorithms perform asymptotically fewer arithmetic operations than the classical algorithm, but they compute an approximate result with an error that can be made arbitrarily small in exact arithmetic.
 Practical APA algorithms provide significant reduction in computation time and still provide enough accuracy for many applications like neural network training.
 We demonstrate that APA algorithms can be efficiently implemented and parallelized for shared-memory platforms to obtain up to 28\% and 21\% speedups over the fastest implementation of the classical algorithm using one core and 12 cores, respectively.
-Furthermore, using these algorithms to train a Multi-Layer Perceptron (MLP) network yields no signification reduction in the training or testing error.
-Our performance results on a large MLP network show overall performance improvements of up to \GB{W\%}.
+Furthermore, using these algorithms to train a Multi-Layer Perceptron (MLP) network yields no significant reduction in the training or testing error.
+Our performance results on a large MLP network show overall multithreaded performance improvements of up to \GB{W\%}.
 \end{abstract}
 
 \section{Introduction}
@@ -386,9 +386,22 @@ It exceeds \texttt{sgemm}'s effective performance at dimension 4000, exceeds the
 \section{Neural Network Accuracy}
 \label{sec:NNacc}
 
-DRAFT: To measure the effect of the error introduced from the APA algorithms, we trained a simple feed forward network on the MNIST dataset and measured its performance over the course of training. MNIST is a common machine learning dataset of 70,000 images of hand-written numerical digits. Each of the images are composed of 28 by 28 grayscale pixels. To feed the images into the network we flatten each of the images into a 784 dimensional vector. The dataset was split into 60,000 examples for the training set and 10,000 examples for the test set. The network is composed of 4 fully-connected layers of shapes 784, 300, 300, and 10.  The input layer takes in the values of all of the pixels which is why it 784 nodes and the output layer is 10 nodes, one for each digit 0-9. The network was created using Tensorflow version 2.2.0.
-APA algorithms were used for the middle multiplication of the network (300x300). The input and output layers used the classical matrix multiplication algorithm. One network was trained for 50 epochs for each of the APA algorithms and one was trained using the classical matrix multiplication algorithm.
-Figure 6 plots the accuracy on the training data over each epoch and figure 7 plots the test accuracy over each epoch. The error introduced from these algorithms did not have much of an effect on these models and they were able to reach the same network performance as the classical algorithm.
+To measure the effect of the matrix multiplication error introduced from the APA algorithms on neural network accuracy, we trained a multi-layer perceptron (MLP) network on the MNIST dataset \cite{LBBH98} and measured its accuracy over the course of training. 
+The network was created using Tensorflow version 2.2.0.
+
+MNIST is a common machine learning dataset of 70,000 images of hand-written numerical digits. 
+Each of the images are composed of 28 by 28 grayscale pixels, which are flattened into a vector of length 784.
+The dataset is split into 60,000 examples for the training set and 10,000 examples for the test set. 
+
+The MLP network is composed of 4 fully-connected layers with 784, 300, 300, and 10 nodes, respectively.  
+The output layer has one node for each digit 0-9. 
+Training is performed using batched stochastic gradient descent with a batch size of \GB{ZZZ}.
+APA algorithms were used for the middle multiplication of the network (yielding matrix multiplication dimenions $300\times \GB{ZZZ}\times300$), while the input and output layers use the classical matrix multiplication algorithm. 
+One network was trained for 50 epochs for each of the APA algorithms and one was trained using the classical matrix multiplication algorithm.
+
+\Cref{fig:NN_acc_train} plots the accuracy on the training data over each epoch, and \cref{fig:NN_acc_test} shows the test accuracy over epochs. 
+The matrix multiplication error introduced from these algorithms had minimal effect on the training error; all algorithms yielded convergence to nearly full accuracy after 20 epochs or so.
+We see more variability in the test error due to the sensitivity inherent in generalizability of the model, though all algorithms achieve between 97\% and 99\% test accuracy.
 
 \begin{figure}
 \centering
@@ -396,7 +409,7 @@ Figure 6 plots the accuracy on the training data over each epoch and figure 7 pl
 \renewcommand{\set}{train}
 \input{plots/NN_acc}
 \caption{MLP training accuracy for MNIST data set}
-\label{fig:matmul_seq}
+\label{fig:NN_acc_train}
 \end{figure}
 
 \begin{figure}
@@ -405,7 +418,7 @@ Figure 6 plots the accuracy on the training data over each epoch and figure 7 pl
 \renewcommand{\set}{test}
 \input{plots/NN_acc}
 \caption{MLP test accuracy for MNIST data set}
-\label{fig:matmul_seq}
+\label{fig:NN_acc_test}
 \end{figure}
 
 \section{Neural Network Performance}
