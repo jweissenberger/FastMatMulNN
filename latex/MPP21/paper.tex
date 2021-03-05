@@ -395,8 +395,8 @@ The dataset is split into 60,000 examples for the training set and 10,000 exampl
 
 The MLP network is composed of 4 fully-connected layers with 784, 300, 300, and 10 nodes, respectively.  
 The output layer has one node for each digit 0-9. 
-Training is performed using batched stochastic gradient descent with a batch size of \GB{ZZZ}.
-APA algorithms were used for the middle multiplication of the network (yielding matrix multiplication dimenions $300\times \GB{ZZZ}\times300$), while the input and output layers use the classical matrix multiplication algorithm. 
+Training is performed using batched stochastic gradient descent with a batch size of 300.
+APA algorithms were used for the middle multiplication of the network (yielding matrix multiplication dimensions $300\times 300\times300$), while the input and output layers use the classical matrix multiplication algorithm. 
 One network was trained for 50 epochs for each of the APA algorithms and one was trained using the classical matrix multiplication algorithm.
 
 \Cref{fig:NN_acc_train} plots the accuracy on the training data over each epoch, and \cref{fig:NN_acc_test} shows the test accuracy over epochs. 
