@@ -383,10 +383,9 @@ It exceeds \texttt{sgemm}'s effective performance at dimension 4000, exceeds the
 \section{Neural Network Accuracy}
 \label{sec:NNacc}
 
-\begin{enumerate}
-	\item describe network (MLP for MNIST) and implementation details (including TensorFlow with version number)
-	\item accuracy results in table or fig
-\end{enumerate}
+DRAFT: To measure the effect of the error introduced from the APA algorithms, we trained a simple feed forward network on the MNIST dataset and measured its performance over the course of training. MNIST is a common machine learning dataset of 70,000 images of hand-written numerical digits. Each of the images are composed of 28 by 28 grayscale pixels. To feed the images into the network we flatten each of the images into a 784 dimensional vector. The dataset was split into 60,000 examples for the training set and 10,000 examples for the test set. The network is composed of 4 fully-connected layers of shapes 784, 300, 300, and 10.  The input layer takes in the values of all of the pixels which is why it 784 nodes and the output layer is 10 nodes, one for each digit 0-9. The network was created using Tensorflow version 2.2.0.
+APA algorithms were used for the middle multiplication of the network (300x300). The input and output layers used the classical matrix multiplication algorithm. One network was trained for 50 epochs for each of the APA algorithms and one was trained using the classical matrix multiplication algorithm.
+Figure 6 plots the accuracy on the training data over each epoch and figure 7 plots the test accuracy over each epoch. The error introduced from these algorithms did not have much of an effect on these models and they were able to reach the same network performance as the classical algorithm.
 
 \begin{figure}
 \centering
