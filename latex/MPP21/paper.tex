@@ -322,6 +322,38 @@ The hybrid strategy is efficient because each thread can achieve close to the pe
 The alternative strategy of employing multithreaded \texttt{gemm} for each of the $r$ multiplications (known as ``DFS'') suffers performance degradation for small problems, where the parallel implementation attains a smaller fraction of peak.
 The hybrid strategy also perfectly load balances the computation across threads, as opposed to the alternate strategy of assigning the $\ell$ remainder multiplications to $\ell$ different threads (known as ``BFS''), leaving the other $p-\ell$ threads idle.
 
+\begin{figure*}[t!]
+%
+\subfloat[One thread]{
+\centering
+\renewcommand{\datafile}{data/matmul_seq.dat}
+\renewcommand{\threads}{1}
+\input{plots/matmul_perf}
+%\caption{Single-threaded matrix multiplication performance}
+\label{fig:matmul_seq}}
+%
+\hfill
+\subfloat[Six threads]{
+\centering
+\renewcommand{\datafile}{data/matmul_par_6.dat}
+\renewcommand{\threads}{6}
+\input{plots/matmul_perf}
+%\caption{Multithreaded matrix multiplication performance (6 threads)}
+\label{fig:matmul_par_6}}
+%
+\hfill
+\subfloat[Twelve threads]{
+\centering
+\renewcommand{\datafile}{data/matmul_par_12.dat}
+\renewcommand{\threads}{12}
+\input{plots/matmul_perf}
+%\caption{Multithreaded matrix multiplication performance (6 threads)}
+\label{fig:matmul_par_12}}
+%
+\caption{Single- and multi-threaded square matrix multiplication performance, relative to $2n^3$ operations}
+\label{fig:matmul_perf}
+\end{figure*}
+
 \subsection{Sequential Performance}
 
 \Cref{fig:matmul_seq} reports the sequential performance of the APA algorithms in comparison to the most efficient implementation of the classical algorithm, MKL's \texttt{sgemm}.
@@ -334,15 +366,6 @@ We vary the dimension from 512 up to 8192 and see that all algorithms outperform
 The highest performing algorithm is $\dims{4,4,4}$, and at dimension 8192, it is 28\% faster than \texttt{sgemm}.
 Ignoring the cost of the matrix additions, $\dims{4,4,4}$ performs 39\% fewer flops than the classical algorithm; the drop to 28\% achieved improvement is because of the overhead of matrix additions and the reduced performance of \texttt{sgemm} on smaller matrices.
 We note that $\dims{4,4,2}$ is also high performing, achieving a 25\% observed improvement (out of a theoretical 33\%), along with $\dims{3,3,3;20}$ and $\dims{5,5,5}$.
-
-\begin{figure}
-\centering
-\renewcommand{\datafile}{data/matmul_seq.dat}
-\renewcommand{\threads}{1}
-\input{plots/matmul_perf}
-\caption{Single-threaded matrix multiplication performance}
-\label{fig:matmul_seq}
-\end{figure}
 
 \subsection{Parallel Performance}
 
@@ -365,26 +388,29 @@ This implies that the dimension of the submultiplications does not fall on the p
 The algorithm with no remainder multiplications, $\dims{4,2,2}$, does not suffer this problem and maintains higher performance.
 It exceeds \texttt{sgemm}'s effective performance at dimension 4000, exceeds the peak parallel performance of any classical algorithm for larger dimensions, and achieves a 21\% speedup over \texttt{sgemm} at dimension 8192 for an effective rate of 389 GFLOPS.
 
-\begin{figure}
-\centering
-\renewcommand{\datafile}{data/matmul_par_6.dat}
-\renewcommand{\threads}{6}
-\input{plots/matmul_perf}
-\caption{Multithreaded matrix multiplication performance (6 threads)}
-\label{fig:matmul_par_6}
-\end{figure}
-
-\begin{figure}
-\centering
-\renewcommand{\datafile}{data/matmul_par_12.dat}
-\renewcommand{\threads}{12}
-\input{plots/matmul_perf}
-\caption{Multithreaded matrix multiplication performance (12 threads)}
-\label{fig:matmul_par_12}
-\end{figure}
-
 \section{Neural Network Accuracy}
 \label{sec:NNacc}
+
+\begin{figure*}[t!]
+%
+\subfloat[Training accuracy]{
+\centering
+\renewcommand{\datafile}{data/NN_acc.dat}
+\renewcommand{\set}{train}
+\input{plots/NN_acc}
+\label{fig:NN_acc_train}}
+%
+\hfill
+\subfloat[Test accuracy]{
+\centering
+\renewcommand{\datafile}{data/NN_acc.dat}
+\renewcommand{\set}{test}
+\input{plots/NN_acc}
+\label{fig:NN_acc_test}}
+%
+\caption{Multi-Layer Perceptron network accuracy for MNIST data set}
+\label{fig:NN_acc}
+\end{figure*}
 
 To measure the effect of the matrix multiplication error introduced from the APA algorithms on neural network accuracy, we trained a multi-layer perceptron (MLP) network on the MNIST dataset \cite{LBBH98} and measured its accuracy over the course of training. 
 The network was created using Tensorflow version 2.2.0.
@@ -403,24 +429,6 @@ One network was trained for 50 epochs for each of the APA algorithms and one was
 The matrix multiplication error introduced from these algorithms had minimal effect on the training error; all algorithms yielded convergence to nearly full accuracy after 20 epochs or so.
 We see more variability in the test error due to the sensitivity inherent in generalizability of the model, though all algorithms achieve between 97\% and 99\% test accuracy.
 
-\begin{figure}
-\centering
-\renewcommand{\datafile}{data/NN_acc.dat}
-\renewcommand{\set}{train}
-\input{plots/NN_acc}
-\caption{MLP training accuracy for MNIST data set}
-\label{fig:NN_acc_train}
-\end{figure}
-
-\begin{figure}
-\centering
-\renewcommand{\datafile}{data/NN_acc.dat}
-\renewcommand{\set}{test}
-\input{plots/NN_acc}
-\caption{MLP test accuracy for MNIST data set}
-\label{fig:NN_acc_test}
-\end{figure}
-
 \section{Neural Network Performance}
 \label{sec:NNperf}
 
@@ -430,27 +438,34 @@ We see more variability in the test error due to the sensitivity inherent in gen
 	\item parallel speedup results
 \end{enumerate}
 
-\begin{figure}
+\begin{figure*}[t!]
+%
 \subfloat[One thread]{
 \centering
 \renewcommand{\datafile}{data/NN_seq.dat}
+\renewcommand{\threads}{1}
 \input{plots/NN_reltime}
 \label{fig:NNreltime_seq}}
-\\
+%
+\hfill
 \subfloat[Six threads]{
 \centering
-\renewcommand{\datafile}{data/NN_par_6.dat}
-%\input{plots/NN_reltime}
+\renewcommand{\datafile}{data/NN_seq.dat}
+\renewcommand{\threads}{6}
+\input{plots/NN_reltime}
 \label{fig:NNreltime_par_6}}
-\\
+%
+\hfill
 \subfloat[Twelve threads]{
 \centering
-\renewcommand{\datafile}{data/NN_par_12.dat}
-%\input{plots/NN_reltime}
+\renewcommand{\datafile}{data/NN_seq.dat}
+\renewcommand{\threads}{12}
+\input{plots/NN_reltime}
 \label{fig:NNreltime_par_12}}
+%
 \caption{Network training time relative to using classical matrix multiplication}
 \label{fig:NNreltime}
-\end{figure}
+\end{figure*}
 
 
 
