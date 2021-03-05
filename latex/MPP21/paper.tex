@@ -417,14 +417,14 @@ Figure 6 plots the accuracy on the training data over each epoch and figure 7 pl
 \begin{figure}
 \subfloat[One thread]{
 \centering
-\renewcommand{\datafile}{data/NNtime_1t.dat}
-\input{plots/reltime}
+\renewcommand{\datafile}{data/NN_seq.dat}
+\input{plots/NN_reltime}
 \label{fig:NNreltime_seq}}
 \\
 \subfloat[Twelve threads]{
 \centering
 \renewcommand{\datafile}{data/NNtime_12t.dat}
-\input{plots/reltime}
+%\input{plots/NN_reltime}
 \label{fig:NNreltime_par}}
 \caption{Network training time relative to using classical matrix multiplication}
 \label{fig:NNreltime}
