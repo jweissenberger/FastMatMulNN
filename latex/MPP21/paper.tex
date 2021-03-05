@@ -437,11 +437,17 @@ We see more variability in the test error due to the sensitivity inherent in gen
 \input{plots/NN_reltime}
 \label{fig:NNreltime_seq}}
 \\
+\subfloat[Six threads]{
+\centering
+\renewcommand{\datafile}{data/NN_par_6.dat}
+%\input{plots/NN_reltime}
+\label{fig:NNreltime_par_6}}
+\\
 \subfloat[Twelve threads]{
 \centering
-\renewcommand{\datafile}{data/NNtime_12t.dat}
+\renewcommand{\datafile}{data/NN_par_12.dat}
 %\input{plots/NN_reltime}
-\label{fig:NNreltime_par}}
+\label{fig:NNreltime_par_12}}
 \caption{Network training time relative to using classical matrix multiplication}
 \label{fig:NNreltime}
 \end{figure}
@@ -450,12 +456,24 @@ We see more variability in the test error due to the sensitivity inherent in gen
 
 \section{Conclusion}
 
-\begin{enumerate}
-	\item promising results for synthetic network, goal is to target costly networks bottlenecked by matmul (\GB{\cite{NPOV15} uses a network including layers with dimensions 25K x 4K and 4K x 4K})
-	\item can tune for matmul dimensions (not just square)
-	\item GPU implementation (cite Jianyu Huang's work)
-	\item mixed precision fast matmul (APA or otherwise)
-\end{enumerate}
+Arbitrary Precision Approximating algorithms offer significant practical performance improvements over exact fast matrix multiplication algorithms.
+They outperform classical matrix multiplication at smaller matrix dimensions and yield greater benefits as matrix dimensions increase.
+APA algorithms sacrifice accuracy, achieving error of only a fractional root of the working precision, but they can be practical for applications that do not demand high accuracy.
+The results presented here show that neural network training, particularly for Multi-Layer Perceptron networks, is robust to such matrix multiplication error, and APA algorithms are a useful tool for accelerating the costly training computations.
+We observe that for APA algorithms offering a theoretical speedup of up to 39\%, we can achieve up to 28\% and 21\% improvements for single-threaded and multi-threaded implementations of individual matrix multiplications, respectively, which translate to up to \GB{W\%} speedup in overall training time on a multicore CPU.
+
+While the accuracy and performance results are promising for MLP networks and the MNIST dataset, we believe that APA algorithms can also be effective in state-of-the-art networks and more difficult machine learning problems.
+For example, the VGG-19 network for large-scale visual recognition \cite{SZ15} is based on a deep convolutional network and is bottlenecked by large fully connected layers, including a layer with dimensions $25088\times 4096$, where APA algorithms can offer significant performance improvement.
+
+As illustrated by Benson and Ballard \cite{BB15}, the highest performing fast algorithms for rectangular matrix multiplications often have dimensions that match the aspect ratio of the problem.
+We consider in this paper only square matrix multiplications, and we see that square (or nearly square) dimensions of $\dims{4,4,4}$ and $\dims{4,4,2}$ are fastest.
+Algorithms with more skewed aspect ratios will likely perform better for problems with matching skewed matrix multiplication dimensions.
+We note that an algorithm for dimensions $\dims{m,n,k}$ can be translated into an algorithm for $\dims{n,m,k}$ and any other reordering of the dimensions \cite{BB15}.
+For very large matrices, it may also be beneficial to consider more than one recursive step of the same algorithm or to use a combination of two or three different algorithms across recursive steps (i.e., uniform, non-stationary algorithms \cite{BBDLS16}).
+
+Finally, we would like to extend the code generation techniques to other hardware platforms, including GPUs.
+Because GPUs can offer higher efficiency for matrix multiplications, we wish to demonstrate the potential of APA algorithms in that environment.
+Techniques used to accelerate Strassen's algorithm on the GPU \cite{HYvdG20,LAES13} can be generalized to other fast algorithms as done in work for multicore CPUs \cite{BB15,HRMvdG17}.
 
 \bibliographystyle{IEEEtran}
 \bibliography{refs}
