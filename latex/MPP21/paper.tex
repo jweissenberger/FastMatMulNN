@@ -377,7 +377,7 @@ While we can expect close to linear speedup with cores on the multiplications (w
 We also note that when the hybrid method uses all threads on remainder multiplications, the smaller dimensions make it harder for \texttt{sgemm} to scale as well as it can on the original matrix dimensions.
 
 In the performance results for 6 threads (\cref{fig:matmul_par_6}), we see that many of the algorithms start to outperform classical around dimension 2000, though some poor performance is observed for algorithms and particular matrix dimensions.
-The fastest algorithms (e.g., $\dims{4,4,4}$ and $\dims{4,4,2}$) achieve a speedup of up to 23\% over \texttt{gemm} and exceed the machine peak for classical algorithms.
+The fastest algorithms (e.g., $\dims{4,4,4}$ and $\dims{4,4,2}$) achieve a speedup of up to 25\% over \texttt{gemm} and exceed the machine peak for classical algorithms.
 We note that the $\dims{4,4,2}$ algorithm has 24 subproblems, which is a multiple of 6, so there are no remainder subproblems that require all threads.
 
 \Cref{fig:matmul_par_12} shows the results for 12 threads.
