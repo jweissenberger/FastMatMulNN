@@ -420,7 +420,7 @@ The dataset is split into 60,000 examples for the training set and 10,000 exampl
 The MLP network is composed of 4 fully-connected layers with 784, 300, 300, and 10 nodes, respectively.  
 The output layer has one node for each digit 0-9. 
 Training is performed using batched stochastic gradient descent with a batch size of 300.
-APA algorithms were used for the middle multiplication of the network (yielding matrix multiplication dimensions $300\times 300\times300$), while the input and output layers use the classical matrix multiplication algorithm. 
+APA algorithms were used for the middle multiplication of the network (yielding matrix multiplication dimensions $300\times 300\times300$), while the input and output layers use the classical matrix multiplication algorithm. The APA algorithms were also used during back propagation in the corresponding multiplications in the center of the network.
 One network was trained for 50 epochs for each of the APA algorithms and one was trained using the classical matrix multiplication algorithm.
 
 \Cref{fig:NN_acc_train} plots the accuracy on the training data over each epoch, and \cref{fig:NN_acc_test} shows the test accuracy over epochs. 
@@ -430,11 +430,11 @@ We see more variability in the test error due to the sensitivity inherent in gen
 \section{Neural Network Performance}
 \label{sec:NNperf}
 
-\begin{enumerate}
-	\item describe synthetic network and implementation details
-	\item perf results for growing dim (maybe for serial and 12-threads separately)
-	\item parallel speedup results
-\end{enumerate}
+The neural networks used for performance benchmarking were 6 layer (4 hidden layers), fully connected networks and were trained on the MNIST dataset. The purpose of these experiments was to measure the speed up in training time provided by the APA algorithms and not to measure the accuracy performance of the networks. The APA algorithms were used only in the multiplications in the hidden layers during forwards and backward propagation. 
+
+Similar to other benchmarks [https://github.com/Emma926/paradnn] on fully connected networks, we measured the performance of each algorithm with the number of nodes in each hidden layer from 2^9 to 20^13. We also matched the batch size of each network to the number of nodes in the hidden layer which produces square multiplications in the hidden layers. We ran these tests using 1, 6 and 12 threads.
+
+The single threaded results began to show speed up over the classical algorithm when the matrix dimensions were 2^10 and were able to show over a 20\% speed up when the dimensions were 2^13. It was more difficult to get performance improvements with more threads but both 6 and 12 thread results were able to show improvement in the larger dimensions. At 6 threads, the best algorithms showed small improvements when the dimensions were 2^11 and were able to get over a 10\% improvement at 2^13. The 12 thread algorithms were not able to see an improvement until the dimensions were 2^12 and were not able to get 10\% improvement at 2^13.
 
 \begin{figure*}[t!]
 %
