@@ -185,6 +185,32 @@ For example, encoding the first multiplication $M_1$ in Bini's algorithm can be 
 The first two matrices specify the linear combinations taken of entries of $A$ and $B$, and the third matrix specifies the contributions of $M_1$ to the entries of $C$.
 Ten such triplets completely specify Bini's algorithm.
 
+\begin{table}
+\centering
+\caption{Properties of Arbitrary Precision Approximating Algorithms  \\ Speedup and Error are computed assuming 1 recursive step}
+\label{tab:algs}
+\begin{tabular}{| c | c c c | c c c |} 
+\hline
+\textbf{Ref} & \textbf{Dims} & \textbf{Rank} & \textbf{Speedup} & $\mathbf{\sigma}$ & $\mathbf{\varphi}$ & \textbf{Error} \\
+\hline
+- & $\dims{2,2,2}$ & 8 & - & 1 & 0 & \num{1.2e-7} \\
+\hline
+\cite{BCRL79} & $\dims{3,2,2}$ & 10 & $20\%$ & 1 & 1 & \num{3.5e-4} \\
+\cite{AS13} & $\dims{4,2,2}$ & 13 & $23\%$ & 1 & 2 & \num{4.9e-3} \\
+\cite{Smirnov13} & $\dims{3,3,2}$ & 14 & $29\%$ & 1 & 3 & \num{1.9e-2} \\
+\cite{Smirnov13} & $\dims{5,2,2}$ & 16 & $25\%$ & 1 & 3 & \num{1.9e-2} \\
+\cite{Smirnov13} & $\dims{3,3,3}$ & 20 & $35\%$ & 1 & 6 & \num{1.0e-1} \\
+\cite{Schonhage81} & $\dims{3,3,3}$ & 21 & $29\%$ & 1 & 2 & \num{4.9e-3} \\
+\cite{Smirnov15} & $\dims{7,2,2}$ & 22 & $27\%$ & 1 & 5 & \num{7.0e-2} \\
+\cite{Smirnov16b} & $\dims{4,4,2}$ & 24 & $33\%$ & 1 & 3 & \num{1.9e-2} \\
+\cite{Smirnov16a} & $\dims{4,3,3}$ & 27 & $33\%$ & 1 & 3 & \num{1.9e-2} \\
+\cite{Smirnov16b} & $\dims{5,5,2}$ & 37 & $35\%$ & 1 & 3 & \num{1.9e-2} \\
+\cite{Smirnov14} & $\dims{4,4,4}$ & 46 & $39\%$ & 1 & 3 & \num{1.9e-2} \\
+\cite{Smirnov18} & $\dims{5,5,5}$ & 90 & $39\%$ & 1 & 3 & \num{1.9e-2} \\
+\hline
+\end{tabular}
+\end{table}
+
 \subsection{Numerical Error of APA Algorithms}
 \label{sec:APAerr}
 
@@ -255,34 +281,6 @@ For all algorithms, we assume only 1 recursive step is used, though the speedup 
 The first column gives the reference where the algorithm was first specified.
 The second block column demonstrates the possible performance improvement, where speedup is calculated as $(mnk/r - 1)\cdot100\%$ for $\dims{m,n,k}$ and rank $r$.
 The third block column shows error parameters, and the error is calculated as $2^{-d\cdot\sigma/(\sigma+\varphi)}$ with $d=23$, corresponding to single precision.
-
-\begin{table}
-\centering
-\caption{Properties of Arbitrary Precision Approximating Algorithms  \\ Speedup and Error are computed assuming 1 recursive step}
-\label{tab:algs}
-\begin{tabular}{| c | c c c | c c c |} 
-\hline
-\textbf{Ref} & \textbf{Dims} & \textbf{Rank} & \textbf{Speedup} & $\mathbf{\sigma}$ & $\mathbf{\varphi}$ & \textbf{Error} \\
-\hline
-- & $\dims{2,2,2}$ & 8 & - & 1 & 0 & \num{1.2e-7} \\
-\hline
-\cite{BCRL79} & $\dims{3,2,2}$ & 10 & $20\%$ & 1 & 1 & \num{3.5e-4} \\
-\cite{AS13} & $\dims{4,2,2}$ & 13 & $23\%$ & 1 & 2 & \num{4.9e-3} \\
-\cite{Smirnov13} & $\dims{3,3,2}$ & 14 & $29\%$ & 1 & 3 & \num{1.9e-2} \\
-\cite{Smirnov13} & $\dims{5,2,2}$ & 16 & $25\%$ & 1 & 3 & \num{1.9e-2} \\
-\cite{Smirnov13} & $\dims{3,3,3}$ & 20 & $35\%$ & 1 & 6 & \num{1.0e-1} \\
-\cite{Schonhage81} & $\dims{3,3,3}$ & 21 & $29\%$ & 1 & 2 & \num{4.9e-3} \\
-\cite{Smirnov15} & $\dims{7,2,2}$ & 22 & $27\%$ & 1 & 5 & \num{7.0e-2} \\
-\cite{Smirnov16b} & $\dims{4,4,2}$ & 24 & $33\%$ & 1 & 3 & \num{1.9e-2} \\
-\cite{Smirnov16a} & $\dims{4,3,3}$ & 27 & $33\%$ & 1 & 3 & \num{1.9e-2} \\
-\cite{Smirnov16b} & $\dims{5,5,2}$ & 37 & $35\%$ & 1 & 3 & \num{1.9e-2} \\
-\cite{Smirnov14} & $\dims{4,4,4}$ & 46 & $39\%$ & 1 & 3 & \num{1.9e-2} \\
-\cite{Smirnov18} & $\dims{5,5,5}$ & 90 & $39\%$ & 1 & 3 & \num{1.9e-2} \\
-\hline
-\end{tabular}
-\end{table}
-
-
 
 \section{Parallel Fast Matrix Multiplication}
 
