@@ -1,11 +1,11 @@
 %!TEX root = ../paper.tex
 
 
-\begin{tikzpicture}
+\begin{tikzpicture}[scale=.55]
 \begin{axis}[
-	width=.35\textwidth,
+	width=.5\textwidth,
 	xlabel=Dimension, 
-	ylabel=Effective GFLOPS, 
+	ylabel=\ifthenelse{\equal{\threads}{1}}{Effective GFLOPS}{},
 	reverse legend,
         legend style={at={(1.02,.5)},anchor=west},
         xtick={512,2048,4096,6144,8192},
@@ -25,5 +25,6 @@
 \addplot table[x=n, y=555]{\datafile}; \addlegendentry{$\dims{5,5,5}$}
 \addplot[color=red,mark=triangle] table[x=n, y=722]{\datafile}; \addlegendentry{$\dims{7,2,2}$}
 \addplot[color=brown,mark=diamond] table[x=n, y=333-20]{\datafile}; \addlegendentry{$\dims{3,3,3;20}$}
+\ifthenelse{\equal{\threads}{12}}{}{\legend{}}
 \end{axis}
 \end{tikzpicture}

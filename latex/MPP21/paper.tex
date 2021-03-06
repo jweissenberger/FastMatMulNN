@@ -75,9 +75,9 @@ Matrix multiplication is one of the bottleneck computations for training the wei
 To speed up the training phase, we propose to use faster algorithms for matrix multiplication known as Arbitrary Precision Approximating (APA) algorithms.
 APA algorithms perform asymptotically fewer arithmetic operations than the classical algorithm, but they compute an approximate result with an error that can be made arbitrarily small in exact arithmetic.
 Practical APA algorithms provide significant reduction in computation time and still provide enough accuracy for many applications like neural network training.
-We demonstrate that APA algorithms can be efficiently implemented and parallelized for shared-memory platforms to obtain up to \GB{Z\%} speedups over the fastest implementation of the classical algorithm.
-Furthermore, using these algorithms to train a Multi-Layer Perceptron (MLP) network yields no signification reduction in the training or testing error.
-Our performance results on a large MLP network show overall performance improvements of up to \GB{W\%}.
+We demonstrate that APA algorithms can be efficiently implemented and parallelized for shared-memory platforms to obtain up to 28\% and 21\% speedups over the fastest implementation of the classical algorithm using one core and 12 cores, respectively.
+Furthermore, using these algorithms to train a Multi-Layer Perceptron (MLP) network yields no significant reduction in the training or testing error.
+Our performance results on a large MLP network show overall multithreaded performance improvements of up to \GB{W\%}.
 \end{abstract}
 
 \section{Introduction}
@@ -108,12 +108,10 @@ Our contribution is the use of APA matrix multiplication algorithms to address t
 In particular we
 \begin{enumerate}
 	\item curate a collection of well-established and recently discovered practical APA algorithms;
-	\item extend the framework of \cite{BB15} to generate efficient multithreaded code for all of them;
+	\item extend the framework of \cite{BB15} to generate efficient multithreaded code for all of them, achieving up to 21\% performance improvement over the best parallel classical implementation,
 	\item demonstrate the robustness of learning accuracy to approximate matrix multiplications; and
 	\item present multithreaded performance improvements of a synthetic MLP of up to \GB{$Y\times$} over the use of classical matrix multiplication.
 \end{enumerate}
-
-\GB{\cite{NPOV15} uses a network including layers with dimensions 25K x 4K and 4K x 4K}
 
 \section{Practical Arbitrary Precision Approximating Matrix Multiplication Algorithms}
 \label{sec:APA}
@@ -131,7 +129,7 @@ Algorithms have been derived both analytically and computationally, and there ex
 \label{sec:APAalgs}
 
 A key characteristic of matrix multiplication, first demonstrated by Bini et al.~\cite{BCRL79}, is that it can be approximated to arbitrary accuracy more efficiently than being computed exactly.
-An APA algorithm is one that takes as input $A$, $B$, and a parameter $0<\lambda<1$ and computes 
+An APA algorithm is one that takes as input $A$, $B$, and a scalar parameter $0<\lambda<1$ and computes 
 \begin{equation}
 \label{eq:APAapprox}
 \hat C = A\cdot B + \lambda E + O(\lambda^2).
@@ -144,9 +142,10 @@ In theory, APA algorithms can be converted to exact algorithms at the cost of an
 In practice, $n$ is not large enough to ignore the logarithmic factor, so we consider each APA algorithm as is.
 
 For a concrete example, we reproduce the rule for the algorithm developed by Bini et al.~\cite{BCRL79} for the $\dims{3,2,2}$ case (multiplying a $3\times 2$ matrix $A$ by a $2\times 2$ matrix $B$), where we use the following notation for input and output matrices:
-$$\begin{bmatrix} C_{11} & C_{12} \\ C_{21} & C_{22} \\ C_{31} & C_{32} \end{bmatrix} = 
+$$
 \begin{bmatrix} A_{11} & A_{12} \\ A_{21} & A_{22} \\ A_{31} & A_{32}  \end{bmatrix} \cdot
-\begin{bmatrix} B_{11} & B_{12} \\ B_{21} & B_{22} \end{bmatrix}.$$
+\begin{bmatrix} B_{11} & B_{12} \\ B_{21} & B_{22} \end{bmatrix}=
+\begin{bmatrix} C_{11} & C_{12} \\ C_{21} & C_{22} \\ C_{31} & C_{32} \end{bmatrix} .$$
 Bini's rule is given by
 \begin{align*}
 M_1 =& (A_{11} + A_{22}) \cdot (\lambda B_{11} + B_{22}) \\
@@ -185,6 +184,32 @@ For example, encoding the first multiplication $M_1$ in Bini's algorithm can be 
 \end{equation}
 The first two matrices specify the linear combinations taken of entries of $A$ and $B$, and the third matrix specifies the contributions of $M_1$ to the entries of $C$.
 Ten such triplets completely specify Bini's algorithm.
+
+\begin{table}
+\centering
+\caption{Properties of Arbitrary Precision Approximating Algorithms  \\ Speedup and Error are computed assuming 1 recursive step}
+\label{tab:algs}
+\begin{tabular}{| c | c c c | c c c |} 
+\hline
+\textbf{Ref} & \textbf{Dims} & \textbf{Rank} & \textbf{Speedup} & $\mathbf{\sigma}$ & $\mathbf{\varphi}$ & \textbf{Error} \\
+\hline
+- & $\dims{2,2,2}$ & 8 & - & 1 & 0 & \num{1.2e-7} \\
+\hline
+\cite{BCRL79} & $\dims{3,2,2}$ & 10 & $20\%$ & 1 & 1 & \num{3.5e-4} \\
+\cite{AS13} & $\dims{4,2,2}$ & 13 & $23\%$ & 1 & 2 & \num{4.9e-3} \\
+\cite{Smirnov13} & $\dims{3,3,2}$ & 14 & $29\%$ & 1 & 3 & \num{1.9e-2} \\
+\cite{Smirnov13} & $\dims{5,2,2}$ & 16 & $25\%$ & 1 & 3 & \num{1.9e-2} \\
+\cite{Smirnov13} & $\dims{3,3,3}$ & 20 & $35\%$ & 1 & 6 & \num{1.0e-1} \\
+\cite{Schonhage81} & $\dims{3,3,3}$ & 21 & $29\%$ & 1 & 2 & \num{4.9e-3} \\
+\cite{Smirnov15} & $\dims{7,2,2}$ & 22 & $27\%$ & 1 & 5 & \num{7.0e-2} \\
+\cite{Smirnov16b} & $\dims{4,4,2}$ & 24 & $33\%$ & 1 & 3 & \num{1.9e-2} \\
+\cite{Smirnov16a} & $\dims{4,3,3}$ & 27 & $33\%$ & 1 & 3 & \num{1.9e-2} \\
+\cite{Smirnov16b} & $\dims{5,5,2}$ & 37 & $35\%$ & 1 & 3 & \num{1.9e-2} \\
+\cite{Smirnov14} & $\dims{4,4,4}$ & 46 & $39\%$ & 1 & 3 & \num{1.9e-2} \\
+\cite{Smirnov18} & $\dims{5,5,5}$ & 90 & $39\%$ & 1 & 3 & \num{1.9e-2} \\
+\hline
+\end{tabular}
+\end{table}
 
 \subsection{Numerical Error of APA Algorithms}
 \label{sec:APAerr}
@@ -257,38 +282,18 @@ The first column gives the reference where the algorithm was first specified.
 The second block column demonstrates the possible performance improvement, where speedup is calculated as $(mnk/r - 1)\cdot100\%$ for $\dims{m,n,k}$ and rank $r$.
 The third block column shows error parameters, and the error is calculated as $2^{-d\cdot\sigma/(\sigma+\varphi)}$ with $d=23$, corresponding to single precision.
 
-\begin{table}
-\centering
-\caption{Properties of Arbitrary Precision Approximating Algorithms  \\ Speedup and Error are computed assuming 1 recursive step}
-\label{tab:algs}
-\begin{tabular}{| c | c c c | c c c |} 
-\hline
-\textbf{Ref} & \textbf{Dims} & \textbf{Rank} & \textbf{Speedup} & $\mathbf{\sigma}$ & $\mathbf{\varphi}$ & \textbf{Error} \\
-\hline
-- & $\dims{2,2,2}$ & 8 & - & 1 & 0 & \num{1.2e-7} \\
-\hline
-\cite{BCRL79} & $\dims{3,2,2}$ & 10 & $20\%$ & 1 & 1 & \num{3.5e-4} \\
-\cite{AS13} & $\dims{4,2,2}$ & 13 & $23\%$ & 1 & 2 & \num{4.9e-3} \\
-\cite{Smirnov13} & $\dims{3,3,2}$ & 14 & $29\%$ & 1 & 3 & \num{1.9e-2} \\
-\cite{Smirnov13} & $\dims{5,2,2}$ & 16 & $25\%$ & 1 & 3 & \num{1.9e-2} \\
-\cite{Smirnov13} & $\dims{3,3,3}$ & 20 & $35\%$ & 1 & 6 & \num{1.0e-1} \\
-\cite{Schonhage81} & $\dims{3,3,3}$ & 21 & $29\%$ & 1 & 2 & \num{4.9e-3} \\
-\cite{Smirnov15} & $\dims{7,2,2}$ & 22 & $27\%$ & 1 & 5 & \num{7.0e-2} \\
-\cite{Smirnov16b} & $\dims{4,4,2}$ & 24 & $33\%$ & 1 & 3 & \num{1.9e-2} \\
-\cite{Smirnov16a} & $\dims{4,3,3}$ & 27 & $33\%$ & 1 & 3 & \num{1.9e-2} \\
-\cite{Smirnov16b} & $\dims{5,5,2}$ & 37 & $35\%$ & 1 & 3 & \num{1.9e-2} \\
-\cite{Smirnov14} & $\dims{4,4,4}$ & 46 & $39\%$ & 1 & 3 & \num{1.9e-2} \\
-\cite{Smirnov18} & $\dims{5,5,5}$ & 90 & $39\%$ & 1 & 3 & \num{1.9e-2} \\
-\hline
-\end{tabular}
-\end{table}
-
-
-
 \section{Parallel Fast Matrix Multiplication}
 
 We exploit the common algorithmic structure across APA (and exact) algorithms to develop a unified strategy of high performance multithreaded implementation using C++/OpenMP.
 We build upon the work of Benson and Ballard \cite{BB15}, using code generation to apply the strategy to each algorithm.
+
+\subsection{Experimental Platform}
+
+All experiments are performed on a dual-socket Intel Xeon E5-2620 (Sandy Bridge) server with 2 sockets each with 6 cores. 
+Each socket has a 15 MB L3 cache, and each core has a 256 KB L2 cache and 32 KB L1 data cache. 
+Each core has a clock rate of 2.00 GHz (with turbo boost disabled) and peak single precision flop rate of 32 GFLOPS. 
+Our code is compiled with GCC version 7.5.0, 
+and we use Intel's Math Kernel Library (MKL) version 2019.4.243.
 
 \subsection{Hybrid Parallelization Strategy}
 
@@ -315,9 +320,37 @@ The hybrid strategy is efficient because each thread can achieve close to the pe
 The alternative strategy of employing multithreaded \texttt{gemm} for each of the $r$ multiplications (known as ``DFS'') suffers performance degradation for small problems, where the parallel implementation attains a smaller fraction of peak.
 The hybrid strategy also perfectly load balances the computation across threads, as opposed to the alternate strategy of assigning the $\ell$ remainder multiplications to $\ell$ different threads (known as ``BFS''), leaving the other $p-\ell$ threads idle.
 
-\subsection{Experimental Platform}
-
-\GB{add paragraph describing householder, listing versions of MKL, peak GFLOPS}
+\begin{figure*}[t!]
+%
+\subfloat[One thread]{
+\centering
+\renewcommand{\datafile}{data/matmul_seq.dat}
+\renewcommand{\threads}{1}
+\input{plots/matmul_perf}
+%\caption{Single-threaded matrix multiplication performance}
+\label{fig:matmul_seq}}
+%
+\hfill
+\subfloat[Six threads]{
+\centering
+\renewcommand{\datafile}{data/matmul_par_6.dat}
+\renewcommand{\threads}{6}
+\input{plots/matmul_perf}
+%\caption{Multithreaded matrix multiplication performance (6 threads)}
+\label{fig:matmul_par_6}}
+%
+\hfill
+\subfloat[Twelve threads]{
+\centering
+\renewcommand{\datafile}{data/matmul_par_12.dat}
+\renewcommand{\threads}{12}
+\input{plots/matmul_perf}
+%\caption{Multithreaded matrix multiplication performance (6 threads)}
+\label{fig:matmul_par_12}}
+%
+\caption{Single- and multi-threaded square matrix multiplication performance, relative to $2n^3$ operations}
+\label{fig:matmul_perf}
+\end{figure*}
 
 \subsection{Sequential Performance}
 
@@ -331,15 +364,6 @@ We vary the dimension from 512 up to 8192 and see that all algorithms outperform
 The highest performing algorithm is $\dims{4,4,4}$, and at dimension 8192, it is 28\% faster than \texttt{sgemm}.
 Ignoring the cost of the matrix additions, $\dims{4,4,4}$ performs 39\% fewer flops than the classical algorithm; the drop to 28\% achieved improvement is because of the overhead of matrix additions and the reduced performance of \texttt{sgemm} on smaller matrices.
 We note that $\dims{4,4,2}$ is also high performing, achieving a 25\% observed improvement (out of a theoretical 33\%), along with $\dims{3,3,3;20}$ and $\dims{5,5,5}$.
-
-\begin{figure}
-\centering
-\renewcommand{\datafile}{data/matmul_seq.dat}
-\renewcommand{\threads}{1}
-\input{plots/matmul_perf}
-\caption{Single-threaded matrix multiplication performance}
-\label{fig:matmul_seq}
-\end{figure}
 
 \subsection{Parallel Performance}
 
@@ -362,49 +386,46 @@ This implies that the dimension of the submultiplications does not fall on the p
 The algorithm with no remainder multiplications, $\dims{4,2,2}$, does not suffer this problem and maintains higher performance.
 It exceeds \texttt{sgemm}'s effective performance at dimension 4000, exceeds the peak parallel performance of any classical algorithm for larger dimensions, and achieves a 21\% speedup over \texttt{sgemm} at dimension 8192 for an effective rate of 389 GFLOPS.
 
-\begin{figure}
-\centering
-\renewcommand{\datafile}{data/matmul_par_6.dat}
-\renewcommand{\threads}{6}
-\input{plots/matmul_perf}
-\caption{Multithreaded matrix multiplication performance (6 threads)}
-\label{fig:matmul_par_6}
-\end{figure}
-
-\begin{figure}
-\centering
-\renewcommand{\datafile}{data/matmul_par_12.dat}
-\renewcommand{\threads}{12}
-\input{plots/matmul_perf}
-\caption{Multithreaded matrix multiplication performance (12 threads)}
-\label{fig:matmul_par_12}
-\end{figure}
-
 \section{Neural Network Accuracy}
 \label{sec:NNacc}
 
-\begin{enumerate}
-	\item describe network (MLP for MNIST) and implementation details (including TensorFlow with version number)
-	\item accuracy results in table or fig
-\end{enumerate}
-
-\begin{figure}
+\begin{figure*}[t!]
+%
+\subfloat[Training accuracy]{
 \centering
 \renewcommand{\datafile}{data/NN_acc.dat}
 \renewcommand{\set}{train}
 \input{plots/NN_acc}
-\caption{MLP training accuracy for MNIST data set}
-\label{fig:matmul_seq}
-\end{figure}
-
-\begin{figure}
+\label{fig:NN_acc_train}}
+%
+\hfill
+\subfloat[Test accuracy]{
 \centering
 \renewcommand{\datafile}{data/NN_acc.dat}
 \renewcommand{\set}{test}
 \input{plots/NN_acc}
-\caption{MLP test accuracy for MNIST data set}
-\label{fig:matmul_seq}
-\end{figure}
+\label{fig:NN_acc_test}}
+%
+\caption{Multi-Layer Perceptron network accuracy for MNIST data set}
+\label{fig:NN_acc}
+\end{figure*}
+
+To measure the effect of the matrix multiplication error introduced from the APA algorithms on neural network accuracy, we trained a multi-layer perceptron (MLP) network on the MNIST dataset \cite{LBBH98} and measured its accuracy over the course of training. 
+The network was created using Tensorflow version 2.2.0.
+
+MNIST is a common machine learning dataset of 70,000 images of hand-written numerical digits. 
+Each of the images are composed of 28 by 28 grayscale pixels, which are flattened into a vector of length 784.
+The dataset is split into 60,000 examples for the training set and 10,000 examples for the test set. 
+
+The MLP network is composed of 4 fully-connected layers with 784, 300, 300, and 10 nodes, respectively.  
+The output layer has one node for each digit 0-9. 
+Training is performed using batched stochastic gradient descent with a batch size of 300.
+APA algorithms were used for the middle multiplication of the network (yielding matrix multiplication dimensions $300\times 300\times300$), while the input and output layers use the classical matrix multiplication algorithm. 
+One network was trained for 50 epochs for each of the APA algorithms and one was trained using the classical matrix multiplication algorithm.
+
+\Cref{fig:NN_acc_train} plots the accuracy on the training data over each epoch, and \cref{fig:NN_acc_test} shows the test accuracy over epochs. 
+The matrix multiplication error introduced from these algorithms had minimal effect on the training error; all algorithms yielded convergence to nearly full accuracy after 20 epochs or so.
+We see more variability in the test error due to the sensitivity inherent in generalizability of the model, though all algorithms achieve between 97\% and 99\% test accuracy.
 
 \section{Neural Network Performance}
 \label{sec:NNperf}
@@ -415,32 +436,57 @@ It exceeds \texttt{sgemm}'s effective performance at dimension 4000, exceeds the
 	\item parallel speedup results
 \end{enumerate}
 
-\begin{figure}
+\begin{figure*}[t!]
+%
 \subfloat[One thread]{
 \centering
-\renewcommand{\datafile}{data/NNtime_1t.dat}
-\input{plots/reltime}
+\renewcommand{\datafile}{data/NN_seq.dat}
+\renewcommand{\threads}{1}
+\input{plots/NN_reltime}
 \label{fig:NNreltime_seq}}
-\\
+%
+\hfill
+\subfloat[Six threads]{
+\centering
+\renewcommand{\datafile}{data/NN_par_6.dat}
+\renewcommand{\threads}{6}
+\input{plots/NN_reltime}
+\label{fig:NNreltime_par_6}}
+%
+\hfill
 \subfloat[Twelve threads]{
 \centering
-\renewcommand{\datafile}{data/NNtime_12t.dat}
-\input{plots/reltime}
-\label{fig:NNreltime_par}}
+\renewcommand{\datafile}{data/NN_par_12.dat}
+\renewcommand{\threads}{12}
+\input{plots/NN_reltime}
+\label{fig:NNreltime_par_12}}
+%
 \caption{Network training time relative to using classical matrix multiplication}
 \label{fig:NNreltime}
-\end{figure}
+\end{figure*}
 
 
 
 \section{Conclusion}
 
-\begin{enumerate}
-	\item promising results for synthetic network, goal is to target costly networks bottlenecked by matmul
-	\item can tune for matmul dimensions (not just square)
-	\item GPU implementation (cite Jianyu Huang's work)
-	\item mixed precision fast matmul (APA or otherwise)
-\end{enumerate}
+Arbitrary Precision Approximating algorithms offer significant practical performance improvements over exact fast matrix multiplication algorithms.
+They outperform classical matrix multiplication at smaller matrix dimensions and yield greater benefits as matrix dimensions increase.
+APA algorithms sacrifice accuracy, achieving error of only a fractional root of the working precision, but they can be practical for applications that do not demand high accuracy.
+The results presented here show that neural network training, particularly for Multi-Layer Perceptron networks, is robust to such matrix multiplication error, and APA algorithms are a useful tool for accelerating the costly training computations.
+We observe that for APA algorithms offering a theoretical speedup of up to 39\%, we can achieve up to 28\% and 21\% improvements for single-threaded and multi-threaded implementations of individual matrix multiplications, respectively, which translate to up to \GB{W\%} speedup in overall training time on a multicore CPU.
+
+While the accuracy and performance results are promising for MLP networks and the MNIST dataset, we believe that APA algorithms can also be effective in state-of-the-art networks and more difficult machine learning problems.
+For example, the VGG-19 network for large-scale visual recognition \cite{SZ15} is based on a deep convolutional network and is bottlenecked by large fully connected layers, including a layer with dimensions $25088\times 4096$, where APA algorithms can offer significant performance improvement.
+
+As illustrated by Benson and Ballard \cite{BB15}, the highest performing fast algorithms for rectangular matrix multiplications often have dimensions that match the aspect ratio of the problem.
+We consider in this paper only square matrix multiplications, and we see that square (or nearly square) dimensions of $\dims{4,4,4}$ and $\dims{4,4,2}$ are fastest.
+Algorithms with more skewed aspect ratios will likely perform better for problems with matching skewed matrix multiplication dimensions.
+We note that an algorithm for dimensions $\dims{m,n,k}$ can be translated into an algorithm for $\dims{n,m,k}$ and any other reordering of the dimensions \cite{BB15}.
+For very large matrices, it may also be beneficial to consider more than one recursive step of the same algorithm or to use a combination of two or three different algorithms across recursive steps (i.e., uniform, non-stationary algorithms \cite{BBDLS16}).
+
+Finally, we would like to extend the code generation techniques to other hardware platforms, including GPUs.
+Because GPUs can offer higher efficiency for matrix multiplications, we wish to demonstrate the potential of APA algorithms in that environment.
+Techniques used to accelerate Strassen's algorithm on the GPU \cite{HYvdG20,LAES13} can be generalized to other fast algorithms as done in work for multicore CPUs \cite{BB15,HRMvdG17}.
 
 \bibliographystyle{IEEEtran}
 \bibliography{refs}
