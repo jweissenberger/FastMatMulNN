@@ -6,80 +6,56 @@
 \tikzstyle{label} = [midway,below]
 \def\offset{.1}
 
-\begin{tikzpicture}[scale=.85]
+\begin{tikzpicture}[scale=.75]
 
 % vertices
-\node[vertex2,fill=red!40] (orig) at (-6,0) {$I_{...}\ $};
+\node[vertex2,fill=red!40] (i1) at (-6,3) {$\ I_1\ $};
+\node[vertex2,fill=red!40] (i2) at (-6,2) {$\ I_2\ $};
+\node[vertex2,fill=red!40] (i3) at (-6,1) {$\ I_3\ $};
+\node (idots) at (-6,.1) {$\vdots$};
+\node[vertex2,fill=red!40] (i4) at (-6,-1) {$I_{782}$};
+\node[vertex2,fill=red!40] (i5) at (-6,-2) {$I_{783}$};
+\node[vertex2,fill=red!40] (i6) at (-6,-3) {$I_{784}$};
 
+\node[vertex,fill=blue!20] (m1) at (-3,2.5) {$\ H_1^1\ $};
+\node[vertex,fill=blue!20] (m2) at (-3,1.25) {$\ H_2^1\ $};
+\node (mdots) at (-3,.1) {$\vdots$};
+\node[vertex,fill=blue!20] (m3) at (-3,-1.25) {$H_{299}^1$};
+\node[vertex,fill=blue!20] (m4) at (-3,-2.5) {$H_{300}^1$};
 
-\node[vertex2,fill=red!40] (i1) at (-6,4) {$\ I_1\ $};
-\node[vertex2,fill=red!40] (i2) at (-6,3) {$\ I_2\ $};
-\node[vertex2,fill=red!40] (i3) at (-6,2) {$\ I_3\ $};
-\node[vertex2,fill=red!40] (i4) at (-6,1) {$\ I_4\ $};
+\node[vertex,fill=blue!20] (n1) at (0,2.5) {$\ H_1^2\ $};
+\node[vertex,fill=blue!20] (n2) at (0,1.25) {$\ H_2^2\ $};
+\node (ndots) at (0,.1) {$\vdots$};
+\node[vertex,fill=blue!20] (n3) at (0,-1.25) {$H_{299}^2$};
+\node[vertex,fill=blue!20] (n4) at (0,-2.5) {$H_{300}^2$};
 
-\node[vertex2,fill=red!40] (i5) at (-6,-1) {$I_{781}$};
-\node[vertex2,fill=red!40] (i6) at (-6,-2) {$I_{782}$};
-\node[vertex2,fill=red!40] (i7) at (-6,-3) {$I_{783}$};
-\node[vertex2,fill=red!40] (i8) at (-6,-4) {$I_{784}$};
-
-
-
-\node[vertex,fill=blue!20] (m1) at (-3,3) {$\ H_1^1\ $};
-\node[vertex,fill=blue!20] (m2) at (-3,2) {$\ H_2^1\ $};
-\node[vertex,fill=blue!20] (m3) at (-3,1) {$\ H_3^1\ $};
-\node[vertex,fill=blue!20] (m4) at (-3,0) {$H_{...}^1\ $};
-\node[vertex,fill=blue!20] (m5) at (-3,-1) {$H_{298}^1$};
-\node[vertex,fill=blue!20] (m6) at (-3,-2) {$H_{299}^1$};
-\node[vertex,fill=blue!20] (m7) at (-3,-3) {$H_{300}^1$};
-
-
-
-\node[vertex,fill=blue!20] (n1) at (0,3) {$\ H_1^2\ $};
-\node[vertex,fill=blue!20] (n2) at (0,2) {$\ H_2^2\ $};
-\node[vertex,fill=blue!20] (n3) at (0,1) {$\ H_3^2\ $};
-\node[vertex,fill=blue!20] (n4) at (0,0) {$H_{...}^2\ $};
-\node[vertex,fill=blue!20] (n5) at (0,-1) {$H_{298}^2$};
-\node[vertex,fill=blue!20] (n6) at (0,-2) {$H_{299}^2$};
-\node[vertex,fill=blue!20] (n7) at (0,-3) {$H_{300}^2$};
-
-
-\node[vertex,fill=yellow!40] (o1) at (3,2) {$\ O_{1}\ $};
-\node[vertex,fill=yellow!40] (o2) at (3,1) {$\ O_{2}\ $};
-\node[vertex,fill=yellow!40] (o3) at (3,0) {$\ O_{...} $};
-\node[vertex,fill=yellow!40] (o4) at (3,-1) {$\ O_{9}\ $};
-\node[vertex,fill=yellow!40] (o5) at (3,-2) {$\ O_{10}$};
-
-% thread number labels
-\node[below=\offset of i8] {Input Layer};
-\node[below=\offset of m7] {Hidden Layer 1: 300 nodes};
-
-\node[below=\offset of n7] {Hidden Layer 2: 300 nodes};
-\node[below=\offset of o5] {Output Layer};
+\node[vertex,fill=yellow!40] (o1) at (3,1) {$\ O_{1}\ $};
+\node (odots) at (3,.1) {$\vdots$};
+\node[vertex,fill=yellow!40] (o2) at (3,-1) {$\ O_{10}\ $};
 
 % edges
-
-\foreach \j in {1,...,7} {
-    \draw[edge] (orig) -- (m\j);
+\foreach \i in {1,...,6} {
+    \foreach \m in {1,...,4} {
+        \draw[edge] (i\i) -- (m\m);
+    }
 }
-
-\foreach \i in {1,...,8} {
-    \foreach \j in {1,...,7} {
-        \draw[edge] (i\i) -- (m\j);
+\foreach \m in {1,...,4} {
+    \foreach \n in {1,...,4} {
+        \draw[edge] (m\m) -- (n\n);
     }
 }
 
-\foreach \i in {1,...,7} {
-    \foreach \j in {1,...,7} {
-        \draw[edge] (m\i) -- (n\j);
+\foreach \n in {1,...,4} {
+    \foreach \o in {1,...,2} {
+        \draw[edge] (n\n) -- (o\o);
     }
 }
 
-\foreach \i in {1,...,7} {
-    \foreach \j in {1,...,5} {
-        \draw[edge] (n\i) -- (o\j);
-    }
-    
-}
+% layer labels
+\node at (-6,-3.75) {\footnotesize Input Layer};
+\node at (-3,-3.75) {\footnotesize Hidden Layer 1};
+\node at (0,-3.75) {\footnotesize Hidden Layer 2};
+\node at (3,-3.75) {\footnotesize Output Layer};
     
 
 \end{tikzpicture}

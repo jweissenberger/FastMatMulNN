@@ -8,6 +8,7 @@
 \usepackage{textcomp}
 \usepackage{xcolor}
 \usepackage{ifthen}
+\usepackage{flushend}
 
 % cleveref
 \usepackage{hyperref}
@@ -77,7 +78,7 @@ APA algorithms perform asymptotically fewer arithmetic operations than the class
 Practical APA algorithms provide significant reduction in computation time and still provide enough accuracy for many applications like neural network training.
 We demonstrate that APA algorithms can be efficiently implemented and parallelized for shared-memory platforms to obtain up to 28\% and 21\% speedups over the fastest implementation of the classical algorithm using one core and 12 cores, respectively.
 Furthermore, using these algorithms to train a Multi-Layer Perceptron (MLP) network yields no significant reduction in the training or testing error.
-Our performance results on a large MLP network show overall multithreaded performance improvements of up to \GB{W\%}.
+Our performance results on a large MLP network show overall multithreaded performance improvements of up to 13\%.
 \end{abstract}
 
 \section{Introduction}
@@ -110,7 +111,7 @@ In particular we
 	\item curate a collection of well-established and recently discovered practical APA algorithms;
 	\item extend the framework of \cite{BB15} to generate efficient multithreaded code for all of them, achieving up to 21\% performance improvement over the best parallel classical implementation,
 	\item demonstrate the robustness of learning accuracy to approximate matrix multiplications; and
-	\item present multithreaded performance improvements of a synthetic MLP of up to \GB{$Y\times$} over the use of classical matrix multiplication.
+	\item present multithreaded performance improvements of a synthetic MLP of up to 13\% over the use of classical matrix multiplication.
 \end{enumerate}
 
 \section{Practical Arbitrary Precision Approximating Matrix Multiplication Algorithms}
@@ -366,6 +367,7 @@ Ignoring the cost of the matrix additions, $\dims{4,4,4}$ performs 39\% fewer fl
 We note that $\dims{4,4,2}$ is also high performing, achieving a 25\% observed improvement (out of a theoretical 33\%), along with $\dims{3,3,3;20}$ and $\dims{5,5,5}$.
 
 \subsection{Parallel Performance}
+\label{sec:matmul_perf_par}
 
 We report parallel performance in \cref{fig:matmul_par_6,fig:matmul_par_12} for running with 6 threads (one socket) and 12 threads (both sockets).
 Overall, speedups of APA algorithms over classical are reduced in the parallel case.
@@ -386,10 +388,16 @@ This implies that the dimension of the submultiplications does not fall on the p
 The algorithm with no remainder multiplications, $\dims{4,2,2}$, does not suffer this problem and maintains higher performance.
 It exceeds \texttt{sgemm}'s effective performance at dimension 4000, exceeds the peak parallel performance of any classical algorithm for larger dimensions, and achieves a 21\% speedup over \texttt{sgemm} at dimension 8192 for an effective rate of 389 GFLOPS.
 
-\section{Neural Network Accuracy}
-\label{sec:NNacc}
+\section{Application of APA Algorithms in Multi-Layer Perceptron Network Training}
 
-\begin{figure*}[t!]
+\begin{figure}[b]
+\centering
+\input{figs/neuralnet}
+\caption{Multi-Layer Perceptron network structure}
+\label{fig:neuralnet}
+\end{figure}
+
+\begin{figure*}[ht!]
 %
 \subfloat[Training accuracy]{
 \centering
@@ -406,12 +414,25 @@ It exceeds \texttt{sgemm}'s effective performance at dimension 4000, exceeds the
 \input{plots/NN_acc}
 \label{fig:NN_acc_test}}
 %
-\caption{Multi-Layer Perceptron network accuracy for MNIST data set}
+\caption{MLP network accuracy for MNIST data set}
 \label{fig:NN_acc}
 \end{figure*}
 
-To measure the effect of the matrix multiplication error introduced from the APA algorithms on neural network accuracy, we trained a multi-layer perceptron (MLP) network on the MNIST dataset \cite{LBBH98} and measured its accuracy over the course of training. 
-The network was created using Tensorflow version 2.2.0.
+\subsection{MLP Network Structure}
+
+To illustrate the effectiveness of APA algorithms in neural network training, we consider Multi-Layer Perceptron networks, as shown in \cref{fig:neuralnet}.
+We use TensorFlow 2.2.0 to build the networks and implement custom operators for matrix multiplication.
+For internal layers, we use the custom operator for both forward propagation and gradient calculation.
+For fair comparison against the classical algorithm, we use a custom classical operator that directly calls \texttt{sgemm}, which significantly outperformed TensorFlow's built-in matrix multiplication operator for fully connected layers.
+
+We show an MLP network with two hidden layers in \cref{fig:neuralnet}.
+The dimensions in the figure match those of the accuracy experiment described in \cref{sec:NNacc}.
+For the performance experiment of \cref{sec:NNperf}, we use an MLP with four hidden layers and varying numbers of nodes in the hidden layers.
+
+\subsection{Accuracy}
+\label{sec:NNacc}
+
+To measure the effect of the matrix multiplication error introduced from the APA algorithms on neural network accuracy, we trained an MLP network on the MNIST dataset \cite{LBBH98} and measured its accuracy over the course of training. 
 
 MNIST is a common machine learning dataset of 70,000 images of hand-written numerical digits. 
 Each of the images are composed of 28 by 28 grayscale pixels, which are flattened into a vector of length 784.
@@ -425,16 +446,10 @@ One network was trained for 50 epochs for each of the APA algorithms and one was
 
 \Cref{fig:NN_acc_train} plots the accuracy on the training data over each epoch, and \cref{fig:NN_acc_test} shows the test accuracy over epochs. 
 The matrix multiplication error introduced from these algorithms had minimal effect on the training error; all algorithms yielded convergence to nearly full accuracy after 20 epochs or so.
-We see more variability in the test error due to the sensitivity inherent in generalizability of the model, though all algorithms achieve between 97\% and 99\% test accuracy.
+We see more variability in the test error due to the sensitivity inherent in the generalizability of the model, though all algorithms achieve between 97\% and 99\% test accuracy.
 
-\section{Neural Network Performance}
+\subsection{Performance}
 \label{sec:NNperf}
-
-The neural networks used for performance benchmarking were 6 layer (4 hidden layers), fully connected networks and were trained on the MNIST dataset. The purpose of these experiments was to measure the speed up in training time provided by the APA algorithms and not to measure the accuracy performance of the networks. The APA algorithms were used only in the multiplications in the hidden layers during forwards and backward propagation. 
-
-Similar to other benchmarks [https://github.com/Emma926/paradnn] on fully connected networks, we measured the performance of each algorithm with the number of nodes in each hidden layer from 2^9 to 20^13. We also matched the batch size of each network to the number of nodes in the hidden layer which produces square multiplications in the hidden layers. We ran these tests using 1, 6 and 12 threads.
-
-The single threaded results began to show speed up over the classical algorithm when the matrix dimensions were 2^10 and were able to show over a 20\% speed up when the dimensions were 2^13. It was more difficult to get performance improvements with more threads but both 6 and 12 thread results were able to show improvement in the larger dimensions. At 6 threads, the best algorithms showed small improvements when the dimensions were 2^11 and were able to get over a 10\% improvement at 2^13. The 12 thread algorithms were not able to see an improvement until the dimensions were 2^12 and were not able to get 10\% improvement at 2^13.
 
 \begin{figure*}[t!]
 %
@@ -465,14 +480,27 @@ The single threaded results began to show speed up over the classical algorithm 
 \label{fig:NNreltime}
 \end{figure*}
 
+The neural networks used for performance benchmarking were 6-layer MLPs (4 hidden layers), and were trained on the MNIST dataset. 
+We base the structure of the network on the fully connected canonical model of ParaDnn \cite{WWB20}.
+The purpose of these experiments was to measure the speed up in training time provided by the APA algorithms and not to measure the accuracy of the networks. 
+The APA algorithms are used only in the multiplications in the hidden layers during both forward and backward propagation; the standard operation was used in the input and output layers. 
 
-\begin{figure}
-	\centering
-	\input{figs/neuralnet}
-	\caption{MNIST Neural Networks}
-	\label{fig:neuralnet}
-	\end{figure}
+Following the methodology of ParaDnn, we measure the performance of each algorithm with the number of nodes in each hidden layer varying from 512 to 8192. 
+We also match the batch size of each network to the number of nodes in the hidden layer to produce square matrix multiplications in the hidden layers. 
+\cref{fig:NNreltime} shows the empirical results using 1, 6, and 12 threads.
 
+As shown in \cref{fig:NNreltime_seq}, the single-threaded results begin to show speed up over the classical algorithm when the matrix dimensions are 1024.
+The highest performing algorithm is $\dims{4,4,4}$, which obtains a 25\% speed up at dimension 8192. 
+All algorithms outperform classical for dimensions 4096 and 8192.
+
+\Cref{fig:NNreltime_par_6} shows the results for six threads (one socket).
+As described in \cref{sec:matmul_perf_par}, the APA algorithms do not scale to higher numbers of cores as efficiently as \texttt{sgemm}, due to both the overhead of matrix additions (a memory bandwidth bottleneck) and reduced parallel performance of \texttt{sgemm} for smaller dimensions.
+In this case, not all APA algorithms outperform the classical algorithm.
+The highest performing algorithms are $\dims{4,4,2}$ and $\dims{4,4,4}$, which obtain an improvement of 13\% for dimension 8192.
+
+In the case of 12 threads (both sockets), as shown in \cref{fig:NNreltime_par_12}, most APA algorithms underperform the classical algorithm.
+These results match the behavior of standalone matrix multiplications using 12 threads (see \cref{sec:matmul_perf_par}); the lack of scaling is due in large part to the poor performance of multithreaded \texttt{sgemm} on remainder multiplications of small dimensions.
+The algorithm with a number of sub-multiplications that is a multiple of 12, $\dims{4,4,2}$, continues to perform well and is slightly faster than the classical algorithm for dimensions 4096 and 8192, attaining speedups of up to 5\%.
 
 \section{Conclusion}
 
@@ -480,7 +508,7 @@ Arbitrary Precision Approximating algorithms offer significant practical perform
 They outperform classical matrix multiplication at smaller matrix dimensions and yield greater benefits as matrix dimensions increase.
 APA algorithms sacrifice accuracy, achieving error of only a fractional root of the working precision, but they can be practical for applications that do not demand high accuracy.
 The results presented here show that neural network training, particularly for Multi-Layer Perceptron networks, is robust to such matrix multiplication error, and APA algorithms are a useful tool for accelerating the costly training computations.
-We observe that for APA algorithms offering a theoretical speedup of up to 39\%, we can achieve up to 28\% and 21\% improvements for single-threaded and multi-threaded implementations of individual matrix multiplications, respectively, which translate to up to \GB{W\%} speedup in overall training time on a multicore CPU.
+We observe that for APA algorithms offering a theoretical speedup of up to 39\%, we can achieve up to 28\% and 21\% improvements for single-threaded and multi-threaded implementations of individual matrix multiplications, respectively, which translate to up to 13\% speedup in overall training time on a multicore CPU.
 
 While the accuracy and performance results are promising for MLP networks and the MNIST dataset, we believe that APA algorithms can also be effective in state-of-the-art networks and more difficult machine learning problems.
 For example, the VGG-19 network for large-scale visual recognition \cite{SZ15} is based on a deep convolutional network and is bottlenecked by large fully connected layers, including a layer with dimensions $25088\times 4096$, where APA algorithms can offer significant performance improvement.
@@ -494,6 +522,10 @@ For very large matrices, it may also be beneficial to consider more than one rec
 Finally, we would like to extend the code generation techniques to other hardware platforms, including GPUs.
 Because GPUs can offer higher efficiency for matrix multiplications, we wish to demonstrate the potential of APA algorithms in that environment.
 Techniques used to accelerate Strassen's algorithm on the GPU \cite{HYvdG20,LAES13} can be generalized to other fast algorithms as done in work for multicore CPUs \cite{BB15,HRMvdG17}.
+
+\section*{Acknowledgments}
+
+This material is based upon work supported by the NSF Grant No. CCF1942892 and a Wake Forest University Undergraduate Research and Creative Activities (URECA) Research Fellowship.
 
 \bibliographystyle{IEEEtran}
 \bibliography{refs}
