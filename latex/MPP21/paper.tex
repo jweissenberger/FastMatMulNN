@@ -96,6 +96,7 @@ Thus, APA algorithms are often considered to have insufficient accuracy for most
 
 Our goal in this paper is to demonstrate that APA algorithms can offer practical performance improvements for applications that are tolerant to error in matrix multiplications, notably the training phase of neural networks.
 Training large neural networks is computationally expensive and the cost has spurred a surge of research into more efficient hardware, better algorithms, and techniques for trading off accuracy for performance.
+\JW{try to add example stat on how much time/money is spent on NN training}
 For instance, low-precision arithmetic has been shown to decrease running time with little to no effect on the ultimate learning task \cite{GAGN15,HCSEB17}, and new floating point formats have been developed and supported in hardware to implement highly efficient low- and mixed-precision computation \cite{KM+19,YWC20}.
 
 Matrix multiplication in particular is a bottleneck computation for many neural networks.
