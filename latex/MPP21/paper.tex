@@ -32,6 +32,7 @@
 \def\BibTeX{{\rm B\kern-.05em{\sc i\kern-.025em b}\kern-.08em
     T\kern-.1667em\lower.7ex\hbox{E}\kern-.125emX}}
 
+
 \newcommand*{\email}[1]{\href{mailto:#1}{\nolinkurl{#1}} } 
 \newcommand{\dims}[1]{\langle #1 \rangle}
 
@@ -45,6 +46,8 @@
 \newcommand{\RZ}[1]{\textcolor{purple}{\textbf{RZ}: #1}}
 
 \begin{document}
+
+\bstctlcite{IEEE:BSTcontrol}
 
 \title{Accelerating Neural Network Training using Arbitrary Precision Approximating Matrix Multiplication Algorithms
 %\thanks{Identify applicable funding agency here. If none, delete this.}
@@ -96,7 +99,7 @@ Thus, APA algorithms are often considered to have insufficient accuracy for most
 
 Our goal in this paper is to demonstrate that APA algorithms can offer practical performance improvements for applications that are tolerant to error in matrix multiplications, notably the training phase of neural networks.
 Training large neural networks is computationally expensive and the cost has spurred a surge of research into more efficient hardware, better algorithms, and techniques for trading off accuracy for performance.
-\JW{try to add example stat on how much time/money is spent on NN training}
+\JW{try to add example stat on how much time/money is spent on NN training \cite{BM+20}}
 For instance, low-precision arithmetic has been shown to decrease running time with little to no effect on the ultimate learning task \cite{GAGN15,HCSEB17}, and new floating point formats have been developed and supported in hardware to implement highly efficient low- and mixed-precision computation \cite{KM+19,YWC20}.
 
 Matrix multiplication in particular is a bottleneck computation for many neural networks.
