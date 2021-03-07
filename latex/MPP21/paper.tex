@@ -133,8 +133,9 @@ A key characteristic of matrix multiplication, first demonstrated by Bini et al.
 An APA algorithm is one that takes as input $A$, $B$, and a scalar parameter $0<\lambda<1$ and computes 
 \begin{equation}
 \label{eq:APAapprox}
-\hat C = A\cdot B + \lambda E + O(\lambda^2).
+\hat C = A\cdot B + \lambda E + O(\lambda^2),
 \end{equation}
+where $E$ is an error matrix that depends on $A$ and $B$ and corresponds to the leading term of the error polynomial.
 Thus, in exact arithmetic, letting $\lambda \rightarrow 0$ achieves arbitrarily small approximation error.
 In floating point arithmetic, choosing too small a value for $\lambda$ leads to accumulation of roundoff error that exceeds the approximation error.
 We discuss optimizing $\lambda$ in \cref{sec:APAerr}.
@@ -161,14 +162,15 @@ M_9 =& (A_{21} + \lambda A_{31}) \cdot (B_{12} - \lambda B_{22})\\
 M_{10} =& (\lambda A_{31} + A_{32}) \cdot (B_{12} - \lambda B_{22})\\
 \end{align*}
 \begin{align*}
-C_{11} =& \lambda^{-1} (M_1 + M_2 - M_3 + M_4) \\
-C_{12} =& \lambda^{-1} (-M_3 + M_5) \\
-C_{21} =& M_4 + M_6 - M_{10}\\
-C_{22} =& M_1 - M_5 + M_9\\
-C_{31} =& \lambda^{-1} (-M_8 + M_{10}) \\
-C_{32} =& \lambda^{-1} (M_6 + M_7 - M_8 + M_9).\\
+\hat C_{11} =& \lambda^{-1} (M_1 + M_2 - M_3 + M_4) \\
+\hat C_{12} =& \lambda^{-1} (-M_3 + M_5) \\
+\hat C_{21} =& M_4 + M_6 - M_{10}\\
+\hat C_{22} =& M_1 - M_5 + M_9\\
+\hat C_{31} =& \lambda^{-1} (-M_8 + M_{10}) \\
+\hat C_{32} =& \lambda^{-1} (M_6 + M_7 - M_8 + M_9).\\
 \end{align*}
 
+\GB{give explicit expression for $\hat{C}_{11}$ and reference \cref{eq:APAapprox}}
 We highlight several properties of the rule which are common across all APA algorithms we consider.
 First, the rule requires fewer multiplications than the classical one (rank 10 instead of 12 for $\dims{3,2,2}$ here).
 Next, each multiplication is between a linear combination of entries of $A$ and a linear combination of entries of $B$, each output entry is computed as a linear combination of the outputs of the multiplications, and each coefficient in the linear combinations is a (Laurent) polynomial in $\lambda$.
@@ -183,7 +185,7 @@ For example, encoding the first multiplication $M_1$ in Bini's algorithm can be 
 \begin{bmatrix} \lambda & 0 \\ 0 & 1 \end{bmatrix}, \hfill
 \begin{bmatrix} \lambda^{-1} & 0 \\ 0 & 1 \\ 0 & 0 \end{bmatrix}.
 \end{equation}
-The first two matrices specify the linear combinations taken of entries of $A$ and $B$, and the third matrix specifies the contributions of $M_1$ to the entries of $C$.
+The first two matrices specify the linear combinations taken of entries of $A$ and $B$, and the third matrix specifies the contributions of $M_1$ to the entries of $\hat C$.
 Ten such triplets completely specify Bini's algorithm.
 
 \begin{table}
@@ -500,7 +502,7 @@ The highest performing algorithms are $\dims{4,4,2}$ and $\dims{4,4,4}$, which o
 
 In the case of 12 threads (both sockets), as shown in \cref{fig:NNreltime_par_12}, most APA algorithms underperform the classical algorithm.
 These results match the behavior of standalone matrix multiplications using 12 threads (see \cref{sec:matmul_perf_par}); the lack of scaling is due in large part to the poor performance of multithreaded \texttt{sgemm} on remainder multiplications of small dimensions.
-The algorithm with a number of sub-multiplications that is a multiple of 12, $\dims{4,4,2}$, continues to perform well and is slightly faster than the classical algorithm for dimensions 4096 and 8192, attaining speedups of up to 5\%.
+The algorithm with a number of sub-multiplications that is a multiple of 12, $\dims{4,4,2}$, continues to perform well and is slightly faster than the classical algorithm for dimensions 4096 and 8192, attaining speedups of up to 7\%.
 
 \section{Conclusion}
 
