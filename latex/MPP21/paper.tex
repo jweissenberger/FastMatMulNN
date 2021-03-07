@@ -175,9 +175,9 @@ M_{10} =& (\lambda A_{31} + A_{32}) \cdot (B_{12} - \lambda B_{22})\\
 \hat C_{31} =& \lambda^{-1} (-M_8 + M_{10}) \\
 \hat C_{32} =& \lambda^{-1} (M_6 + M_7 - M_8 + M_9).\\
 \end{align*}
+For example, this rule computes the first entry of the output matrix as $\hat C_{11} = A_{11}  B_{11} + A_{12}  B_{21} - \lambda A_{12}  B_{11}$.
+Thus, in this case, the first entry of the error matrix $E$ in \cref{eq:APAapprox} is $E_{11} = A_{12}  B_{11}$.
 
-We can also expressed for $\hat{C}_{11}$ as $\hat C_{11} = A_{11} \cdot B_{11} + A_{12} \cdot B_{21} - \lambda (A_{12} \cdot B_{11})$, where $E = A_{12} \cdot B_{11}$ is the error matrix.
-\GB{give explicit expression for $\hat{C}_{11}$ and reference \cref{eq:APAapprox}}
 We highlight several properties of the rule which are common across all APA algorithms we consider.
 First, the rule requires fewer multiplications than the classical one (rank 10 instead of 12 for $\dims{3,2,2}$ here).
 Next, each multiplication is between a linear combination of entries of $A$ and a linear combination of entries of $B$, each output entry is computed as a linear combination of the outputs of the multiplications, and each coefficient in the linear combinations is a (Laurent) polynomial in $\lambda$.
