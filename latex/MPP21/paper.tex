@@ -86,7 +86,7 @@ Our performance results on a large MLP network show overall sequential and multi
 
 \section{Introduction}
 
-\emph{Fast} matrix multiplication algorithms are those that perform fewer than the $2n^3+O(n^2)$ flops performed by the classical algorithm.
+\emph{Fast} matrix multiplication algorithms are those that perform fewer than the $2n^3+O(n^2)$ floating point operations (flops) performed by the classical algorithm.
 For example, Strassen's original fast matrix multiplication algorithm performs $O(n^{\log_2 7})$ flops, where $\log_27 \approx 2.81$ \cite{Strassen69}.
 The true complexity of matrix multiplication, typically measured as the exponent $\omega$ for complexity $O(n^\omega)$ is an open question, but the current tightest upper bound is 2.37286 \cite{AW21}.
 Upper bounds in this range correspond to theoretical algorithms that are not expected to be practical.
@@ -98,9 +98,11 @@ In floating point arithmetic, however, there is a lower bound on the approximati
 Thus, APA algorithms are often considered to have insufficient accuracy for most applications and have largely been overlooked as practical tools despite their performance potential and ability to outperform their exact counterparts \cite{BB15}.
 
 Our goal in this paper is to demonstrate that APA algorithms can offer practical performance improvements for applications that are tolerant to error in matrix multiplications, notably the training phase of neural networks.
-Training large neural networks is computationally expensive and the cost has spurred a surge of research into more efficient hardware, better algorithms, and techniques for trading off accuracy for performance.
+Training large neural networks can be incredibly computationally expensive.
+For example,  OpenAI's most recent language model, GPT-3, spent the equivalent of thousands of days training on a petaflop machine \cite{BM+20}. 
+Even a slight reduction in flops could save a large amount of time and money.
+This steep cost has spurred a surge of research into more efficient hardware, better algorithms, and techniques for trading off accuracy for performance.
 For instance, low-precision arithmetic has been shown to decrease running time with little to no effect on the ultimate learning task \cite{GAGN15,HCSEB17}, and new floating point formats have been developed and supported in hardware to implement highly efficient low- and mixed-precision computation \cite{KM+19,YWC20}.
-\JW{Open-AI's most recent language model, GPT-3, spent the equivalent of days training on a petaflop machine. Even a slight reduction in flops could save a large amount of time and reduce server costs.}\cite{BM+20}
 
 Matrix multiplication in particular is a bottleneck computation for many neural networks.
 Forward and backward propagation in training the weights of fully connected layers requires matrix multiplication with dimensions given by the sizes of the layers and number of batch samples.
