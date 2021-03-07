@@ -254,7 +254,7 @@ Overall, we see little fluctuation of the error over matrix dimension, and the t
 Note that the legend is ordered according to the error parameters, and the empirical error generally follows this ordering.
 The two most accurate APA algorithms are the least recently discovered: Bini's $\dims{3,2,2}$ and Schonhage's $\dims{3,3,3;21}$.
 Algorithms that offer more potential speedup tend to be less accurate.
-Two algorithms with smaller error than expected are $\dims{5,5,5}$ and ${7,2,2}$, which is explained by the coefficients of those algorithms including fraction pre-factors.
+Two algorithms with smaller error than expected are $\dims{5,5,5}$ and $\dims{7,2,2}$, which is explained by the coefficients of those algorithms including fraction pre-factors.
 While $\phi$ is computed using the exponents of the largest intermediate term of $\lambda$, the leading term of $\dims{5,5,5}$ has a constant of $1/4$, lessening its magnitude. 
 We study the effects of the matrix multiplication error on neural network training and test accuracy in \cref{sec:NNacc}.
 
@@ -307,7 +307,7 @@ We note that the original code generation tool was designed primarily for exact 
 
 We adopt the ``hybrid'' parallelization strategy proposed by Benson and Ballard \cite{BB15}.
 All linear combinations are parallelized in a straightforward way, in order to maximize the memory bandwidth of the machine.
-The multiplications are parallelized as follows: given $r$ multiplications and $p$ threads, with $r=p\cdot q + \ell$ for integers $q$ and $\ell<r$, we assign each thread $q$ multiplications to be performed independently, and the remaining $\ell$ multiplications are performed by all threads using the multithreaded implementation of \texttt{gemm}.
+The multiplications are parallelized as follows: given $r$ multiplications and $p$ threads, with $r=p\cdot q + \ell$ for integers $q$ and $\ell<p$, we assign each thread $q$ multiplications to be performed independently, and the remaining $\ell$ multiplications are performed by all threads using the multithreaded implementation of \texttt{gemm}.
 \Cref{fig:hybrid} shows the hybrid strategy for $r=10$ (Bini's algorithm) and $p=4$.
 
 \begin{figure}
