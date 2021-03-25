@@ -145,12 +145,21 @@ def writer(in_file, out_file):
 
 
 if __name__ == "__main__":
-
+    
     in_files = ['bini322_10_52_approx.hpp', "schonhage333_21_117_approx.hpp", "smirnov224_13_91_approx.hpp",
-                "smirnov225_16_124_approx.hpp", "smirnov272_22_198_approx.hpp", "smirnov323_14_108_approx.hpp",
+                "smirnov225_16_124_approx.hpp", "smirnov272_22_198_approx.hpp","smirnov323_14_108_approx.hpp",
                 "smirnov333_20_182_approx.hpp", "smirnov334_27_202_approx.hpp", "smirnov442_24_180_approx.hpp",
                 "smirnov444_46_352_approx.hpp", "smirnov552_37_262_approx.hpp", "smirnov555_90_710_approx.hpp",
-                "strassen.hpp"]
+                "strassen.hpp", 
+                'bini232_10_52_approx.hpp', 'bini223_10_52_approx.hpp', 
+                "smirnov242_13_91_approx.hpp", "smirnov422_13_91_approx.hpp", 
+                "smirnov252_16_124_approx.hpp", "smirnov522_16_124_approx.hpp", 
+                "smirnov227_22_198_approx.hpp", "smirnov722_22_198_approx.hpp", 
+                "smirnov332_14_108_approx.hpp", "smirnov233_14_108_approx.hpp", 
+                "smirnov343_27_202_approx.hpp", "smirnov433_27_202_approx.hpp", 
+                "smirnov424_24_180_approx.hpp", "smirnov244_24_180_approx.hpp",
+                "smirnov525_37_262_approx.hpp", "smirnov255_37_262_approx.hpp"
+                ]
 
     for i in in_files:
         if i == "strassen.hpp":
