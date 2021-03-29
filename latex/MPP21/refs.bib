@@ -1,5 +1,11 @@
 %!TEX root = paper.tex
 
+@IEEEtranBSTCTL{IEEE:BSTcontrol,
+  CTLuse_forced_etal       = "yes",
+  CTLmax_names_forced_etal = "5",
+  CTLnames_show_etal       = "2" 
+}
+
 @Article{BCRL79,
   Title                    = { {$O(n^{2.7799})$} complexity for {$n \times n$} approximate matrix multiplication},
   Author                   = {D. Bini and M. Capovani and F. Romani and G. Lotti},
@@ -14,6 +20,18 @@
   ISSN                     = {0020-0190},
   Keywords                 = {Analysis of algorithms; computational complexity; numerical mathematics},
   Url                      = {http://dx.doi.org/10.1016/0020-0190(79)90113-3}
+}
+
+@InProceedings{BM+20,
+  author    = {Brown, Tom and Mann, Benjamin and Ryder, Nick and Subbiah, Melanie and Kaplan, Jared D and Dhariwal, Prafulla and Neelakantan, Arvind and Shyam, Pranav and Sastry, Girish and Askell, Amanda and Agarwal, Sandhini and Herbert-Voss, Ariel and Krueger, Gretchen and Henighan, Tom and Child, Rewon and Ramesh, Aditya and Ziegler, Daniel and Wu, Jeffrey and Winter, Clemens and Hesse, Chris and Chen, Mark and Sigler, Eric and Litwin, Mateusz and Gray, Scott and Chess, Benjamin and Clark, Jack and Berner, Christopher and McCandlish, Sam and Radford, Alec and Sutskever, Ilya and Amodei, Dario},
+  title     = {Language Models are Few-Shot Learners},
+  booktitle = {Advances in Neural Information Processing Systems},
+  year      = {2020},
+  editor    = {H. Larochelle and M. Ranzato and R. Hadsell and M. F. Balcan and H. Lin},
+  volume    = {33},
+  pages     = {1877--1901},
+  publisher = {Curran Associates, Inc.},
+  url       = {https://papers.nips.cc/paper/2020/hash/1457c0d6bfcb4967418bfb8ac142f64a-Abstract.html},
 }
 
 @Article{LBBH98,
@@ -82,7 +100,7 @@
 
 @InProceedings{LAES13,
   author    = {P. {Lai} and H. {Arafat} and V. {Elango} and P. {Sadayappan}},
-  title     = {Accelerating Strassen-Winograd's matrix multiplication algorithm on {GPU}s},
+  title     = {Accelerating {Strassen-Winograd's} matrix multiplication algorithm on {GPU}s},
   booktitle = {20th Annual International Conference on High Performance Computing},
   year      = {2013},
   pages     = {139-148},
@@ -366,7 +384,6 @@
   title     = {Tensorizing Neural Networks},
   booktitle = {Advances in Neural Information Processing Systems},
   year      = {2015},
-  editor    = {C. Cortes and N. Lawrence and D. Lee and M. Sugiyama and R. Garnett},
   volume    = {28},
   publisher = {Curran Associates, Inc.},
   file      = {:NPOV15.pdf:PDF},
