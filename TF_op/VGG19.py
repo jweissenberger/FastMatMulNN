@@ -2,12 +2,17 @@
 
 Code copied from: https://github.com/tensorflow/tensorflow/blob/v2.4.1/tensorflow/python/keras/applications/vgg19.py
 
+# tensorflow 2.4.1
+
 Reference:
   - [Very Deep Convolutional Networks for Large-Scale Image Recognition](
       https://arxiv.org/abs/1409.1556) (ICLR 2015)
 """
 
 import time
+import os
+
+import numpy as np
 
 from tensorflow.python.keras import backend
 from tensorflow.python.keras.applications import imagenet_utils
@@ -51,17 +56,17 @@ epsilon_values = {
 
 
 
-@tf.RegisterGradient("FastMatMul")
-def _Fast_MatMul_grad(op, grad):
-    bt = array_ops.transpose(op.inputs[1])
-    at = array_ops.transpose(op.inputs[0])
-    grad_a = fast_mm_module.FastMatMul(a_matrix=grad, b_matrix=bt, epsilon=1e-2, steps=1, numthreads=num_threads)
-    grad_b = fast_mm_module.FastMatMul(a_matrix=at, b_matrix=grad, epsilon=1e-2, steps=1, numthreads=num_threads)
-    # a = math_ops.conj(op.inputs[0])
-    # b = math_ops.conj(op.inputs[1])
-    # grad_a = gen_math_ops.mat_mul(grad, b, transpose_b=True)
-    # grad_b = gen_math_ops.mat_mul(a, grad, transpose_a=True)
-    return grad_a, grad_b
+# @tf.RegisterGradient("FastMatMul")
+# def _Fast_MatMul_grad(op, grad):
+#     bt = array_ops.transpose(op.inputs[1])
+#     at = array_ops.transpose(op.inputs[0])
+#     grad_a = fast_mm_module.FastMatMul(a_matrix=grad, b_matrix=bt, epsilon=1e-2, steps=1, numthreads=num_threads)
+#     grad_b = fast_mm_module.FastMatMul(a_matrix=at, b_matrix=grad, epsilon=1e-2, steps=1, numthreads=num_threads)
+#     # a = math_ops.conj(op.inputs[0])
+#     # b = math_ops.conj(op.inputs[1])
+#     # grad_a = gen_math_ops.mat_mul(grad, b, transpose_b=True)
+#     # grad_b = gen_math_ops.mat_mul(a, grad, transpose_a=True)
+#     return grad_a, grad_b
 
 
 class Fast_Linear(keras.layers.Layer):
@@ -80,8 +85,8 @@ class Fast_Linear(keras.layers.Layer):
         self.epsilon = epsilon_values.get(self.mm, 1e-2)
 
     def call(self, inputs):
-        return fast_mm_module.FastMatMul(a_matrix=inputs, b_matrix=self.w, epsilon=self.epsilon, steps=1,
-                                         numthreads=num_threads) + self.b
+        return tf.nn.relu(fast_mm_module.FastMatMul(a_matrix=inputs, b_matrix=self.w, epsilon=self.epsilon, steps=1,
+                                                    numthreads=num_threads) + self.b)
 
 
 def VGG19(
@@ -223,12 +228,16 @@ def VGG19(
   if include_top:
     # Classification block
     x = layers.Flatten(name='flatten')(x)
+    print(x.shape)
     # swap here with fast_linear
     x = layers.Dense(4096, activation='relu', name='fc1')(x)
+    print(x.shape)
     x = layers.Dense(4096, activation='relu', name='fc2')(x)
     imagenet_utils.validate_activation(classifier_activation, weights)
     x = layers.Dense(classes, activation=classifier_activation,
                      name='predictions')(x)
+    print(x.shape)
+
   else:
     if pooling == 'avg':
       x = layers.GlobalAveragePooling2D()(x)
@@ -267,5 +276,21 @@ def VGG19(
 
 if __name__ == '__main__':
 
-    start = time.time()
-    fast_mm_module = tf.load_op_library(f'obj/{mm_algo}_mat_mul.so')
+    # start = time.time()
+    # fast_mm_module = tf.load_op_library(f'obj/{mm_algo}_mat_mul.so')
+    #
+    # tf.keras.applications.vgg19.preprocess_input()
+
+    #print(os.listdir('/Users/jackweissenberger/Documents/ILSVRC2012_img_train_t3/n02085620'))
+
+    image = tf.image.decode_jpeg(tf.io.read_file('/Users/jackweissenberger/Documents/ILSVRC2012_img_train_t3/n02085620/n02085620_7.JPEG'))
+    print(image.shape)
+
+    image = tf.keras.applications.vgg19.preprocess_input(image)
+    print(image.shape)
+    image = tf.image.resize(image, (224, 224))
+    image = tf.reshape(image, [1, 224, 224, 3])
+
+    model = VGG19(include_top=True, weights=None, input_tensor=None, pooling=None)
+
+    print(model(image))
