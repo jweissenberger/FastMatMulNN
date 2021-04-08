@@ -56,21 +56,21 @@ epsilon_values = {
 
 
 
-# @tf.RegisterGradient("FastMatMul")
-# def _Fast_MatMul_grad(op, grad):
-#     bt = array_ops.transpose(op.inputs[1])
-#     at = array_ops.transpose(op.inputs[0])
-#     grad_a = fast_mm_module.FastMatMul(a_matrix=grad, b_matrix=bt, epsilon=1e-2, steps=1, numthreads=num_threads)
-#     grad_b = fast_mm_module.FastMatMul(a_matrix=at, b_matrix=grad, epsilon=1e-2, steps=1, numthreads=num_threads)
-#     # a = math_ops.conj(op.inputs[0])
-#     # b = math_ops.conj(op.inputs[1])
-#     # grad_a = gen_math_ops.mat_mul(grad, b, transpose_b=True)
-#     # grad_b = gen_math_ops.mat_mul(a, grad, transpose_a=True)
-#     return grad_a, grad_b
+@tf.RegisterGradient("FastMatMul")
+def _Fast_MatMul_grad(op, grad):
+    bt = array_ops.transpose(op.inputs[1])
+    at = array_ops.transpose(op.inputs[0])
+    grad_a = fast_mm_module.FastMatMul(a_matrix=grad, b_matrix=bt, epsilon=1e-2, steps=1, numthreads=num_threads)
+    grad_b = fast_mm_module.FastMatMul(a_matrix=at, b_matrix=grad, epsilon=1e-2, steps=1, numthreads=num_threads)
+    # a = math_ops.conj(op.inputs[0])
+    # b = math_ops.conj(op.inputs[1])
+    # grad_a = gen_math_ops.mat_mul(grad, b, transpose_b=True)
+    # grad_b = gen_math_ops.mat_mul(a, grad, transpose_a=True)
+    return grad_a, grad_b
 
 
 class Fast_Linear(keras.layers.Layer):
-    def __init__(self, units=32, input_dim=32):
+    def __init__(self, units=32, input_dim=32, activation='relu'):
         super(Fast_Linear, self).__init__()
         w_init = tf.random_normal_initializer()
         self.w = tf.Variable(
@@ -84,9 +84,15 @@ class Fast_Linear(keras.layers.Layer):
 
         self.epsilon = epsilon_values.get(self.mm, 1e-2)
 
+        self.activation = activation
+
     def call(self, inputs):
-        return tf.nn.relu(fast_mm_module.FastMatMul(a_matrix=inputs, b_matrix=self.w, epsilon=self.epsilon, steps=1,
-                                                    numthreads=num_threads) + self.b)
+        output = fast_mm_module.FastMatMul(a_matrix=inputs, b_matrix=self.w, epsilon=self.epsilon, steps=1,
+                                                    numthreads=num_threads) + self.b
+        if self.activation == 'softmax':
+            return tf.nn.softmax(output)
+        else:
+            return tf.nn.relu(output)
 
 
 def VGG19(
@@ -229,13 +235,22 @@ def VGG19(
     # Classification block
     x = layers.Flatten(name='flatten')(x)
     print(x.shape)
-    # swap here with fast_linear
-    x = layers.Dense(4096, activation='relu', name='fc1')(x)
+
+    #x = layers.Dense(4096, activation='relu', name='fc1')(x)
+    fast_layer1 = Fast_Linear(units=4096, input_dim=25088, activation='relu')
+    x = fast_layer1(x)
     print(x.shape)
-    x = layers.Dense(4096, activation='relu', name='fc2')(x)
-    imagenet_utils.validate_activation(classifier_activation, weights)
-    x = layers.Dense(classes, activation=classifier_activation,
-                     name='predictions')(x)
+
+    #x = layers.Dense(4096, activation='relu', name='fc2')(x)
+    fast_layer2 = Fast_Linear(units=4096, input_dim=4096, activation='relu')
+    x = fast_layer2(x)
+    print(x.shape)
+
+    #imagenet_utils.validate_activation(classifier_activation, weights)
+
+    #x = layers.Dense(classes, activation=classifier_activation, name='predictions')(x)
+    fast_output_layer = Fast_Linear(units=classes, input_dim=4096, activation='softmax')
+    x = fast_output_layer(x)
     print(x.shape)
 
   else:
@@ -277,13 +292,11 @@ def VGG19(
 if __name__ == '__main__':
 
     # start = time.time()
-    # fast_mm_module = tf.load_op_library(f'obj/{mm_algo}_mat_mul.so')
+    fast_mm_module = tf.load_op_library(f'obj/{mm_algo}_mat_mul.so')
     #
     # tf.keras.applications.vgg19.preprocess_input()
 
-    #print(os.listdir('/Users/jackweissenberger/Documents/ILSVRC2012_img_train_t3/n02085620'))
-
-    image = tf.image.decode_jpeg(tf.io.read_file('/Users/jackweissenberger/Documents/ILSVRC2012_img_train_t3/n02085620/n02085620_7.JPEG'))
+    image = tf.image.decode_jpeg(tf.io.read_file('test_image.JPEG'))
     print(image.shape)
 
     image = tf.keras.applications.vgg19.preprocess_input(image)
