@@ -87,6 +87,9 @@ class Fast_Linear(keras.layers.Layer):
         self.activation = activation
 
     def call(self, inputs):
+        print('\ninputs * weights')
+        print('inputs shape:', inputs.shape)
+        print('weights shape:', self.w.shape)
         output = fast_mm_module.FastMatMul(a_matrix=inputs, b_matrix=self.w, epsilon=self.epsilon, steps=1,
                                                     numthreads=num_threads) + self.b
         if self.activation == 'softmax':
