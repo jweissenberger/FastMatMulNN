@@ -82,7 +82,7 @@ class Fast_Linear(keras.layers.Layer):
             initial_value=b_init(shape=(units,), dtype="float32"), trainable=True
         )
 
-        self.epsilon = epsilon_values.get(self.mm, 1e-2)
+        self.epsilon = epsilon_values.get(mm_algo, 1e-2)
 
         self.activation = activation
 
@@ -306,4 +306,17 @@ if __name__ == '__main__':
 
     model = VGG19(include_top=True, weights=None, input_tensor=None, pooling=None)
 
-    print(model(image))
+    #print(model(image))
+
+    model.compile(
+        optimizer=keras.optimizers.RMSprop(),  # Optimizer
+        # Loss function to minimize
+        loss=keras.losses.SparseCategoricalCrossentropy(),
+        # List of metrics to monitor
+        metrics=[keras.metrics.SparseCategoricalAccuracy()],
+    )
+
+    y_train = tf.ones([4])
+    x_train = tf.concat([image, image, image, image], 0)
+
+    model.fit(x_train, y_train, batch_size=4, epochs=2)
