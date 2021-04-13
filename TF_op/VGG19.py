@@ -318,6 +318,8 @@ if __name__ == '__main__':
 
     y_train = tf.ones([num_examples])
     x_train = []
+    for i in range (num_examples):
+        x_train.append(image)
 
     x_train = tf.concat(x_train, 0)
 
