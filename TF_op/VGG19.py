@@ -294,22 +294,16 @@ def VGG19(
 
 if __name__ == '__main__':
 
-    # start = time.time()
     fast_mm_module = tf.load_op_library(f'obj/{mm_algo}_mat_mul.so')
-    #
-    # tf.keras.applications.vgg19.preprocess_input()
 
     image = tf.image.decode_jpeg(tf.io.read_file('test_image.JPEG'))
-    print(image.shape)
 
     image = tf.keras.applications.vgg19.preprocess_input(image)
-    print(image.shape)
+
     image = tf.image.resize(image, (224, 224))
     image = tf.reshape(image, [1, 224, 224, 3])
 
     model = VGG19(include_top=True, weights=None, input_tensor=None, pooling=None)
-
-    #print(model(image))
 
     model.compile(
         optimizer=keras.optimizers.RMSprop(),  # Optimizer
@@ -319,7 +313,16 @@ if __name__ == '__main__':
         metrics=[keras.metrics.SparseCategoricalAccuracy()],
     )
 
-    y_train = tf.ones([4])
-    x_train = tf.concat([image, image, image, image], 0)
+    epochs = 2
+    num_examples = 1024
 
-    model.fit(x_train, y_train, batch_size=4, epochs=2)
+    y_train = tf.ones([num_examples])
+    x_train = []
+
+    x_train = tf.concat(x_train, 0)
+
+    a = time.time()
+    model.fit(x_train, y_train, batch_size=1024, epochs=epochs)
+    b = time.time()
+
+    print(f"Total train time: {b-a} seconds\nTime per epoch: {(b-a)/epochs}")
