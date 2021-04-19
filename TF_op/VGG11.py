@@ -94,88 +94,89 @@ def VGG11(
     input_tensor=None,
     input_shape=None,
     pooling=None,
-    classes=1000,
-    classifier_activation='softmax'):
-  """Instantiates the VGG11 architecture.
-  Reference:
-  - [Very Deep Convolutional Networks for Large-Scale Image Recognition](
-      https://arxiv.org/abs/1409.1556) (ICLR 2015)
-  By default, it loads weights pre-trained on ImageNet. Check 'weights' for
-  other options.
-  This model can be built both with 'channels_first' data format
-  (channels, height, width) or 'channels_last' data format
-  (height, width, channels).
-  The default input size for this model is 224x224.
-  Note: each Keras Application expects a specific kind of input preprocessing.
-  For VGG19, call `tf.keras.applications.vgg19.preprocess_input` on your
-  inputs before passing them to the model.
-  Arguments:
-    include_top: whether to include the 3 fully-connected
-      layers at the top of the network.
-    weights: one of `None` (random initialization),
-        'imagenet' (pre-training on ImageNet),
-        or the path to the weights file to be loaded.
-    input_tensor: optional Keras tensor
-      (i.e. output of `layers.Input()`)
-      to use as image input for the model.
-    input_shape: optional shape tuple, only to be specified
-      if `include_top` is False (otherwise the input shape
-      has to be `(224, 224, 3)`
-      (with `channels_last` data format)
-      or `(3, 224, 224)` (with `channels_first` data format).
-      It should have exactly 3 inputs channels,
-      and width and height should be no smaller than 32.
-      E.g. `(200, 200, 3)` would be one valid value.
-    pooling: Optional pooling mode for feature extraction
-      when `include_top` is `False`.
-      - `None` means that the output of the model will be
-          the 4D tensor output of the
-          last convolutional block.
-      - `avg` means that global average pooling
-          will be applied to the output of the
-          last convolutional block, and thus
-          the output of the model will be a 2D tensor.
-      - `max` means that global max pooling will
-          be applied.
-    classes: optional number of classes to classify images
-      into, only to be specified if `include_top` is True, and
-      if no `weights` argument is specified.
-    classifier_activation: A `str` or callable. The activation function to use
-      on the "top" layer. Ignored unless `include_top=True`. Set
-      `classifier_activation=None` to return the logits of the "top" layer.
-  Returns:
-    A `keras.Model` instance.
-  Raises:
-    ValueError: in case of invalid argument for `weights`,
-      or invalid input shape.
-    ValueError: if `classifier_activation` is not `softmax` or `None` when
-      using a pretrained top layer.
-  """
-  if not (weights in {'imagenet', None} or file_io.file_exists_v2(weights)):
-    raise ValueError('The `weights` argument should be either '
-                     '`None` (random initialization), `imagenet` '
-                     '(pre-training on ImageNet), '
-                     'or the path to the weights file to be loaded.')
+    classes=1000,):
+    """Instantiates the VGG19 architecture.
+      Reference:
+      - [Very Deep Convolutional Networks for Large-Scale Image Recognition](
+          https://arxiv.org/abs/1409.1556) (ICLR 2015)
+      By default, it loads weights pre-trained on ImageNet. Check 'weights' for
+      other options.
+      This model can be built both with 'channels_first' data format
+      (channels, height, width) or 'channels_last' data format
+      (height, width, channels).
+      The default input size for this model is 224x224.
+      Note: each Keras Application expects a specific kind of input preprocessing.
+      For VGG19, call `tf.keras.applications.vgg19.preprocess_input` on your
+      inputs before passing them to the model.
+      Arguments:
+        include_top: whether to include the 3 fully-connected
+          layers at the top of the network.
+        weights: one of `None` (random initialization),
+            'imagenet' (pre-training on ImageNet),
+            or the path to the weights file to be loaded.
+        input_tensor: optional Keras tensor
+          (i.e. output of `layers.Input()`)
+          to use as image input for the model.
+        input_shape: optional shape tuple, only to be specified
+          if `include_top` is False (otherwise the input shape
+          has to be `(224, 224, 3)`
+          (with `channels_last` data format)
+          or `(3, 224, 224)` (with `channels_first` data format).
+          It should have exactly 3 inputs channels,
+          and width and height should be no smaller than 32.
+          E.g. `(200, 200, 3)` would be one valid value.
+        pooling: Optional pooling mode for feature extraction
+          when `include_top` is `False`.
+          - `None` means that the output of the model will be
+              the 4D tensor output of the
+              last convolutional block.
+          - `avg` means that global average pooling
+              will be applied to the output of the
+              last convolutional block, and thus
+              the output of the model will be a 2D tensor.
+          - `max` means that global max pooling will
+              be applied.
+        classes: optional number of classes to classify images
+          into, only to be specified if `include_top` is True, and
+          if no `weights` argument is specified.
+        classifier_activation: A `str` or callable. The activation function to use
+          on the "top" layer. Ignored unless `include_top=True`. Set
+          `classifier_activation=None` to return the logits of the "top" layer.
+      Returns:
+        A `keras.Model` instance.
+      Raises:
+        ValueError: in case of invalid argument for `weights`,
+          or invalid input shape.
+        ValueError: if `classifier_activation` is not `softmax` or `None` when
+          using a pretrained top layer.
+      """
+    if not (weights in {'imagenet', None} or file_io.file_exists_v2(weights)):
+        raise ValueError('The `weights` argument should be either '
+                         '`None` (random initialization), `imagenet` '
+                         '(pre-training on ImageNet), '
+                         'or the path to the weights file to be loaded.')
 
-  if weights == 'imagenet' and include_top and classes != 1000:
-    raise ValueError('If using `weights` as `"imagenet"` with `include_top`'
-                     ' as true, `classes` should be 1000')
-  # Determine proper input shape
-  input_shape = imagenet_utils.obtain_input_shape(
-      input_shape,
-      default_size=224,
-      min_size=32,
-      data_format=backend.image_data_format(),
-      require_flatten=include_top,
-      weights=weights)
+    if weights == 'imagenet' and include_top and classes != 1000:
+        raise ValueError('If using `weights` as `"imagenet"` with `include_top`'
+                         ' as true, `classes` should be 1000')
+    # Determine proper input shape
+    input_shape = imagenet_utils.obtain_input_shape(
+        input_shape,
+        default_size=224,
+        min_size=32,
+        data_format=backend.image_data_format(),
+        require_flatten=include_top,
+        weights=weights)
 
-  if input_tensor is None:
-    img_input = layers.Input(shape=input_shape)
-  else:
-    if not backend.is_keras_tensor(input_tensor):
-      img_input = layers.Input(tensor=input_tensor, shape=input_shape)
+    if input_tensor is None:
+        img_input = layers.Input(shape=input_shape)
     else:
-      img_input = input_tensor
+        if not backend.is_keras_tensor(input_tensor):
+            img_input = layers.Input(tensor=input_tensor, shape=input_shape)
+        else:
+            img_input = input_tensor
+
+
     # Block 1
     x = layers.Conv2D(
         64, (3, 3), activation='relu', padding='same', name='block1_conv1')(
@@ -208,7 +209,7 @@ def VGG11(
         512, (3, 3), activation='relu', padding='same', name='block5_conv2')(x)
     x = layers.MaxPooling2D((2, 2), strides=(2, 2), name='block5_pool')(x)
 
-  if include_top:
+
     # Classification block
     x = layers.Flatten(name='flatten')(x)
     print(x.shape)
@@ -226,22 +227,19 @@ def VGG11(
     fast_output_layer = Fast_Linear(units=classes, input_dim=4096, activation='softmax')
     x = fast_output_layer(x)
 
-  else:
-    if pooling == 'avg':
-      x = layers.GlobalAveragePooling2D()(x)
-    elif pooling == 'max':
-      x = layers.GlobalMaxPooling2D()(x)
 
-  # Ensure that the model takes into account
-  # any potential predecessors of `input_tensor`.
-  if input_tensor is not None:
-    inputs = layer_utils.get_source_inputs(input_tensor)
-  else:
-    inputs = img_input
-  # Create model.
-  model = training.Model(inputs, x, name='vgg11')
 
-  return model
+    # Ensure that the model takes into account
+    # any potential predecessors of `input_tensor`.
+    if input_tensor is not None:
+        inputs = layer_utils.get_source_inputs(input_tensor)
+    else:
+        inputs = img_input
+
+    # Create model.
+    model = training.Model(inputs, x, name='vgg11')
+
+    return model
 
 
 if __name__ == '__main__':
@@ -255,7 +253,7 @@ if __name__ == '__main__':
     image = tf.image.resize(image, (224, 224))
     image = tf.reshape(image, [1, 224, 224, 3])
 
-    model = VGG11(include_top=True, weights=None, input_tensor=None, pooling=None)
+    model = VGG11(include_top=True, input_tensor=None, pooling=None)
 
     model.compile(
         optimizer=keras.optimizers.RMSprop(),  # Optimizer
