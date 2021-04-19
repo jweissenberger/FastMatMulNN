@@ -27,13 +27,6 @@ from tensorflow.python.ops import array_ops, gen_math_ops, math_ops
 import tensorflow as tf
 from tensorflow import keras
 
-
-WEIGHTS_PATH = ('https://storage.googleapis.com/tensorflow/keras-applications/'
-                'vgg19/vgg19_weights_tf_dim_ordering_tf_kernels.h5')
-WEIGHTS_PATH_NO_TOP = ('https://storage.googleapis.com/tensorflow/'
-                       'keras-applications/vgg19/'
-                       'vgg19_weights_tf_dim_ordering_tf_kernels_notop.h5')
-
 layers = VersionAwareLayers()
 
 
@@ -106,7 +99,7 @@ def VGG11(
     pooling=None,
     classes=1000,
     classifier_activation='softmax'):
-  """Instantiates the VGG19 architecture.
+  """Instantiates the VGG11 architecture.
   Reference:
   - [Very Deep Convolutional Networks for Large-Scale Image Recognition](
       https://arxiv.org/abs/1409.1556) (ICLR 2015)
@@ -249,25 +242,7 @@ def VGG11(
   else:
     inputs = img_input
   # Create model.
-  model = training.Model(inputs, x, name='vgg19')
-
-  # Load weights.
-  if weights == 'imagenet':
-    if include_top:
-      weights_path = data_utils.get_file(
-          'vgg19_weights_tf_dim_ordering_tf_kernels.h5',
-          WEIGHTS_PATH,
-          cache_subdir='models',
-          file_hash='cbe5617147190e668d6c5d5026f83318')
-    else:
-      weights_path = data_utils.get_file(
-          'vgg19_weights_tf_dim_ordering_tf_kernels_notop.h5',
-          WEIGHTS_PATH_NO_TOP,
-          cache_subdir='models',
-          file_hash='253f8cb515780f3b799900260a226db6')
-    model.load_weights(weights_path)
-  elif weights is not None:
-    model.load_weights(weights)
+  model = training.Model(inputs, x, name='vgg11')
 
   return model
 
@@ -283,7 +258,7 @@ if __name__ == '__main__':
     image = tf.image.resize(image, (224, 224))
     image = tf.reshape(image, [1, 224, 224, 3])
 
-    model = VGG19(include_top=True, weights=None, input_tensor=None, pooling=None)
+    model = VGG11(include_top=True, weights=None, input_tensor=None, pooling=None)
 
     model.compile(
         optimizer=keras.optimizers.RMSprop(),  # Optimizer
@@ -294,14 +269,16 @@ if __name__ == '__main__':
     )
 
     epochs = 2
-    num_examples = 1024
+    num_examples = 500
 
     y_train = tf.ones([num_examples])
     x_train = []
-    for i in range (num_examples):
+    for i in range(num_examples):
         x_train.append(image)
 
     x_train = tf.concat(x_train, 0)
+
+    print('\n\nAll images put in memory\n\n')
 
     a = time.time()
     model.fit(x_train, y_train, batch_size=1024, epochs=epochs)
