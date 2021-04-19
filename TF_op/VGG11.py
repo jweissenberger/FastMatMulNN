@@ -269,11 +269,11 @@ if __name__ == '__main__':
     )
 
     epochs = 2
-    num_examples = 500
+    batch_size = 500
 
-    y_train = tf.ones([num_examples])
+    y_train = tf.ones([batch_size])
     x_train = []
-    for i in range(num_examples):
+    for i in range(batch_size):
         x_train.append(image)
 
     x_train = tf.concat(x_train, 0)
@@ -281,7 +281,7 @@ if __name__ == '__main__':
     print('\n\nAll images put in memory\n\n')
 
     a = time.time()
-    model.fit(x_train, y_train, batch_size=1024, epochs=epochs)
+    model.fit(x_train, y_train, batch_size=batch_size, epochs=epochs)
     b = time.time()
 
     print(f"Total train time: {b-a} seconds\nTime per epoch: {(b-a)/epochs}")
