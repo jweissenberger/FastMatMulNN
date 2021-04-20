@@ -72,23 +72,27 @@ loops = 3
 times = np.zeros((loops, 4))
 k=0
 
-for dim in range(1024, 4096+1024, 1024):
+for dim in range(256, 1024+256, 256):
     
+    total_dim = 0
     if bs_dim == 0:
         a = tf.Variable(tf.random.uniform(shape=(dim, reg_dim[1] * 1024)), dtype=tf.float32)
         b = tf.Variable(tf.random.uniform(shape=(reg_dim[1] * 1024, reg_dim[2] * 1024)), dtype=tf.float32)
+        total_dim = dim* reg_dim[1] * 1024 * reg_dim[2] * 1024
     elif bs_dim == 1:
         a = tf.Variable(tf.random.uniform(shape=(reg_dim[0] * 1024, dim)), dtype=tf.float32)
         b = tf.Variable(tf.random.uniform(shape=(dim, reg_dim[2] * 1024)), dtype=tf.float32)
+        total_dim = dim* reg_dim[0] * 1024 * reg_dim[2] * 1024
     elif bs_dim == 2:
         a = tf.Variable(tf.random.uniform(shape=(reg_dim[0] * 1024, reg_dim[1] * 1024)), dtype=tf.float32)
         b = tf.Variable(tf.random.uniform(shape=(reg_dim[1] * 1024, dim)), dtype=tf.float32)
+        total_dim = dim* reg_dim[1] * 1024 * reg_dim[0] * 1024
 
     if algo_name == 'classic':
         t1 = time.time()
         regular = tf.matmul(a, b)
         t2 = time.time()
-        times[0][k] = 1e-9 * 2 * (dim**3) / (t2-t1)
+        times[0][k] = 1e-9 * 2 * total_dim / (t2-t1)
     
     else:
         for i in range(loops):
@@ -97,7 +101,7 @@ for dim in range(1024, 4096+1024, 1024):
             op = fast_mm_module.FastMatMul(a_matrix=a, b_matrix=b, epsilon=2**epsilon_, steps=step_, numthreads=args.omp)
             t2 = time.time()
 
-            times[i][k]=  1e-9 * 2 * (dim**3) / (t2-t1)
+            times[i][k]=  1e-9 * 2 * total_dim / (t2-t1)
         
     #print(f'Average relative error: {diff/loops}')
     if bs_dim == 0:
