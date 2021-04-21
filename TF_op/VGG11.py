@@ -32,7 +32,7 @@ layers = VersionAwareLayers()
 
 
 num_threads = 12
-mm_algo = 'smirnov444'
+mm_algo = 'dgemm'
 epsilon_values = {
     'bini322': 2**-11,
     'schonhage333': 2**-5,
@@ -282,7 +282,8 @@ if __name__ == '__main__':
 
     print('\n\nAll images put in memory\n\n')
 
-    print(model.layers)
+    for l in model.layers:
+        print(l.name)
 
 
 
