@@ -23,6 +23,7 @@ from tensorflow.python.keras.utils import layer_utils
 from tensorflow.python.lib.io import file_io
 from tensorflow.python.util.tf_export import keras_export
 from tensorflow.python.ops import array_ops, gen_math_ops, math_ops
+from tensorflow.keras.callbacks import Callback
 
 import tensorflow as tf
 from tensorflow import keras
@@ -212,7 +213,7 @@ def VGG11(
 
     # Classification block
     x = layers.Flatten(name='flatten')(x)
-    print(x.shape)
+
     #x = layers.Dense(4096, activation='relu', name='fc1')(x)
     fast_layer1 = Fast_Linear(units=4096, input_dim=25088, activation='relu')
     x = fast_layer1(x)
@@ -242,6 +243,18 @@ def VGG11(
     return model
 
 
+
+class TimeHistory(Callback):
+    def on_train_begin(self, logs={}):
+        self.times = []
+
+    def on_epoch_begin(self, batch, logs={}):
+        self.epoch_time_start = time.time()
+
+    def on_epoch_end(self, batch, logs={}):
+        self.times.append(time.time() - self.epoch_time_start)
+
+
 if __name__ == '__main__':
 
     fast_mm_module = tf.load_op_library(f'obj/{mm_algo}_mat_mul.so')
@@ -255,16 +268,10 @@ if __name__ == '__main__':
 
     model = VGG11(include_top=True, input_tensor=None, pooling=None)
 
-    model.compile(
-        optimizer=keras.optimizers.RMSprop(),  # Optimizer
-        # Loss function to minimize
-        loss=keras.losses.SparseCategoricalCrossentropy(),
-        # List of metrics to monitor
-        metrics=[keras.metrics.SparseCategoricalAccuracy()],
-    )
+
 
     epochs = 2
-    batch_size = 500
+    batch_size = 250
 
     y_train = tf.ones([batch_size])
     x_train = []
@@ -275,8 +282,44 @@ if __name__ == '__main__':
 
     print('\n\nAll images put in memory\n\n')
 
-    a = time.time()
-    model.fit(x_train, y_train, batch_size=batch_size, epochs=epochs)
-    b = time.time()
+    print(model.layers)
 
-    print(f"Total train time: {b-a} seconds\nTime per epoch: {(b-a)/epochs}")
+
+
+
+    time_callback = TimeHistory()
+
+
+
+    # Loop through each layer setting it Trainable and others as non trainable
+    results = []
+    for i in range(len(model.layers)):
+
+        layer_name = model.layers[i].name  # storing name of layer for printing layer
+
+        # Setting all layers as non-Trainable
+        for layer in model.layers:
+            layer.trainable = False
+
+        # Setting ith layers as trainable
+        model.layers[i].trainable = True
+
+        # Compile
+        model.compile(
+            optimizer=keras.optimizers.RMSprop(),  # Optimizer
+            # Loss function to minimize
+            loss=keras.losses.SparseCategoricalCrossentropy(),
+            # List of metrics to monitor
+            metrics=[keras.metrics.SparseCategoricalAccuracy()],
+        )
+
+        # Fit on a small number of epochs with callback that records time for each epoch
+        model.fit(x_train, y_train,
+                  epochs=epochs,
+                  batch_size=batch_size,
+                  verbose=0,
+                  callbacks=[time_callback])
+
+        results.append(np.average(time_callback.times))
+        # Print average of the time for each layer
+        print(f"{layer_name}: Approx (avg) train time for {epochs} epochs = ", np.average(time_callback.times))
