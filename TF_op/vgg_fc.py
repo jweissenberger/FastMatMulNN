@@ -58,7 +58,7 @@ class Fast_Linear(keras.layers.Layer):
             return tf.nn.relu(output)
 
 num_threads = 12
-mm_algo = 'smirnov444'
+mm_algo = 'smirnov442'
 epsilon_values = {
     'bini322': 2**-11,
     'schonhage333': 2**-5,
@@ -77,8 +77,8 @@ epsilon_values = {
 if __name__ == '__main__':
 
     fast_mm_module = tf.load_op_library(f'obj/{mm_algo}_mat_mul.so')
-    epochs = 2
-    batch_size = 256
+    epochs = 3
+    batch_size = 1000
 
     y_train = tf.random.uniform(shape=[batch_size])
     x_train = tf.random.uniform(shape=[batch_size, 25088])
@@ -117,6 +117,7 @@ if __name__ == '__main__':
 
     b = time.time()
 
-    print(f"Total time: {b - a} seconds, Time per epoch ({epochs}): {(b - a) / epochs}")
+    print(f"\n\nTotal time: {b - a} seconds, Time per epoch ({epochs}): {(b - a) / epochs}")
+    print(f"Batch size: {batch_size}, Algorithm: {mm_algo}")
 
-    # Total time: 6.033765554428101 seconds, Time per epoch (2): 3.0168827772140503
+    #Total time: 6.033765554428101 seconds, Time per epoch (2): 3.0168827772140503
