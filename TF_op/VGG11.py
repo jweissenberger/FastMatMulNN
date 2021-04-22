@@ -184,37 +184,38 @@ def VGG11(
     x = layers.Conv2D(
         64, (3, 3), activation='relu', padding='same', name='block1_conv1')(
         img_input)
-    x = layers.MaxPooling2D((2, 2), strides=(2, 2), name='block1_pool')(x)
-
-    # Block 2
-    x = layers.Conv2D(
-        128, (3, 3), activation='relu', padding='same', name='block2_conv1')(x)
-    x = layers.MaxPooling2D((2, 2), strides=(2, 2), name='block2_pool')(x)
-
-    # Block 3
-    x = layers.Conv2D(
-        256, (3, 3), activation='relu', padding='same', name='block3_conv1')(x)
-    x = layers.Conv2D(
-        256, (3, 3), activation='relu', padding='same', name='block3_conv2')(x)
-    x = layers.MaxPooling2D((2, 2), strides=(2, 2), name='block3_pool')(x)
-
-    # Block 4
-    x = layers.Conv2D(
-        512, (3, 3), activation='relu', padding='same', name='block4_conv1')(x)
-    x = layers.Conv2D(
-        512, (3, 3), activation='relu', padding='same', name='block4_conv2')(x)
-    x = layers.MaxPooling2D((2, 2), strides=(2, 2), name='block4_pool')(x)
-
-    # Block 5
-    x = layers.Conv2D(
-        512, (3, 3), activation='relu', padding='same', name='block5_conv1')(x)
-    x = layers.Conv2D(
-        512, (3, 3), activation='relu', padding='same', name='block5_conv2')(x)
-    x = layers.MaxPooling2D((2, 2), strides=(2, 2), name='block5_pool')(x)
+    # x = layers.MaxPooling2D((2, 2), strides=(2, 2), name='block1_pool')(x)
+    #
+    # # Block 2
+    # x = layers.Conv2D(
+    #     128, (3, 3), activation='relu', padding='same', name='block2_conv1')(x)
+    # x = layers.MaxPooling2D((2, 2), strides=(2, 2), name='block2_pool')(x)
+    #
+    # # Block 3
+    # x = layers.Conv2D(
+    #     256, (3, 3), activation='relu', padding='same', name='block3_conv1')(x)
+    # x = layers.Conv2D(
+    #     256, (3, 3), activation='relu', padding='same', name='block3_conv2')(x)
+    # x = layers.MaxPooling2D((2, 2), strides=(2, 2), name='block3_pool')(x)
+    #
+    # # Block 4
+    # x = layers.Conv2D(
+    #     512, (3, 3), activation='relu', padding='same', name='block4_conv1')(x)
+    # x = layers.Conv2D(
+    #     512, (3, 3), activation='relu', padding='same', name='block4_conv2')(x)
+    # x = layers.MaxPooling2D((2, 2), strides=(2, 2), name='block4_pool')(x)
+    #
+    # # Block 5
+    # x = layers.Conv2D(
+    #     512, (3, 3), activation='relu', padding='same', name='block5_conv1')(x)
+    # x = layers.Conv2D(
+    #     512, (3, 3), activation='relu', padding='same', name='block5_conv2')(x)
+    # x = layers.MaxPooling2D((2, 2), strides=(2, 2), name='block5_pool')(x)
 
 
     # Classification block
     x = layers.Flatten(name='flatten')(x)
+    print(x.shape)
 
     #x = layers.Dense(4096, activation='relu', name='fc1')(x)
     fast_layer1 = Fast_Linear(units=4096, input_dim=25088, activation='relu', trainable=fast_trainable)
@@ -282,7 +283,7 @@ if __name__ == '__main__':
 
     print('\n\nAll images put in memory\n\n')
 
-    model = VGG11(include_top=True, input_tensor=None, pooling=None, fast_trainable=True)
+    model = VGG11(include_top=True, input_tensor=None, pooling=None)
     # Compile
     model.compile(
         optimizer=keras.optimizers.RMSprop(),  # Optimizer
@@ -303,6 +304,6 @@ if __name__ == '__main__':
     print(f"Total time: {b-a} seconds, Time per epoch ({epochs}): {(b-a)/epochs}")
 
 
-    # Total time: 149.12401008605957 seconds, Time per epoch (2): 74.56200504302979
+    # TTotal time: 147.18857884407043 seconds, Time per epoch (2): 73.59428942203522
 
 

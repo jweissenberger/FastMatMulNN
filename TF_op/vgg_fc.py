@@ -113,7 +113,7 @@ if __name__ == '__main__':
     model.fit(x_train, y_train,
               epochs=epochs,
               batch_size=batch_size,
-              verbose=0)
+              )
 
     b = time.time()
 
