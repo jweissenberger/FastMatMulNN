@@ -33,21 +33,29 @@ def _Fast_MatMul_grad(op, grad):
 
 
 class Fast_Linear(keras.layers.Layer):
-    def __init__(self, units=32, input_dim=32, activation='relu'):
+    def __init__(self, units=32, input_dim=32, activation='relu', trainable=True):
         super(Fast_Linear, self).__init__()
         w_init = tf.random_normal_initializer()
         self.w = tf.Variable(
             initial_value=w_init(shape=(input_dim, units), dtype="float32"),
-            trainable=True,
+            trainable=trainable,
         )
         b_init = tf.zeros_initializer()
         self.b = tf.Variable(
-            initial_value=b_init(shape=(units,), dtype="float32"), trainable=True
+            initial_value=b_init(shape=(units,), dtype="float32"), trainable=trainable
         )
 
         self.epsilon = epsilon_values.get(mm_algo, 1e-2)
 
         self.activation = activation
+
+    def call(self, inputs):
+        output = fast_mm_module.FastMatMul(a_matrix=inputs, b_matrix=self.w, epsilon=self.epsilon, steps=1,
+                                                    numthreads=num_threads) + self.b
+        if self.activation == 'softmax':
+            return tf.nn.softmax(output)
+        else:
+            return tf.nn.relu(output)
 
 num_threads = 12
 mm_algo = 'smirnov444'
