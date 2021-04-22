@@ -1,4 +1,4 @@
-\documentclass[sigconf]{acmart}
+\documentclass[sigconf,review,anonymous]{acmart}
 
 \usepackage{amsmath,amsfonts}
 \usepackage{algorithmic}
@@ -46,24 +46,24 @@
 %\thanks{Identify applicable funding agency here. If none, delete this.}
 }
 
-%\author{\IEEEauthorblockN{Grey Ballard}
-%\IEEEauthorblockA{\textit{Department of Computer Science} \\
-%\textit{Wake Forest University}\\
-%Winston-Salem, NC, USA \\
-%\email{ballard@wfu.edu}}
-%\and
-%\IEEEauthorblockN{Jack Weissenberger}
-%\IEEEauthorblockA{\textit{Department of Computer Science} \\
-%\textit{Wake Forest University}\\
-%Winston-Salem, NC, USA \\
-%\email{jack.weissenberger@gmail.com}}
-%\and
-%\IEEEauthorblockN{Luoping Zhang}
-%\IEEEauthorblockA{\textit{Department of Computer Science} \\
-%\textit{Wake Forest University}\\
-%Winston-Salem, NC, USA \\
-%\email{zhanl317@wfu.edu}}
-%}
+\author{\IEEEauthorblockN{Grey Ballard}
+\IEEEauthorblockA{\textit{Department of Computer Science} \\
+\textit{Wake Forest University}\\
+Winston-Salem, NC, USA \\
+\email{ballard@wfu.edu}}
+\and
+\IEEEauthorblockN{Jack Weissenberger}
+\IEEEauthorblockA{\textit{Department of Computer Science} \\
+\textit{Wake Forest University}\\
+Winston-Salem, NC, USA \\
+\email{jack.weissenberger@gmail.com}}
+\and
+\IEEEauthorblockN{Luoping Zhang}
+\IEEEauthorblockA{\textit{Department of Computer Science} \\
+\textit{Wake Forest University}\\
+Winston-Salem, NC, USA \\
+\email{zhanl317@wfu.edu}}
+}
 
 \begin{abstract}
 Matrix multiplication is one of the bottleneck computations for training the weights within deep neural networks.
@@ -89,7 +89,7 @@ One of the reasons such algorithms are impractical is that they are based on so-
 In exact arithmetic, these algorithms compute an approximation of the correct result, where the error is polynomial in a nonzero parameter of the algorithm \cite{BLR80}.
 That is, in exact arithmetic, the error can be made arbitrarily small.
 In floating point arithmetic, however, there is a lower bound on the approximation error that depends on the working precision and properties of the algorithm.
-Thus, APA algorithms are often considered to have insufficient accuracy for most applications and have largely been overlooked as practical tools despite their performance potential and ability to outperform their exact counterparts \cite{BB15}.
+Thus, APA algorithms are often considered to have insufficient accuracy for most applications and have largely been overlooked as practical tools despite their performance potential and ability to outperform exact algorithms \cite{BB15}.
 
 Our goal in this paper is to demonstrate that APA algorithms can offer practical performance improvements for applications that are tolerant to error in matrix multiplications, notably the training phase of neural networks.
 Training large neural networks can be incredibly computationally expensive.
@@ -105,7 +105,7 @@ In this paper we focus on Multi-Layer Perceptron (MLP) networks that rely on a s
 Because the sizes of the layers in MLP networks continue to grow, various techniques have been used to reduce the computational demands of the training phase.
 For example, low-rank tensor approximation of the weights can reduce both memory and computation \cite{NPOV15}, and fast matrix multiplication (the Strassen-Winograd algorithm) has been applied to the bottleneck matrix multiplications \cite{KAA20}.
 
-Our contribution is the use of APA matrix multiplication algorithms to address this problem and accelerate training.
+Our contribution is the use of APA matrix multiplication algorithms to address this problem.
 In particular we
 \begin{enumerate}
 	\item curate a collection of both well-established and recently discovered practical APA algorithms;
@@ -191,7 +191,7 @@ Ten such triplets completely specify Bini's algorithm.
 
 \begin{table}
 \centering
-\caption{Properties of Arbitrary Precision Approximating Algorithms  \\ Speedup and Error are computed assuming 1 recursive step}
+\caption{Properties of APA algorithms. Speedup and error are computed assuming 1 recursive step}
 \label{tab:algs}
 \begin{tabular}{| c | c c c | c c c |} 
 \hline
@@ -323,7 +323,7 @@ The third block column shows error parameters, and the error is calculated as $2
 %\caption{Multithreaded matrix multiplication performance (6 threads)}
 \label{fig:matmul_par_12}}
 %
-\caption{Single- and multi-threaded square matrix multiplication performance, relative to $2n^3$ operations}
+\caption{Single- and multi-threaded square matrix multiplication performance, relative to $2n^3$ operations.  The machine peak with respect to classical algorithms is given as a dotted line.}
 \label{fig:matmul_perf}
 \end{figure*}
 
