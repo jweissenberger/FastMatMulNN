@@ -1,14 +1,12 @@
-\documentclass[conference]{IEEEtran}
-%\IEEEoverridecommandlockouts
-% The preceding line is only needed to identify funding in the first footnote. If that is unneeded, please comment it out.
-\usepackage{cite}
-\usepackage{amsmath,amssymb,amsfonts}
+\documentclass[sigconf,review,anonymous]{acmart}
+
+\usepackage{amsmath,amsfonts}
 \usepackage{algorithmic}
 \usepackage{graphicx}
 \usepackage{textcomp}
 \usepackage{xcolor}
 \usepackage{ifthen}
-\usepackage{flushend}
+\usepackage{balance}
 
 % cleveref
 \usepackage{hyperref}
@@ -29,11 +27,6 @@
 \usepackage{siunitx}
 \sisetup{output-exponent-marker=\ensuremath{\mathrm{e}}}
 
-\def\BibTeX{{\rm B\kern-.05em{\sc i\kern-.025em b}\kern-.08em
-    T\kern-.1667em\lower.7ex\hbox{E}\kern-.125emX}}
-
-
-\newcommand*{\email}[1]{\href{mailto:#1}{\nolinkurl{#1}} } 
 \newcommand{\dims}[1]{\langle #1 \rangle}
 
 % macros for plots
@@ -45,9 +38,9 @@
 \newcommand{\JW}[1]{\textcolor{blue}{\textbf{JW}: #1}}
 \newcommand{\RZ}[1]{\textcolor{purple}{\textbf{RZ}: #1}}
 
-\begin{document}
 
-\bstctlcite{IEEE:BSTcontrol}
+\acmConference[ICPP'21]{International Conference on Parallel Processing}{August 9--12}{Chicago, IL, USA}
+
 
 \title{Accelerating Neural Network Training using Arbitrary Precision Approximating Matrix Multiplication Algorithms
 %\thanks{Identify applicable funding agency here. If none, delete this.}
@@ -72,8 +65,6 @@ Winston-Salem, NC, USA \\
 \email{zhanl317@wfu.edu}}
 }
 
-\maketitle
-
 \begin{abstract}
 Matrix multiplication is one of the bottleneck computations for training the weights within deep neural networks.
 To speed up the training phase, we propose to use faster algorithms for matrix multiplication known as Arbitrary Precision Approximating (APA) algorithms.
@@ -83,6 +74,9 @@ We demonstrate that APA algorithms can be efficiently implemented and paralleliz
 Furthermore, using these algorithms to train a Multi-Layer Perceptron (MLP) network yields no significant reduction in the training or testing error.
 Our performance results on a large MLP network show overall sequential and multithreaded performance improvements of up to 25\% and 13\%, respectively.
 \end{abstract}
+
+\begin{document}
+\maketitle
 
 \section{Introduction}
 
@@ -95,7 +89,7 @@ One of the reasons such algorithms are impractical is that they are based on so-
 In exact arithmetic, these algorithms compute an approximation of the correct result, where the error is polynomial in a nonzero parameter of the algorithm \cite{BLR80}.
 That is, in exact arithmetic, the error can be made arbitrarily small.
 In floating point arithmetic, however, there is a lower bound on the approximation error that depends on the working precision and properties of the algorithm.
-Thus, APA algorithms are often considered to have insufficient accuracy for most applications and have largely been overlooked as practical tools despite their performance potential and ability to outperform their exact counterparts \cite{BB15}.
+Thus, APA algorithms are often considered to have insufficient accuracy for most applications and have largely been overlooked as practical tools despite their performance potential and ability to outperform exact algorithms \cite{BB15}.
 
 Our goal in this paper is to demonstrate that APA algorithms can offer practical performance improvements for applications that are tolerant to error in matrix multiplications, notably the training phase of neural networks.
 Training large neural networks can be incredibly computationally expensive.
@@ -111,7 +105,7 @@ In this paper we focus on Multi-Layer Perceptron (MLP) networks that rely on a s
 Because the sizes of the layers in MLP networks continue to grow, various techniques have been used to reduce the computational demands of the training phase.
 For example, low-rank tensor approximation of the weights can reduce both memory and computation \cite{NPOV15}, and fast matrix multiplication (the Strassen-Winograd algorithm) has been applied to the bottleneck matrix multiplications \cite{KAA20}.
 
-Our contribution is the use of APA matrix multiplication algorithms to address this problem and accelerate training.
+Our contribution is the use of APA matrix multiplication algorithms to address this problem.
 In particular we
 \begin{enumerate}
 	\item curate a collection of both well-established and recently discovered practical APA algorithms;
@@ -197,7 +191,7 @@ Ten such triplets completely specify Bini's algorithm.
 
 \begin{table}
 \centering
-\caption{Properties of Arbitrary Precision Approximating Algorithms  \\ Speedup and Error are computed assuming 1 recursive step}
+\caption{Properties of APA algorithms. Speedup and error are computed assuming 1 recursive step}
 \label{tab:algs}
 \begin{tabular}{| c | c c c | c c c |} 
 \hline
@@ -329,7 +323,7 @@ The third block column shows error parameters, and the error is calculated as $2
 %\caption{Multithreaded matrix multiplication performance (6 threads)}
 \label{fig:matmul_par_12}}
 %
-\caption{Single- and multi-threaded square matrix multiplication performance, relative to $2n^3$ operations}
+\caption{Single- and multi-threaded square matrix multiplication performance, relative to $2n^3$ operations.  The machine peak with respect to classical algorithms is given as a dotted line.}
 \label{fig:matmul_perf}
 \end{figure*}
 
@@ -540,13 +534,13 @@ Because GPUs can offer higher efficiency for matrix multiplications, we wish to 
 Techniques used to accelerate Strassen's algorithm on the GPU \cite{HYvdG20,LAES13} can be generalized to other fast algorithms as done in work for multicore CPUs \cite{BB15,HRMvdG17}.
 We believe improved performance benefits can be achieved by APA algorithms on GPU architectures due to the relatively higher memory bandwidth.
 
-\paragraph*{Acknowledgments}
+%\paragraph*{Acknowledgments}
+%
+%This material is based upon work supported by the NSF Grant No. CCF1942892 and a Wake Forest University Undergraduate Research and Creative Activities (URECA) Research Fellowship.
 
-This material is based upon work supported by the NSF Grant No. CCF1942892 and a Wake Forest University Undergraduate Research and Creative Activities (URECA) Research Fellowship.
-
-\vspace{-.175cm}
-
-\bibliographystyle{IEEEtran}
+\newpage
+\balance
+\bibliographystyle{ACM-Reference-Format}
 \bibliography{refs}
 
 \end{document}
