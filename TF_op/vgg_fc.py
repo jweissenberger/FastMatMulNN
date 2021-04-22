@@ -118,3 +118,5 @@ if __name__ == '__main__':
     b = time.time()
 
     print(f"Total time: {b - a} seconds, Time per epoch ({epochs}): {(b - a) / epochs}")
+
+    # Total time: 6.033765554428101 seconds, Time per epoch (2): 3.0168827772140503

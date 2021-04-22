@@ -245,7 +245,6 @@ def VGG11(
     return model
 
 
-
 class TimeHistory(Callback):
     def on_train_begin(self, logs={}):
         self.times = []
@@ -273,7 +272,9 @@ if __name__ == '__main__':
     epochs = 2
     batch_size = 256
 
-    y_train = tf.ones([batch_size])
+    g = tf.random.Generator()
+    y_train = g.normal(shape=(None, batch_size))
+    #y_train = tf.ones([batch_size])
     x_train = []
     for i in range(batch_size):
         x_train.append(image)
@@ -301,5 +302,8 @@ if __name__ == '__main__':
     b = time.time()
 
     print(f"Total time: {b-a} seconds, Time per epoch ({epochs}): {(b-a)/epochs}")
+
+
+    # Total time: 149.12401008605957 seconds, Time per epoch (2): 74.56200504302979
 
 
