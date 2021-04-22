@@ -272,8 +272,7 @@ if __name__ == '__main__':
     epochs = 2
     batch_size = 256
 
-    g = tf.random.Generator()
-    y_train = g.normal(shape=(None, batch_size))
+    y_train = tf.random.uniform(shape=(None, batch_size))
     #y_train = tf.ones([batch_size])
     x_train = []
     for i in range(batch_size):

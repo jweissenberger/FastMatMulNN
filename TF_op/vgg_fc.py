@@ -80,8 +80,8 @@ if __name__ == '__main__':
     epochs = 2
     batch_size = 256
 
-    y_train = tf.ones([batch_size])
-    x_train = tf.ones([batch_size, 25088])
+    y_train = tf.random.uniform(shape=[batch_size])
+    x_train = tf.random.uniform(shape=[batch_size, 25088])
 
     model_input = layers.Input(shape=25088)
     # x = layers.Dense(4096, activation='relu', name='fc1')(x)
