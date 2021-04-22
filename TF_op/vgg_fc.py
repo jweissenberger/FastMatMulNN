@@ -78,7 +78,7 @@ if __name__ == '__main__':
     model_input = layers.Input(shape=25088)
     # x = layers.Dense(4096, activation='relu', name='fc1')(x)
     fast_layer1 = Fast_Linear(units=4096, input_dim=25088, activation='relu')
-    x = fast_layer1()
+    x = fast_layer1(model_input)
 
     # x = layers.Dense(4096, activation='relu', name='fc2')(x)
     fast_layer2 = Fast_Linear(units=4096, input_dim=4096, activation='relu')
