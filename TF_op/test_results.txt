@@ -9,3 +9,16 @@ Batch size: 4096, Algorithm: dgemm
 
 Total time: 49.519376039505005 seconds, Time per epoch: 16.506458679835003
 Batch size: 8192, Algorithm: dgemm
+
+
+Total time: 47.152334690093994 seconds, Time per epoch (3): 15.717444896697998
+Batch size: 8192, Algorithm: smirnov442
+
+Total time: 28.056435346603394 seconds, Time per epoch (3): 9.352145115534464
+Batch size: 4096, Algorithm: smirnov442
+
+Total time: 17.324838399887085 seconds, Time per epoch (3): 5.774946133295695
+Batch size: 2048, Algorithm: smirnov442
+
+Total time: 11.957063436508179 seconds, Time per epoch (3): 3.985687812169393
+Batch size: 1024, Algorithm: smirnov442
