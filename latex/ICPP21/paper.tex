@@ -73,6 +73,7 @@ Practical APA algorithms provide significant reduction in computation time and s
 We demonstrate that APA algorithms can be efficiently implemented and parallelized for multicore CPUs to obtain up to 28\% and 21\% speedups over the fastest implementation of the classical algorithm using one core and 12 cores, respectively.
 Furthermore, using these algorithms to train a Multi-Layer Perceptron (MLP) network yields no significant reduction in the training or testing error.
 Our performance results on a large MLP network show overall sequential and multithreaded performance improvements of up to 25\% and 13\%, respectively.
+\RZ{We also demonstrate that APA algorithms are efficiently implemented on a more complicated network VGG-11?}
 \end{abstract}
 
 \begin{document}
@@ -109,9 +110,10 @@ Our contribution is the use of APA matrix multiplication algorithms to address t
 In particular we
 \begin{enumerate}
 	\item curate a collection of both well-established and recently discovered practical APA algorithms;
-	\item extend the framework of \cite{BB15} to generate efficient multithreaded code for all of them, achieving up to 21\% performance improvement over the best parallel classical implementation,
-	\item demonstrate the robustness of learning accuracy to approximate matrix multiplications; and
-	\item present multithreaded performance improvements of a synthetic MLP of up to 13\% over the use of classical matrix multiplication.
+	\item extend the framework of \cite{BB15} to generate efficient multithreaded code for all of them, achieving up to 21\% performance improvement over the best parallel classical implementation;
+	\item demonstrate the robustness of learning accuracy to approximate matrix multiplications;
+	\item present multithreaded performance improvements of a synthetic MLP of up to 13\% over the use of classical matrix multiplication; and
+	\item \RZ{present performance improvements of VGG-11? network of ?\% over the classical matrix multiplication.}
 \end{enumerate}
 
 \section{Practical Arbitrary Precision Approximating Matrix Multiplication Algorithms}
@@ -395,6 +397,13 @@ This implies that the dimension of the submultiplications does not fall on the p
 The algorithm with no remainder multiplications, $\dims{4,2,2}$, does not suffer this problem and maintains higher performance.
 It exceeds \texttt{gemm}'s effective performance at dimension 4000, exceeds the peak parallel performance of any classical algorithm for larger dimensions, and achieves a 21\% speedup over \texttt{gemm} at dimension 8192 for an effective rate of 389 GFLOPS.
 
+\subsection{Skewed Matrix Multiplication}
+When computing square matrix multiplications, we have demonstrated that $\dims{4,4,2}$ and $\dims{4,4,4}$ algorithms have the best performance.
+However, algorithms with more skewed aspect ratios will likely perform better for problems with matching skewed matrix multiplication dimensions.
+We note that an algorithm for dimensions $\dims{m,n,k}$ can be translated into an algorithm for $\dims{n,m,k}$ and any other reordering of the dimensions \cite{BB15}.
+\RZ{transposing row major matrix problem?}
+\RZ{Best algorithm for each shape of matrices and its figure}
+
 \section{Application of APA Algorithms in Multi-Layer Perceptron Network Training}
 
 \begin{figure*}[ht!]
@@ -511,6 +520,15 @@ The highest performing algorithms are $\dims{4,4,2}$ and $\dims{4,4,4}$, which o
 In the case of 12 threads (both sockets), as shown in \cref{fig:NNreltime_par_12}, most APA algorithms underperform the classical algorithm.
 These results match the behavior of standalone matrix multiplications using 12 threads (see \cref{sec:matmul_perf_par}); the lack of scaling is due in large part to the poor performance of multithreaded \texttt{gemm} on remainder multiplications of small dimensions.
 The algorithm with a number of sub-multiplications that is a multiple of 12, $\dims{4,4,2}$, continues to perform well and is slightly faster than the classical algorithm for dimensions 4096 and 8192, attaining speedups of up to 7\%.
+
+\section{Application of APA algorithms in VGG-11}
+\subsection{VGG-11 Network}
+\RZ{description of the model of VGG-11 and VGG-19?}
+
+% \subsection{Accuracy}
+
+\subsection{Performance}
+\RZ{VGG-11 fully connected layer: BS x 25K x 4K / BS x 4K x 4K / BS x 4K x 1K? with plot}
 
 \section{Conclusion}
 
