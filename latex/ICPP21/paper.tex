@@ -522,13 +522,27 @@ These results match the behavior of standalone matrix multiplications using 12 t
 The algorithm with a number of sub-multiplications that is a multiple of 12, $\dims{4,4,2}$, continues to perform well and is slightly faster than the classical algorithm for dimensions 4096 and 8192, attaining speedups of up to 7\%.
 
 \section{Application of APA algorithms in VGG-11}
+
+\begin{figure}[hb!]
+\centering
+\input{plots/VGG_time}
+\caption{Total time test on VGG-11 with 6 threads}
+\label{fig:vgg}
+\end{figure}
+
 \subsection{VGG-11 Network}
 \RZ{description of the model of VGG-11 and VGG-19?}
+
+
+
 
 % \subsection{Accuracy}
 
 \subsection{Performance}
 \RZ{VGG-11 fully connected layer: BS x 25K x 4K / BS x 4K x 4K / BS x 4K x 1K? with plot}
+\cref{fig:vgg}
+\RZ{Fast Combo: 525, 442, 242}
+
 
 \section{Conclusion}
 

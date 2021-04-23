@@ -1,0 +1,26 @@
+%!TEX root = ../paper.tex
+
+ 
+
+\begin{tikzpicture}
+    \begin{axis}[
+        width=.5\textwidth,
+        xmode=log,
+        log basis x={2},
+        xlabel=Batch Size, 
+        ylabel=Total Time in seconds,
+        legend style={at={(.05,.85)},anchor=west},
+        xtick={1024,2048,4096,8192},
+        xticklabels={1024,2048,4096,8192},
+            /pgf/number format/.cd, 1000 sep={},
+            reverse legend,
+    ]
+    \addplot 
+        coordinates {(8192,96.19704151153564) (4096,51.911903381347656)
+             (2048,29.849395275115967) (1024,18.838172435760498)};
+    \addplot 
+        coordinates {(8192,106.00743579864502) (4096,55.22960305213928) 
+            (2048,30.237940549850464) (1024,17.160202264785767)};
+    \legend{Fast Combo,Dgemm}
+    \end{axis}
+\end{tikzpicture}
