@@ -33,7 +33,7 @@ def _Fast_MatMul_grad(op, grad):
 
 
 class Fast_Linear(keras.layers.Layer):
-    def __init__(self, units=32, input_dim=32, activation='relu', trainable=True, mm_module=object):
+    def __init__(self, units=32, input_dim=32, activation='relu', trainable=True, mm_module=object, mm_algo='smirnov444'):
         super(Fast_Linear, self).__init__()
         w_init = tf.random_normal_initializer()
         self.w = tf.Variable(
@@ -88,17 +88,17 @@ if __name__ == '__main__':
 
     model_input = layers.Input(shape=25088)
     # x = layers.Dense(4096, activation='relu', name='fc1')(x)
-    fast_layer1 = Fast_Linear(units=4096, input_dim=25088, activation='relu', mm_module=fast_mm_442)
+    fast_layer1 = Fast_Linear(units=4096, input_dim=25088, activation='relu', mm_module=fast_mm_442, mm_algo='smirnov442')
     x = fast_layer1(model_input)
 
     # x = layers.Dense(4096, activation='relu', name='fc2')(x)
-    fast_layer2 = Fast_Linear(units=4096, input_dim=4096, activation='relu', mm_module=fast_mm_442)
+    fast_layer2 = Fast_Linear(units=4096, input_dim=4096, activation='relu', mm_module=fast_mm_442, mm_algo='smirnov442')
     x = fast_layer2(x)
 
     # imagenet_utils.validate_activation('softmax', weights)
 
     # x = layers.Dense(classes, activation='softmax', name='predictions')(x)
-    fast_output_layer = Fast_Linear(units=1000, input_dim=4096, activation='softmax', mm_module=fast_mm_242)
+    fast_output_layer = Fast_Linear(units=1000, input_dim=4096, activation='softmax', mm_module=fast_mm_242, mm_algo='smirnov242')
     x = fast_output_layer(x)
 
     model = training.Model(model_input, x, name='FC')
@@ -121,6 +121,6 @@ if __name__ == '__main__':
     b = time.time()
 
     print(f"\n\nTotal time: {b - a} seconds, Time per epoch ({epochs}): {(b - a) / epochs}")
-    print(f"Batch size: {batch_size}, Algorithm: {mm_algo}")
+    print(f"Batch size: {batch_size}")
 
     #Total time: 6.033765554428101 seconds, Time per epoch (2): 3.0168827772140503
