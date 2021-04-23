@@ -78,10 +78,8 @@ epsilon_values = {
 if __name__ == '__main__':
 
     fast_mm_242 = tf.load_op_library(f'obj/smirnov242_mat_mul.so')
-    print(dir(fast_mm_242))
 
     fast_mm_442 = tf.load_op_library(f'obj/smirnov442_mat_mul.so')
-    print(dir(fast_mm_442))
 
     #fast_mm_424 = tf.load_op_library(f'obj/smirnov424_mat_mul.so')
 

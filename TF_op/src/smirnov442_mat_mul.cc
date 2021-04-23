@@ -11,7 +11,7 @@
 
 using namespace tensorflow;
 
-REGISTER_OP("FastMatMul")
+REGISTER_OP("FastMatMul442")
     .Attr("epsilon: float")
     .Attr("steps: int")
     .Attr("numthreads: int")
