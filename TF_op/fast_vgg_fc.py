@@ -95,11 +95,17 @@ epsilon_values = {
 if __name__ == '__main__':
 
     fast_mm_242 = tf.load_op_library('obj/smirnov242_mat_mul.so')
+    fast_mm_242 = fast_mm_242.FastMatMul242
     fast_mm_442 = tf.load_op_library('obj/smirnov442_mat_mul.so')
+    fast_mm_442 = fast_mm_442.FastMatMul442
     fast_mm_525 = tf.load_op_library('obj/smirnov525_mat_mul.so')
+    fast_mm_525 = fast_mm_525.FastMatMul525
     fast_mm_424 = tf.load_op_library('obj/smirnov424_mat_mul.so')
+    fast_mm_424 = fast_mm_424.FastMatMul424
     fast_mm_444 = tf.load_op_library('obj/smirnov444_mat_mul.so')
+    fast_mm_444 = fast_mm_444.FastMatMul444
     fast_mm_244 = tf.load_op_library('obj/smirnov244_mat_mul.so')
+    fast_mm_244 = fast_mm_244.FastMatMul244
 
 
 
