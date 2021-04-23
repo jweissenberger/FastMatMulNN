@@ -11,7 +11,7 @@
 
 using namespace tensorflow;
 
-REGISTER_OP("FastMatMul")
+REGISTER_OP("FastMatMul525")
     .Attr("epsilon: float")
     .Attr("steps: int")
     .Attr("numthreads: int")
@@ -99,4 +99,4 @@ public:
 
     };
 
-REGISTER_KERNEL_BUILDER(Name("FastMatMul").Device(DEVICE_CPU), FastMatMulOp);
+REGISTER_KERNEL_BUILDER(Name("FastMatMul525").Device(DEVICE_CPU), FastMatMulOp);
