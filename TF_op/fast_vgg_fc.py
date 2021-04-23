@@ -19,16 +19,33 @@ from tensorflow import keras
 layers = VersionAwareLayers()
 
 
-@tf.RegisterGradient("FastMatMul")
+# output to second FC
+@tf.RegisterGradient("FastMatMul242")
+def _Fast_MatMul_grad(op, grad):
+    bt = array_ops.transpose(op.inputs[1])
+    at = array_ops.transpose(op.inputs[0])
+    grad_a = fast_mm_444.FastMatMul(a_matrix=grad, b_matrix=bt, epsilon=1e-2, steps=1, numthreads=num_threads)
+    grad_b = fast_mm_244.FastMatMul(a_matrix=at, b_matrix=grad, epsilon=1e-2, steps=1, numthreads=num_threads)
+    return grad_a, grad_b
+
+
+# second FC to first
+@tf.RegisterGradient("FastMatMul442")
 def _Fast_MatMul_grad(op, grad):
     bt = array_ops.transpose(op.inputs[1])
     at = array_ops.transpose(op.inputs[0])
     grad_a = fast_mm_442.FastMatMul(a_matrix=grad, b_matrix=bt, epsilon=1e-2, steps=1, numthreads=num_threads)
-    grad_b = fast_mm_442.FastMatMul(a_matrix=at, b_matrix=grad, epsilon=1e-2, steps=1, numthreads=num_threads)
-    # a = math_ops.conj(op.inputs[0])
-    # b = math_ops.conj(op.inputs[1])
-    # grad_a = gen_math_ops.mat_mul(grad, b, transpose_b=True)
-    # grad_b = gen_math_ops.mat_mul(a, grad, transpose_a=True)
+    grad_b = fast_mm_424.FastMatMul(a_matrix=at, b_matrix=grad, epsilon=1e-2, steps=1, numthreads=num_threads)
+    return grad_a, grad_b
+
+
+# second FC to first
+@tf.RegisterGradient("FastMatMul525")
+def _Fast_MatMul_grad(op, grad):
+    bt = array_ops.transpose(op.inputs[1])
+    at = array_ops.transpose(op.inputs[0])
+    grad_a = fast_mm_442.FastMatMul(a_matrix=grad, b_matrix=bt, epsilon=1e-2, steps=1, numthreads=num_threads)
+    grad_b = fast_mm_525.FastMatMul(a_matrix=at, b_matrix=grad, epsilon=1e-2, steps=1, numthreads=num_threads)
     return grad_a, grad_b
 
 
@@ -77,11 +94,13 @@ epsilon_values = {
 
 if __name__ == '__main__':
 
-    fast_mm_242 = tf.load_op_library(f'obj/smirnov242_mat_mul.so')
+    fast_mm_242 = tf.load_op_library('obj/smirnov242_mat_mul.so')
+    fast_mm_442 = tf.load_op_library('obj/smirnov442_mat_mul.so')
+    fast_mm_525 = tf.load_op_library('obj/smirnov525_mat_mul.so')
+    fast_mm_424 = tf.load_op_library('obj/smirnov424_mat_mul.so')
+    fast_mm_444 = tf.load_op_library('obj/smirnov444_mat_mul.so')
+    fast_mm_244 = tf.load_op_library('obj/smirnov244_mat_mul.so')
 
-    fast_mm_442 = tf.load_op_library(f'obj/smirnov442_mat_mul.so')
-
-    #fast_mm_424 = tf.load_op_library(f'obj/smirnov424_mat_mul.so')
 
 
     epochs = 3
@@ -92,7 +111,7 @@ if __name__ == '__main__':
 
     model_input = layers.Input(shape=25088)
     # x = layers.Dense(4096, activation='relu', name='fc1')(x)
-    fast_layer1 = Fast_Linear(units=4096, input_dim=25088, activation='relu', mm_module=fast_mm_442, mm_algo='smirnov442')
+    fast_layer1 = Fast_Linear(units=4096, input_dim=25088, activation='relu', mm_module=fast_mm_525, mm_algo='smirnov525')
     x = fast_layer1(model_input)
 
     # x = layers.Dense(4096, activation='relu', name='fc2')(x)
@@ -102,7 +121,7 @@ if __name__ == '__main__':
     # imagenet_utils.validate_activation('softmax', weights)
 
     # x = layers.Dense(classes, activation='softmax', name='predictions')(x)
-    fast_output_layer = Fast_Linear(units=1000, input_dim=4096, activation='softmax', mm_module=fast_mm_442, mm_algo='smirnov442')
+    fast_output_layer = Fast_Linear(units=1000, input_dim=4096, activation='softmax', mm_module=fast_mm_242, mm_algo='smirnov242')
     x = fast_output_layer(x)
 
     model = training.Model(model_input, x, name='FC')
