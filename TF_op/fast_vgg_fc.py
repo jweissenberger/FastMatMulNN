@@ -19,19 +19,7 @@ from tensorflow import keras
 layers = VersionAwareLayers()
 
 
-@tf.RegisterGradient("fast_mm_442")
-def _Fast_MatMul_grad(op, grad):
-    bt = array_ops.transpose(op.inputs[1])
-    at = array_ops.transpose(op.inputs[0])
-    grad_a = fast_mm_442.FastMatMul(a_matrix=grad, b_matrix=bt, epsilon=1e-2, steps=1, numthreads=num_threads)
-    grad_b = fast_mm_442.FastMatMul(a_matrix=at, b_matrix=grad, epsilon=1e-2, steps=1, numthreads=num_threads)
-    # a = math_ops.conj(op.inputs[0])
-    # b = math_ops.conj(op.inputs[1])
-    # grad_a = gen_math_ops.mat_mul(grad, b, transpose_b=True)
-    # grad_b = gen_math_ops.mat_mul(a, grad, transpose_a=True)
-    return grad_a, grad_b
-
-@tf.RegisterGradient("fast_mm_242")
+@tf.RegisterGradient("FastMatMul")
 def _Fast_MatMul_grad(op, grad):
     bt = array_ops.transpose(op.inputs[1])
     at = array_ops.transpose(op.inputs[0])
@@ -89,10 +77,12 @@ epsilon_values = {
 
 if __name__ == '__main__':
 
-    fast_mm_442 = tf.load_op_library(f'obj/smirnov442_mat_mul.so')
-    fast_mm_442 = fast_mm_442.FastMatMul
     fast_mm_242 = tf.load_op_library(f'obj/smirnov242_mat_mul.so')
-    fast_mm_242 = fast_mm_242.FastMatMul
+    print(dir(fast_mm_242))
+
+    fast_mm_442 = tf.load_op_library(f'obj/smirnov442_mat_mul.so')
+    print(dir(fast_mm_442))
+
     #fast_mm_424 = tf.load_op_library(f'obj/smirnov424_mat_mul.so')
 
 
