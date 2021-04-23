@@ -24,8 +24,8 @@ layers = VersionAwareLayers()
 def _Fast_MatMul_grad(op, grad):
     bt = array_ops.transpose(op.inputs[1])
     at = array_ops.transpose(op.inputs[0])
-    grad_a = fast_mm_444.FastMatMul(a_matrix=grad, b_matrix=bt, epsilon=1e-2, steps=1, numthreads=num_threads)
-    grad_b = fast_mm_244.FastMatMul(a_matrix=at, b_matrix=grad, epsilon=1e-2, steps=1, numthreads=num_threads)
+    grad_a = fast_mm_444.FastMatMul444(a_matrix=grad, b_matrix=bt, epsilon=1e-2, steps=1, numthreads=num_threads)
+    grad_b = fast_mm_244.FastMatMul244(a_matrix=at, b_matrix=grad, epsilon=1e-2, steps=1, numthreads=num_threads)
     return grad_a, grad_b
 
 
@@ -34,8 +34,8 @@ def _Fast_MatMul_grad(op, grad):
 def _Fast_MatMul_grad(op, grad):
     bt = array_ops.transpose(op.inputs[1])
     at = array_ops.transpose(op.inputs[0])
-    grad_a = fast_mm_442.FastMatMul(a_matrix=grad, b_matrix=bt, epsilon=1e-2, steps=1, numthreads=num_threads)
-    grad_b = fast_mm_424.FastMatMul(a_matrix=at, b_matrix=grad, epsilon=1e-2, steps=1, numthreads=num_threads)
+    grad_a = fast_mm_442.FastMatMul442(a_matrix=grad, b_matrix=bt, epsilon=1e-2, steps=1, numthreads=num_threads)
+    grad_b = fast_mm_424.FastMatMul424(a_matrix=at, b_matrix=grad, epsilon=1e-2, steps=1, numthreads=num_threads)
     return grad_a, grad_b
 
 
@@ -44,8 +44,8 @@ def _Fast_MatMul_grad(op, grad):
 def _Fast_MatMul_grad(op, grad):
     bt = array_ops.transpose(op.inputs[1])
     at = array_ops.transpose(op.inputs[0])
-    grad_a = fast_mm_442.FastMatMul(a_matrix=grad, b_matrix=bt, epsilon=1e-2, steps=1, numthreads=num_threads)
-    grad_b = fast_mm_525.FastMatMul(a_matrix=at, b_matrix=grad, epsilon=1e-2, steps=1, numthreads=num_threads)
+    grad_a = fast_mm_442.FastMatMul442(a_matrix=grad, b_matrix=bt, epsilon=1e-2, steps=1, numthreads=num_threads)
+    grad_b = fast_mm_525.FastMatMul525(a_matrix=at, b_matrix=grad, epsilon=1e-2, steps=1, numthreads=num_threads)
     return grad_a, grad_b
 
 
