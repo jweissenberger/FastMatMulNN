@@ -24,19 +24,19 @@ def _Fast_MatMul_grad(op, grad):
     bt = array_ops.transpose(op.inputs[1])
     at = array_ops.transpose(op.inputs[0])
     grad_a = fast_mm_442.FastMatMul(a_matrix=grad, b_matrix=bt, epsilon=1e-2, steps=1, numthreads=num_threads)
-    grad_b = fast_mm_424.FastMatMul(a_matrix=at, b_matrix=grad, epsilon=1e-2, steps=1, numthreads=num_threads)
+    grad_b = fast_mm_442.FastMatMul(a_matrix=at, b_matrix=grad, epsilon=1e-2, steps=1, numthreads=num_threads)
     # a = math_ops.conj(op.inputs[0])
     # b = math_ops.conj(op.inputs[1])
     # grad_a = gen_math_ops.mat_mul(grad, b, transpose_b=True)
     # grad_b = gen_math_ops.mat_mul(a, grad, transpose_a=True)
     return grad_a, grad_b
 
-@tf.RegisterGradient("fast_mm_424")
+@tf.RegisterGradient("fast_mm_242")
 def _Fast_MatMul_grad(op, grad):
     bt = array_ops.transpose(op.inputs[1])
     at = array_ops.transpose(op.inputs[0])
     grad_a = fast_mm_442.FastMatMul(a_matrix=grad, b_matrix=bt, epsilon=1e-2, steps=1, numthreads=num_threads)
-    grad_b = fast_mm_424.FastMatMul(a_matrix=at, b_matrix=grad, epsilon=1e-2, steps=1, numthreads=num_threads)
+    grad_b = fast_mm_442.FastMatMul(a_matrix=at, b_matrix=grad, epsilon=1e-2, steps=1, numthreads=num_threads)
     # a = math_ops.conj(op.inputs[0])
     # b = math_ops.conj(op.inputs[1])
     # grad_a = gen_math_ops.mat_mul(grad, b, transpose_b=True)
@@ -45,7 +45,7 @@ def _Fast_MatMul_grad(op, grad):
 
 
 class Fast_Linear(keras.layers.Layer):
-    def __init__(self, units=32, input_dim=32, activation='relu', trainable=True, mm_module=fast_mm_442, mm_algo='smirnov442'):
+    def __init__(self, units=32, input_dim=32, activation='relu', trainable=True, mm_module=object, mm_algo='smirnov442'):
         super(Fast_Linear, self).__init__()
         w_init = tf.random_normal_initializer()
         self.w = tf.Variable(
@@ -91,9 +91,10 @@ if __name__ == '__main__':
 
     fast_mm_442 = tf.load_op_library(f'obj/smirnov442_mat_mul.so')
     fast_mm_442 = fast_mm_442.FastMatMul
-    #fast_mm_242 = tf.load_op_library(f'obj/smirnov242_mat_mul.so')
-    fast_mm_424 = tf.load_op_library(f'obj/smirnov424_mat_mul.so')
-    fast_mm_424 = fast_mm_424.FastMatMul
+    fast_mm_242 = tf.load_op_library(f'obj/smirnov242_mat_mul.so')
+    fast_mm_242 = fast_mm_242.FastMatMul
+    #fast_mm_424 = tf.load_op_library(f'obj/smirnov424_mat_mul.so')
+
 
     epochs = 3
     batch_size = 1000
