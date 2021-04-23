@@ -21,7 +21,7 @@ layers = VersionAwareLayers()
 
 # output to second FC
 @tf.RegisterGradient("FastMatMul242")
-def _Fast_MatMul_grad(op, grad):
+def first_Fast_MatMul_grad(op, grad):
     bt = array_ops.transpose(op.inputs[1])
     at = array_ops.transpose(op.inputs[0])
     grad_a = fast_mm_444(a_matrix=grad, b_matrix=bt, epsilon=1e-2, steps=1, numthreads=num_threads)
@@ -31,7 +31,7 @@ def _Fast_MatMul_grad(op, grad):
 
 # second FC to first
 @tf.RegisterGradient("FastMatMul442")
-def _Fast_MatMul_grad(op, grad):
+def second_Fast_MatMul_grad(op, grad):
     bt = array_ops.transpose(op.inputs[1])
     at = array_ops.transpose(op.inputs[0])
     grad_a = fast_mm_442(a_matrix=grad, b_matrix=bt, epsilon=1e-2, steps=1, numthreads=num_threads)
@@ -41,7 +41,7 @@ def _Fast_MatMul_grad(op, grad):
 
 # second FC to first
 @tf.RegisterGradient("FastMatMul525")
-def _Fast_MatMul_grad(op, grad):
+def thrid_Fast_MatMul_grad(op, grad):
     bt = array_ops.transpose(op.inputs[1])
     at = array_ops.transpose(op.inputs[0])
     grad_a = fast_mm_442(a_matrix=grad, b_matrix=bt, epsilon=1e-2, steps=1, numthreads=num_threads)
