@@ -64,16 +64,16 @@ def _Fast_MatMul_grad(op, grad):
 
 
 class Fast_Linear(keras.layers.Layer):
-    def __init__(self, units=32, input_dim=32, activation='relu'):
+    def __init__(self, units=32, input_dim=32, activation='relu', trainable=True):
         super(Fast_Linear, self).__init__()
         w_init = tf.random_normal_initializer()
         self.w = tf.Variable(
             initial_value=w_init(shape=(input_dim, units), dtype="float32"),
-            trainable=True,
+            trainable=trainable,
         )
         b_init = tf.zeros_initializer()
         self.b = tf.Variable(
-            initial_value=b_init(shape=(units,), dtype="float32"), trainable=True
+            initial_value=b_init(shape=(units,), dtype="float32"), trainable=trainable
         )
 
         self.epsilon = epsilon_values.get(mm_algo, 1e-2)
@@ -90,12 +90,14 @@ class Fast_Linear(keras.layers.Layer):
 
 
 def VGG11(
-    include_top=True,
-    weights='imagenet',
-    input_tensor=None,
-    input_shape=None,
-    pooling=None,
-    classes=1000,):
+        include_top=True,
+        weights='imagenet',
+        input_tensor=None,
+        input_shape=None,
+        pooling=None,
+        classes=1000,
+        fast_trainable=True
+        ):
     """Instantiates the VGG19 architecture.
       Reference:
       - [Very Deep Convolutional Networks for Large-Scale Image Recognition](
@@ -182,50 +184,51 @@ def VGG11(
     x = layers.Conv2D(
         64, (3, 3), activation='relu', padding='same', name='block1_conv1')(
         img_input)
-    x = layers.MaxPooling2D((2, 2), strides=(2, 2), name='block1_pool')(x)
-
-    # Block 2
-    x = layers.Conv2D(
-        128, (3, 3), activation='relu', padding='same', name='block2_conv1')(x)
-    x = layers.MaxPooling2D((2, 2), strides=(2, 2), name='block2_pool')(x)
-
-    # Block 3
-    x = layers.Conv2D(
-        256, (3, 3), activation='relu', padding='same', name='block3_conv1')(x)
-    x = layers.Conv2D(
-        256, (3, 3), activation='relu', padding='same', name='block3_conv2')(x)
-    x = layers.MaxPooling2D((2, 2), strides=(2, 2), name='block3_pool')(x)
-
-    # Block 4
-    x = layers.Conv2D(
-        512, (3, 3), activation='relu', padding='same', name='block4_conv1')(x)
-    x = layers.Conv2D(
-        512, (3, 3), activation='relu', padding='same', name='block4_conv2')(x)
-    x = layers.MaxPooling2D((2, 2), strides=(2, 2), name='block4_pool')(x)
-
-    # Block 5
-    x = layers.Conv2D(
-        512, (3, 3), activation='relu', padding='same', name='block5_conv1')(x)
-    x = layers.Conv2D(
-        512, (3, 3), activation='relu', padding='same', name='block5_conv2')(x)
-    x = layers.MaxPooling2D((2, 2), strides=(2, 2), name='block5_pool')(x)
+    # x = layers.MaxPooling2D((2, 2), strides=(2, 2), name='block1_pool')(x)
+    #
+    # # Block 2
+    # x = layers.Conv2D(
+    #     128, (3, 3), activation='relu', padding='same', name='block2_conv1')(x)
+    # x = layers.MaxPooling2D((2, 2), strides=(2, 2), name='block2_pool')(x)
+    #
+    # # Block 3
+    # x = layers.Conv2D(
+    #     256, (3, 3), activation='relu', padding='same', name='block3_conv1')(x)
+    # x = layers.Conv2D(
+    #     256, (3, 3), activation='relu', padding='same', name='block3_conv2')(x)
+    # x = layers.MaxPooling2D((2, 2), strides=(2, 2), name='block3_pool')(x)
+    #
+    # # Block 4
+    # x = layers.Conv2D(
+    #     512, (3, 3), activation='relu', padding='same', name='block4_conv1')(x)
+    # x = layers.Conv2D(
+    #     512, (3, 3), activation='relu', padding='same', name='block4_conv2')(x)
+    # x = layers.MaxPooling2D((2, 2), strides=(2, 2), name='block4_pool')(x)
+    #
+    # # Block 5
+    # x = layers.Conv2D(
+    #     512, (3, 3), activation='relu', padding='same', name='block5_conv1')(x)
+    # x = layers.Conv2D(
+    #     512, (3, 3), activation='relu', padding='same', name='block5_conv2')(x)
+    # x = layers.MaxPooling2D((2, 2), strides=(2, 2), name='block5_pool')(x)
 
 
     # Classification block
     x = layers.Flatten(name='flatten')(x)
+    print(x.shape)
 
     #x = layers.Dense(4096, activation='relu', name='fc1')(x)
-    fast_layer1 = Fast_Linear(units=4096, input_dim=25088, activation='relu')
+    fast_layer1 = Fast_Linear(units=4096, input_dim=25088, activation='relu', trainable=fast_trainable)
     x = fast_layer1(x)
 
     #x = layers.Dense(4096, activation='relu', name='fc2')(x)
-    fast_layer2 = Fast_Linear(units=4096, input_dim=4096, activation='relu')
+    fast_layer2 = Fast_Linear(units=4096, input_dim=4096, activation='relu', trainable=fast_trainable)
     x = fast_layer2(x)
 
-    #imagenet_utils.validate_activation(classifier_activation, weights)
+    #imagenet_utils.validate_activation('softmax', weights)
 
-    #x = layers.Dense(classes, activation=classifier_activation, name='predictions')(x)
-    fast_output_layer = Fast_Linear(units=classes, input_dim=4096, activation='softmax')
+    #x = layers.Dense(classes, activation='softmax', name='predictions')(x)
+    fast_output_layer = Fast_Linear(units=classes, input_dim=4096, activation='softmax', trainable=fast_trainable)
     x = fast_output_layer(x)
 
 
@@ -241,7 +244,6 @@ def VGG11(
     model = training.Model(inputs, x, name='vgg11')
 
     return model
-
 
 
 class TimeHistory(Callback):
@@ -266,14 +268,13 @@ if __name__ == '__main__':
     image = tf.image.resize(image, (224, 224))
     image = tf.reshape(image, [1, 224, 224, 3])
 
-    model = VGG11(include_top=True, input_tensor=None, pooling=None)
-
 
 
     epochs = 2
-    batch_size = 250
+    batch_size = 256
 
-    y_train = tf.ones([batch_size])
+    y_train = tf.random.uniform(shape=[batch_size])
+    #y_train = tf.ones([batch_size])
     x_train = []
     for i in range(batch_size):
         x_train.append(image)
@@ -282,45 +283,27 @@ if __name__ == '__main__':
 
     print('\n\nAll images put in memory\n\n')
 
-    for l in model.layers:
-        print(l.name)
+    model = VGG11(include_top=True, input_tensor=None, pooling=None)
+    # Compile
+    model.compile(
+        optimizer=keras.optimizers.RMSprop(),  # Optimizer
+        # Loss function to minimize
+        loss=keras.losses.SparseCategoricalCrossentropy(),
+        # List of metrics to monitor
+        metrics=[keras.metrics.SparseCategoricalAccuracy()],
+    )
+
+    a = time.time()
+    model.fit(x_train, y_train,
+              epochs=epochs,
+              batch_size=batch_size,
+              verbose=0)
+
+    b = time.time()
+
+    print(f"Total time: {b-a} seconds, Time per epoch ({epochs}): {(b-a)/epochs}")
 
 
+    # TTotal time: 147.18857884407043 seconds, Time per epoch (2): 73.59428942203522
 
 
-    time_callback = TimeHistory()
-
-
-
-    # Loop through each layer setting it Trainable and others as non trainable
-    results = []
-    for i in range(len(model.layers)):
-
-        layer_name = model.layers[i].name  # storing name of layer for printing layer
-
-        # Setting all layers as non-Trainable
-        for layer in model.layers:
-            layer.trainable = False
-
-        # Setting ith layers as trainable
-        model.layers[i].trainable = True
-
-        # Compile
-        model.compile(
-            optimizer=keras.optimizers.RMSprop(),  # Optimizer
-            # Loss function to minimize
-            loss=keras.losses.SparseCategoricalCrossentropy(),
-            # List of metrics to monitor
-            metrics=[keras.metrics.SparseCategoricalAccuracy()],
-        )
-
-        # Fit on a small number of epochs with callback that records time for each epoch
-        model.fit(x_train, y_train,
-                  epochs=epochs,
-                  batch_size=batch_size,
-                  verbose=0,
-                  callbacks=[time_callback])
-
-        results.append(np.average(time_callback.times))
-        # Print average of the time for each layer
-        print(f"{layer_name}: Approx (avg) train time for {epochs} epochs = ", np.average(time_callback.times))
