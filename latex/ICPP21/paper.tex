@@ -397,6 +397,7 @@ This implies that the dimension of the submultiplications does not fall on the p
 The algorithm with no remainder multiplications, $\dims{4,2,2}$, does not suffer this problem and maintains higher performance.
 It exceeds \texttt{gemm}'s effective performance at dimension 4000, exceeds the peak parallel performance of any classical algorithm for larger dimensions, and achieves a 21\% speedup over \texttt{gemm} at dimension 8192 for an effective rate of 389 GFLOPS.
 
+\begin{comment}
 \subsection{Skewed Matrix Multiplication}
 When computing square matrix multiplications, we have demonstrated that $\dims{4,4,2}$ and $\dims{4,4,4}$ algorithms have the best performance.
 However, algorithms with more skewed aspect ratios will likely perform better for problems with matching skewed matrix multiplication dimensions.
@@ -409,7 +410,7 @@ Therefore, there are 9 in total multiplications involved: $\dims{bs, 25088, 4096
 ($bs$ stands for the batch size of the input.)
 
 The performance results for 6 threads shows that algorithm $\dims{4,4,2}$ and its variances are still the dominant one among all 12 APA algorithms and their variances.
-
+\end{comment}
 
 \section{Application of APA Algorithms in Multi-Layer Perceptron Network Training}
 
