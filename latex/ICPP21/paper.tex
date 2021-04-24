@@ -191,8 +191,6 @@ Ten such triplets completely specify Bini's algorithm.
 
 \begin{table}
 \centering
-\caption{Properties of APA algorithms. Speedup and error are computed assuming 1 recursive step}
-\label{tab:algs}
 \begin{tabular}{| c | c c c | c c c |} 
 \hline
 \textbf{Ref} & \textbf{Dims} & \textbf{Rank} & \textbf{Speedup} & $\mathbf{\sigma}$ & $\mathbf{\varphi}$ & \textbf{Error} \\
@@ -213,6 +211,8 @@ Ten such triplets completely specify Bini's algorithm.
 \cite{Smirnov18} & $\dims{5,5,5}$ & 90 & $39\%$ & 1 & 3 & \num{1.9e-2} \\
 \hline
 \end{tabular}
+\caption{Properties of APA algorithms. Speedup and error are computed assuming 1 recursive step}
+\label{tab:algs}
 \end{table}
 
 \subsection{Numerical Error of APA Algorithms}
@@ -534,11 +534,13 @@ Because GPUs can offer higher efficiency for matrix multiplications, we wish to 
 Techniques used to accelerate Strassen's algorithm on the GPU \cite{HYvdG20,LAES13} can be generalized to other fast algorithms as done in work for multicore CPUs \cite{BB15,HRMvdG17}.
 We believe improved performance benefits can be achieved by APA algorithms on GPU architectures due to the relatively higher memory bandwidth.
 
+
+
 %\paragraph*{Acknowledgments}
 %
 %This material is based upon work supported by the NSF Grant No. CCF1942892 and a Wake Forest University Undergraduate Research and Creative Activities (URECA) Research Fellowship.
 
-\newpage
+
 \balance
 \bibliographystyle{ACM-Reference-Format}
 \bibliography{refs}
