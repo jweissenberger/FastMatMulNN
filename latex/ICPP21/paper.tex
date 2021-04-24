@@ -403,6 +403,9 @@ However, algorithms with more skewed aspect ratios will likely perform better fo
 We note that an algorithm for dimensions $\dims{m,n,k}$ can be translated into an algorithm for $\dims{n,m,k}$ and any other reordering of the dimensions \cite{BB15}.
 \RZ{transposing row major matrix problem?}
 \RZ{Best algorithm for each shape of matrices and its figure}
+In order to achieve the best performance on a neural network model VGG-11, which we will apply these APA algorithms on, we decided to measure the performance all 28 algorithms on the shapes of multiplied matrices involved in the fully connected layers of VGG-11.
+Each fully connected layers of VGG-11 contains the number of weights of 4096, 4096, and 1000, and the input dimension of the first layer is 25088.
+Therefore, there are 9 in total multiplications involved: $\dims{25088, 4096, bs}$.
 
 \section{Application of APA Algorithms in Multi-Layer Perceptron Network Training}
 
