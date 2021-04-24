@@ -113,7 +113,7 @@ In particular we
 	\item extend the framework of \cite{BB15} to generate efficient multithreaded code for all of them, achieving up to 21\% performance improvement over the best parallel classical implementation;
 	\item demonstrate the robustness of learning accuracy to approximate matrix multiplications;
 	\item present multithreaded performance improvements of a synthetic MLP of up to 13\% over the use of classical matrix multiplication; and
-	\item \RZ{present performance improvements of VGG-11? network of ?\% over the classical matrix multiplication.}
+	\item \RZ{present performance improvements of VGG-19 network of 15\% over the classical matrix multiplication.}
 \end{enumerate}
 
 \section{Practical Arbitrary Precision Approximating Matrix Multiplication Algorithms}
@@ -528,28 +528,40 @@ In the case of 12 threads (both sockets), as shown in \cref{fig:NNreltime_par_12
 These results match the behavior of standalone matrix multiplications using 12 threads (see \cref{sec:matmul_perf_par}); the lack of scaling is due in large part to the poor performance of multithreaded \texttt{gemm} on remainder multiplications of small dimensions.
 The algorithm with a number of sub-multiplications that is a multiple of 12, $\dims{4,4,2}$, continues to perform well and is slightly faster than the classical algorithm for dimensions 4096 and 8192, attaining speedups of up to 7\%.
 
-\section{Application of APA algorithms in VGG-11}
+\section{Application of APA algorithms in VGG-19}
 
-\begin{figure}[hb!]
+\begin{figure*}
+%
+\subfloat[One thread]{
+\centering
+\input{plots/VGG_time_seq}
+\label{fig:vgg_seq}}
+	%
+\hfill	
+\subfloat[Six threads]{
 \centering
 \input{plots/VGG_time}
-\caption{Total time test on VGG-11 with 6 threads}
+\label{fig:vgg_par6}}
+%
+\caption{Total time test on the fully connected layes on VGG-19 using $\dims{4,4,2}$ and dgemm}
 \label{fig:vgg}
-\end{figure}
-
-\subsection{VGG-11 Network}
-\RZ{description of the model of VGG-11 and VGG-19?}
+\end{figure*}
 
 
+\subsection{VGG-19 Network}
+VGG19 is a convolutional neural network typically trained on the imagenet dataset as a classification task. The model is one of the highest performing algorithms for this task. 
+The network is composed of 19 layers, 16 convolutional and 3 fully connected. 
+The 3 fully connected layers consist of 25,088, 4096 and 1000 nodes and are placed at the end of the network. 
+These create very large multiplications in forwards and backwards propagation. 
+Using faster APA algorithms for the multiplication we are able to speed up the training of the network. 
 
 
 % \subsection{Accuracy}
 
 \subsection{Performance}
-\RZ{VGG-11 fully connected layer: BS x 25K x 4K / BS x 4K x 4K / BS x 4K x 1K? with plot}
-\cref{fig:vgg}
-\RZ{Fast Combo: 525, 442, 242}
 
+Replacing the classic matrix multiplication algorithm in these layers with the Smirnov 442 algorithm provides up to a 10\% speed up of the fully connected layers during training with 6 threads and a 15\% speed up using a single thread. 
+\cref{fig:vgg} plot the training time of each network with increasing batch sizes 
 
 \section{Conclusion}
 
@@ -560,7 +572,9 @@ The results presented here show that neural network training, particularly for M
 We observe that for APA algorithms offering a theoretical speedup of up to 39\%, we can achieve up to 28\% and 21\% improvements for single- and multi-threaded implementations of individual matrix multiplications, respectively, which translate to up to 13\% speedup in overall training time on a multicore CPU.
 
 While the accuracy and performance results are promising for MLP networks and the MNIST dataset, we believe that APA algorithms can also be effective in state-of-the-art networks and more difficult machine learning problems.
-For example, the VGG-19 network for large-scale visual recognition \cite{SZ15} is based on a deep convolutional network and is bottlenecked by large fully connected layers, including a layer with dimensions $25088\times 4096$, where APA algorithms can offer significant performance improvement.
+For example, the VGG-19 network for large-scale visual recognition \cite{SZ15} is based on a deep convolutional network and is bottlenecked by large fully connected layers.
+Our result are able to show a 15\% performance improvement using the sequential algorithm, and a 10\% improvement using parallel algorithm.
+This highlights the practical applications on training large networks.
 
 As illustrated by Benson and Ballard \cite{BB15}, the highest performing fast algorithms for rectangular matrix multiplications often have dimensions that match the aspect ratio of the problem.
 We consider in this paper only square matrix multiplications, and we see that square (or nearly square) dimensions of $\dims{4,4,4}$ and $\dims{4,4,2}$ are fastest.
