@@ -38,6 +38,8 @@
 \newcommand{\JW}[1]{\textcolor{blue}{\textbf{JW}: #1}}
 \newcommand{\RZ}[1]{\textcolor{purple}{\textbf{RZ}: #1}}
 
+\setcopyright{rightsretained}
+
 
 \acmConference[ICPP'21]{International Conference on Parallel Processing}{August 9--12}{Chicago, IL, USA}
 
@@ -73,7 +75,7 @@ Practical APA algorithms provide significant reduction in computation time and s
 We demonstrate that APA algorithms can be efficiently implemented and parallelized for multicore CPUs to obtain up to 28\% and 21\% speedups over the fastest implementation of the classical algorithm using one core and 12 cores, respectively.
 Furthermore, using these algorithms to train a Multi-Layer Perceptron (MLP) network yields no significant reduction in the training or testing error.
 Our performance results on a large MLP network show overall sequential and multithreaded performance improvements of up to 25\% and 13\%, respectively.
-\RZ{We also demonstrate that APA algorithms are efficiently implemented on a more complicated network VGG-11?}
+We also demonstrate up to 15\% improvement when training the fully connected layers of the VGG-19 image classification network.
 \end{abstract}
 
 \begin{document}
@@ -112,8 +114,8 @@ In particular we
 	\item curate a collection of both well-established and recently discovered practical APA algorithms;
 	\item extend the framework of \cite{BB15} to generate efficient multithreaded code for all of them, achieving up to 21\% performance improvement over the best parallel classical implementation;
 	\item demonstrate the robustness of learning accuracy to approximate matrix multiplications;
-	\item present multithreaded performance improvements of a synthetic MLP of up to 13\% over the use of classical matrix multiplication; and
-	\item \RZ{present performance improvements of VGG-19 network of 15\% over the classical matrix multiplication.}
+	\item present multithreaded performance improvements of a synthetic MLP of up to 13\% over the classical algorithm; and
+	\item show performance improvements for training the fully connected layers of the VGG-19 network of up to 15\%.
 \end{enumerate}
 
 \section{Practical Arbitrary Precision Approximating Matrix Multiplication Algorithms}
@@ -531,38 +533,33 @@ The algorithm with a number of sub-multiplications that is a multiple of 12, $\d
 
 \section{Application of APA algorithms in VGG-19}
 
-\begin{figure*}
+\begin{figure}
 %
 \subfloat[One thread]{
 \centering
 \input{plots/VGG_time_seq}
-\label{fig:vgg_seq}}
-	%
+\label{fig:vgg_seq}}%
 \hfill	
 \subfloat[Six threads]{
 \centering
 \input{plots/VGG_time}
 \label{fig:vgg_par6}}
 %
-\caption{Total time test on the fully connected layes on VGG-19 using $\dims{4,4,2}$ and dgemm}
+\caption{Per-batch training time on the fully connected layers of VGG-19 using $\dims{4,4,2}$ and Classical}
 \label{fig:vgg}
-\end{figure*}
+\end{figure}
 
 
-\subsection{VGG-19 Network}
-VGG19 is a convolutional neural network typically trained on the imagenet dataset as a classification task. The model is one of the highest performing algorithms for this task. 
-The network is composed of 19 layers, 16 convolutional and 3 fully connected. 
-The 3 fully connected layers consist of 25,088, 4096 and 1000 nodes and are placed at the end of the network. 
-These create very large multiplications in forwards and backwards propagation. 
-Using faster APA algorithms for the multiplication we are able to speed up the training of the network. 
+%\subsection{VGG-19 Network}
+VGG-19 \cite{SZ15} is a convolutional neural network typically trained on the ImageNet dataset as a classification task. 
+The model is one of the highest performing algorithms for this task, and the network is composed of 19 layers, 16 convolutional and 3 fully connected. 
+The 3 fully connected layers consist of 25{,}088, 4096, and 1000 nodes, creating very large matrix multiplications in forward and backward propagation. 
+By using faster APA algorithms for the multiplication, we are able to speed up the training of the network. 
 
+%\subsection{Performance}
 
-% \subsection{Accuracy}
-
-\subsection{Performance}
-
-Replacing the classic matrix multiplication algorithm in these layers with the Smirnov 442 algorithm provides up to a 10\% speed up of the fully connected layers during training with 6 threads and a 15\% speed up using a single thread. 
-\cref{fig:vgg} plot the training time of each network with increasing batch sizes 
+Replacing the classic matrix multiplication algorithm in these layers with the $\dims{4,4,2}$ algorithm provides up to a 10\% speed up of the fully connected layers during training with 6 threads and a 15\% speed up using a single thread. 
+\Cref{fig:vgg} shows the per-batch training time of the fully connected layers across batch sizes.
 
 \section{Conclusion}
 
@@ -581,7 +578,7 @@ As illustrated by Benson and Ballard \cite{BB15}, the highest performing fast al
 We consider in this paper only square matrix multiplications, and we see that square (or nearly square) dimensions of $\dims{4,4,4}$ and $\dims{4,4,2}$ are fastest.
 Algorithms with more skewed aspect ratios will likely perform better for problems with matching skewed matrix multiplication dimensions.
 We note that an algorithm for dimensions $\dims{m,n,k}$ can be translated into an algorithm for $\dims{n,m,k}$ and any other reordering of the dimensions \cite{BB15}.
-For very large matrices, it may also be beneficial to consider more than one recursive step of the same algorithm or a combination of two or three different algorithms across recursive steps (uniform, non-stationary algorithms \cite{BBDLS16}).
+For very large matrices, it may be worth considering more than one recursive step of the same algorithm or a combination of two or three different algorithms across recursive steps (uniform, non-stationary algorithms \cite{BBDLS16}).
 
 Finally, we would like to extend the code generation techniques to other hardware platforms, including GPUs.
 Because GPUs can offer higher efficiency for matrix multiplications, we wish to demonstrate the potential of APA algorithms in that environment.
