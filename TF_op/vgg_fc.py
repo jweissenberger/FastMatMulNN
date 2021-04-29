@@ -58,7 +58,7 @@ class Fast_Linear(keras.layers.Layer):
             return tf.nn.relu(output)
 
 num_threads = 12
-mm_algo = 'smirnov442'
+mm_algo = 'dgemm'
 epsilon_values = {
     'bini322': 2**-11,
     'schonhage333': 2**-5,
@@ -89,8 +89,8 @@ if __name__ == '__main__':
     x = fast_layer1(model_input)
 
     # x = layers.Dense(4096, activation='relu', name='fc2')(x)
-    fast_layer2 = Fast_Linear(units=4096, input_dim=4096, activation='relu')
-    x = fast_layer2(x)
+    #fast_layer2 = Fast_Linear(units=4096, input_dim=4096, activation='relu')
+    #x = fast_layer2(x)
 
     # imagenet_utils.validate_activation('softmax', weights)
 
