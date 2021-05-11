@@ -75,32 +75,34 @@ epsilon_values = {
 }
 
 if __name__ == '__main__':
-
     fast_mm_module = tf.load_op_library(f'obj/{mm_algo}_mat_mul.so')
     epochs = 3
-    batch_size = 1000
+    batch_size = 500
     size = 1000
 
     y_train = tf.random.uniform(shape=[batch_size])
-    x_train = tf.random.uniform(shape=[batch_size, size])
+    x_train = tf.random.uniform(shape=[batch_size, 25088])
 
-    model_input = layers.Input(shape=size)
-    # # x = layers.Dense(4096, activation='relu', name='fc1')(x)
-    # fast_layer1 = Fast_Linear(units=4096, input_dim=25088, activation='relu')
-    # #x = fast_layer1(model_input)
-    #
-    # # x = layers.Dense(4096, activation='relu', name='fc2')(x)
-    # #fast_layer2 = Fast_Linear(units=4096, input_dim=4096, activation='relu')
-    # #x = fast_layer2(x)
-    #
-    # # imagenet_utils.validate_activation('softmax', weights)
-    #
-    # # x = layers.Dense(classes, activation='softmax', name='predictions')(x)
-    fast_output_layer = Fast_Linear(units=1000, input_dim=size, activation='softmax')
-    x = fast_output_layer(model_input)
+    model_input = layers.Input(shape=2)
+
+    fast_layer0 = Fast_Linear(units=25088, input_dim=2, activation='relu')
+    x = fast_layer0(model_input)
+
+    # x = layers.Dense(4096, activation='relu', name='fc1')(x)
+    fast_layer1 = Fast_Linear(units=4096, input_dim=25088, activation='relu')
+    x = fast_layer1(x)
+
+    # x = layers.Dense(4096, activation='relu', name='fc2')(x)
+    fast_layer2 = Fast_Linear(units=4096, input_dim=4096, activation='relu')
+    x = fast_layer2(x)
+
+    # imagenet_utils.validate_activation('softmax', weights)
+
+    # x = layers.Dense(classes, activation='softmax', name='predictions')(x)
+    fast_output_layer = Fast_Linear(units=1000, input_dim=4096, activation='softmax')
+    x = fast_output_layer(x)
 
     model = training.Model(model_input, x, name='FC')
-
 
     model.compile(
         optimizer=keras.optimizers.RMSprop(),  # Optimizer
@@ -109,11 +111,14 @@ if __name__ == '__main__':
         # List of metrics to monitor
         metrics=[keras.metrics.SparseCategoricalAccuracy()],
     )
-
+    tboard_callback = tf.keras.callbacks.TensorBoard(log_dir='keras_test2',
+                                                     histogram_freq=1,
+                                                     profile_batch=2)
     a = time.time()
     model.fit(x_train, y_train,
               epochs=epochs,
               batch_size=batch_size,
+              callbacks=[tboard_callback]
               )
 
     b = time.time()
