@@ -81,7 +81,7 @@ if __name__ == '__main__':
     size = 1000
 
     y_train = tf.random.uniform(shape=[batch_size])
-    x_train = tf.random.uniform(shape=[batch_size, 25088])
+    x_train = tf.random.uniform(shape=[batch_size, 2])
 
     model_input = layers.Input(shape=2)
 
