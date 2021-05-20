@@ -57,7 +57,7 @@ class Fast_Linear(keras.layers.Layer):
         else:
             return tf.nn.relu(output)
 
-num_threads = 12
+num_threads = 6
 mm_algo = 'dgemm'
 epsilon_values = {
     'bini322': 2**-11,

@@ -76,7 +76,8 @@ class Fast_Linear(keras.layers.Layer):
         else:
             return tf.nn.relu(output)
 
-num_threads = 12
+
+num_threads = 6
 epsilon_values = {
     'bini322': 2**-11,
     'schonhage333': 2**-5,
@@ -110,7 +111,7 @@ if __name__ == '__main__':
 
 
     epochs = 3
-    batch_size = 1000
+    batch_size = 1024
 
     y_train = tf.random.uniform(shape=[batch_size])
     x_train = tf.random.uniform(shape=[batch_size, 2])
