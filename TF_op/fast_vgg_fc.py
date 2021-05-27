@@ -44,8 +44,8 @@ def second_Fast_MatMul_grad(op, grad):
 def thrid_Fast_MatMul_grad(op, grad):
     bt = array_ops.transpose(op.inputs[1])
     at = array_ops.transpose(op.inputs[0])
-    grad_a = fast_mm_444(a_matrix=grad, b_matrix=bt, epsilon=1e-2, steps=1, numthreads=num_threads)
-    grad_b = fast_mm_244(a_matrix=at, b_matrix=grad, epsilon=1e-2, steps=1, numthreads=num_threads)
+    grad_a = fast_mm_442(a_matrix=grad, b_matrix=bt, epsilon=1e-2, steps=1, numthreads=num_threads)
+    grad_b = fast_mm_444(a_matrix=at, b_matrix=grad, epsilon=1e-2, steps=1, numthreads=num_threads)
     return grad_a, grad_b
 
 
@@ -125,7 +125,7 @@ if __name__ == '__main__':
     x = layers.Dense(25088, activation='relu', name='fc0')(model_input)
 
     # x = layers.Dense(4096, activation='relu', name='fc1')(x)
-    fast_layer1 = Fast_Linear(units=4096, input_dim=25088, activation='relu', mm_module=fast_mm_552)
+    fast_layer1 = Fast_Linear(units=4096, input_dim=25088, activation='relu', mm_module=fast_mm_244)
     x = fast_layer1(x)
 
     # x = layers.Dense(4096, activation='relu', name='fc2')(x)
