@@ -48,6 +48,15 @@ def thrid_Fast_MatMul_grad(op, grad):
     grad_b = fast_mm_444(a_matrix=at, b_matrix=grad, epsilon=1e-2, steps=1, numthreads=num_threads)
     return grad_a, grad_b
 
+# second FC to first
+@tf.RegisterGradient("FastMatMul442")
+def thrid_Fast_MatMul_grad(op, grad):
+    bt = array_ops.transpose(op.inputs[1])
+    at = array_ops.transpose(op.inputs[0])
+    grad_a = fast_mm_442(a_matrix=grad, b_matrix=bt, epsilon=1e-2, steps=1, numthreads=num_threads)
+    grad_b = fast_mm_442(a_matrix=at, b_matrix=grad, epsilon=1e-2, steps=1, numthreads=num_threads)
+    return grad_a, grad_b
+
 
 class Fast_Linear(keras.layers.Layer):
     def __init__(self, units=32, input_dim=32, activation='relu', trainable=True, mm_module=None, mm_algo='smirnov442'):
@@ -112,7 +121,7 @@ if __name__ == '__main__':
 
 
 
-    epochs = 3
+    epochs = 5
     batch_size = 1024
 
     y_train = tf.random.uniform(shape=[batch_size])
@@ -125,17 +134,17 @@ if __name__ == '__main__':
     x = layers.Dense(25088, activation='relu', name='fc0')(model_input)
 
     # x = layers.Dense(4096, activation='relu', name='fc1')(x)
-    fast_layer1 = Fast_Linear(units=4096, input_dim=25088, activation='relu', mm_module=fast_mm_244)
+    fast_layer1 = Fast_Linear(units=4096, input_dim=25088, activation='relu', mm_module=fast_mm_442)
     x = fast_layer1(x)
 
     # x = layers.Dense(4096, activation='relu', name='fc2')(x)
-    fast_layer2 = Fast_Linear(units=4096, input_dim=4096, activation='relu', mm_module=fast_mm_424)
+    fast_layer2 = Fast_Linear(units=4096, input_dim=4096, activation='relu', mm_module=fast_mm_442)
     x = fast_layer2(x)
 
     # imagenet_utils.validate_activation('softmax', weights)
 
     # x = layers.Dense(1000, activation='softmax', name='predictions')(x)
-    fast_output_layer = Fast_Linear(units=1000, input_dim=4096, activation='softmax', mm_module=fast_mm_244)
+    fast_output_layer = Fast_Linear(units=1000, input_dim=4096, activation='softmax', mm_module=fast_mm_442)
     x = fast_output_layer(x)
 
     model = training.Model(model_input, x, name='FC')
