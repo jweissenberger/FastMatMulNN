@@ -1,0 +1,31 @@
+Questions For Rebuttal:
+
+In the sequential implementation, it is shown that the highest performing algorithm is ⟨4, 4, 4⟩, is there any reason for this?:
+- six threads matches well with the subproblems
+
+Your computer sucks:
+- The more important part is that we are applying new algorithms to help improve one of the most widely used and computationally expensive algorithms out there
+
+How does compare APA to modern processor support for 16b precision, and have you proven that these two techniques are composable?
+
+
+Detailed Comments:
+The main innovation and contributions can not be found clearly in this paper.:
+- These algorithms have been mostly theoretical and we are getting real value out of them
+- Neural network training is very computationally expensive and is being used everywhere by every major company and we have found a way to speed up this training
+    - saves money, time, etc etc tens of millions of dollars are spent on network training etc
+    - mlperf (now called ml commons): https://mlcommons.org/en/#philosophy
+        - lots of companies want to speed up NN training
+
+In the experiment parts, though a lot of APA methods are tested, but it lacks of further analysis of different APA methods.
+
+
+The experimental results using a discontinued 6-core Intel CPU from 2012, which provides a rather modest amount of parallelism for experiments in a Parallel Processing conference i 2021
+
+Figure 4: where is "Classical" on the plot? It's impossible to see. The figure in Figure 4 are too crowed to see any thing. Try to use table or make it readable.
+- its essentially in the middle of the other algorithms and we used that graph to show that there isn't much difference between model performance
+
+
+More applications should be introduced to show the robustness.
+- There are many other NN applications
+    - large language models and other CV models like VGG
