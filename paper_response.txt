@@ -3,7 +3,7 @@ Questions For Rebuttal:
 In the sequential implementation, it is shown that the highest performing algorithm is ⟨4, 4, 4⟩, is there any reason for this?:
 - six threads matches well with the subproblems
 
-Your computer sucks:
+Do you have the ability to test a chip that's less than 5 years old?:
 - The more important part is that we are applying new algorithms to help improve one of the most widely used and computationally expensive algorithms out there
 
 How does compare APA to modern processor support for 16b precision, and have you proven that these two techniques are composable?
