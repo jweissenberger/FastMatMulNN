@@ -7,6 +7,8 @@ Reviewer 1
 
 While APA algorithms have been around for 30 years, they have only ever been of theoretical interest, as a step towards reducing the computational complexity exponent of matrix multiplication.  We believe a central contribution of our paper is that we are the first to demonstrate the practicality of the algorithms, providing an efficient, parallel implementation and studying the impact of the approximation error in a practical scenario. 
 
+We do base our parallelization on the framework of [5], but we point out that the framework could not be used for all of our APA algorithms and required re-writing and generalizing many of the core code generators.  It was also nontrivial to integrate the framework within TensorFlow's underlying C++ implementation. 
+
 "In the sequential implementation, it is shown that the highest performing algorithm is ⟨4, 4, 4⟩, is there any reason for this?"
 
 The (4,4,4) algorithm has the greatest reduction in flops (per Table 1); in the sequential case, the performance matches the theoretical reduction in flops reasonably well.
@@ -22,6 +24,10 @@ We have newer Intel machines available to us, but none of them support half-prec
 The techniques are certainly composable, and the behavior of APA matrix multiplication error in half precision is predictable, given by the theoretical analysis and confirmed by our empirical evidence in single precision. However, the tolerance of a neural network to composing these two optimizations has not been tested.  The matrix multiplication accuracy of APA algorithms in half-precision would be on the range of 3-5 bits, or 1-2 decimal digits.
 
 Reviewer 3
+
+"More applications should be introduced to show the robustness."
+
+We believe neural network training is an important application in its own right, drawing incredible amounts of time and money.  The networks we consider in this work are representative of what is used in industry, but there are many others that are bottlenecked by fully connected layers and matrix multiplication.
 
 "The figure in Figure 4 are too crowded to see any thing." (also mentioned by Reviewer 2)
 

@@ -1,6 +1,7 @@
 *.bbl
 *.blg
 *.aux
+*.auxlock
 *.out
 *.synctex.gz
 main.pdf
