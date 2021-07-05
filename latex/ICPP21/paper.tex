@@ -260,7 +260,8 @@ In order to choose the optimal $\lambda$ value for each algorithm, we tested the
 \begin{figure}
 \centering
 \renewcommand{\datafile}{data/matmul_acc.dat}
-\input{plots/accuracy}
+%\input{plots/accuracy}
+\includegraphics{tikz-taps/paper-figure0}
 \caption{Relative Frobenius norm error for APA algorithms on random inputs.}
 \label{fig:accuracy}
 \end{figure}
@@ -302,7 +303,8 @@ The third block column shows error parameters, and the error is calculated as $2
 
 \begin{figure}
 \centering
-\input{figs/hybrid}
+%\input{figs/hybrid}
+\includegraphics{tikz-taps/paper-figure1.pdf}
 \caption{Illustration of hybrid parallelization strategy for $r=10$ and 4 threads.  Each thread is assigned two multiplications to compute using single-threaded \texttt{gemm} and the two remaining multiplications are performed using multithreaded \texttt{gemm}.}
 \label{fig:hybrid}
 \end{figure}
@@ -313,7 +315,8 @@ The third block column shows error parameters, and the error is calculated as $2
 \centering
 \renewcommand{\datafile}{data/matmul_seq.dat}
 \renewcommand{\threads}{1}
-\input{plots/matmul_perf}
+%\input{plots/matmul_perf}
+\includegraphics{tikz-taps/paper-figure2.pdf}
 %\caption{Single-threaded matrix multiplication performance}
 \label{fig:matmul_seq}}
 %
@@ -322,7 +325,8 @@ The third block column shows error parameters, and the error is calculated as $2
 \centering
 \renewcommand{\datafile}{data/matmul_par_6.dat}
 \renewcommand{\threads}{6}
-\input{plots/matmul_perf}
+%\input{plots/matmul_perf}
+\includegraphics{tikz-taps/paper-figure3.pdf}
 %\caption{Multithreaded matrix multiplication performance (6 threads)}
 \label{fig:matmul_par_6}}
 %
@@ -331,7 +335,8 @@ The third block column shows error parameters, and the error is calculated as $2
 \centering
 \renewcommand{\datafile}{data/matmul_par_12.dat}
 \renewcommand{\threads}{12}
-\input{plots/matmul_perf}
+%\input{plots/matmul_perf}
+\includegraphics{tikz-taps/paper-figure4.pdf}
 %\caption{Multithreaded matrix multiplication performance (6 threads)}
 \label{fig:matmul_par_12}}
 %
@@ -430,7 +435,8 @@ The performance results for 6 threads shows that algorithm $\dims{4,4,2}$ and it
 \centering
 \renewcommand{\datafile}{data/NN_acc.dat}
 \renewcommand{\set}{train}
-\input{plots/NN_acc}
+%\input{plots/NN_acc}
+\includegraphics{tikz-taps/paper-figure5.pdf}
 \label{fig:NN_acc_train}}
 %
 \hfill
@@ -438,7 +444,8 @@ The performance results for 6 threads shows that algorithm $\dims{4,4,2}$ and it
 \centering
 \renewcommand{\datafile}{data/NN_acc.dat}
 \renewcommand{\set}{test}
-\input{plots/NN_acc}
+%\input{plots/NN_acc}
+\includegraphics{tikz-taps/paper-figure6.pdf}
 \label{fig:NN_acc_test}}
 %
 \caption{MLP network accuracy for MNIST data set}
@@ -447,7 +454,8 @@ The performance results for 6 threads shows that algorithm $\dims{4,4,2}$ and it
 
 \begin{figure}[hb!]
 \centering
-\input{figs/neuralnet}
+%\input{figs/neuralnet}
+\includegraphics{tikz-taps/paper-figure7.pdf}
 \caption{Multi-Layer Perceptron network structure}
 \label{fig:neuralnet}
 \end{figure}
@@ -494,7 +502,8 @@ We see more variability in the test error due to the sensitivity inherent in the
 \centering
 \renewcommand{\datafile}{data/NN_seq.dat}
 \renewcommand{\threads}{1}
-\input{plots/NN_reltime}
+%\input{plots/NN_reltime}
+\includegraphics{tikz-taps/paper-figure8.pdf}
 \label{fig:NNreltime_seq}}
 %
 \hfill
@@ -502,7 +511,8 @@ We see more variability in the test error due to the sensitivity inherent in the
 \centering
 \renewcommand{\datafile}{data/NN_par_6.dat}
 \renewcommand{\threads}{6}
-\input{plots/NN_reltime}
+%\input{plots/NN_reltime}
+\includegraphics{tikz-taps/paper-figure9.pdf}
 \label{fig:NNreltime_par_6}}
 %
 \hfill
@@ -510,7 +520,8 @@ We see more variability in the test error due to the sensitivity inherent in the
 \centering
 \renewcommand{\datafile}{data/NN_par_12.dat}
 \renewcommand{\threads}{12}
-\input{plots/NN_reltime}
+%\input{plots/NN_reltime}
+\includegraphics{tikz-taps/paper-figure10.pdf}
 \label{fig:NNreltime_par_12}}
 %
 \caption{Network training time relative to using classical matrix multiplication}
@@ -545,12 +556,14 @@ The algorithm with a number of sub-multiplications that is a multiple of 12, $\d
 %
 \subfloat[One thread]{
 \centering
-\input{plots/VGG_time_seq}
+%\input{plots/VGG_time_seq}
+\includegraphics{tikz-taps/paper-figure11.pdf}
 \label{fig:vgg_seq}}%
 \hfill	
 \subfloat[Six threads]{
 \centering
-\input{plots/VGG_time}
+%\input{plots/VGG_time}
+\includegraphics{tikz-taps/paper-figure12.pdf}
 \label{fig:vgg_par6}}
 %
 \caption{Per-batch training time on the fully connected layers of VGG-19 using $\dims{4,4,2}$ and Classical}
