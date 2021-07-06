@@ -1,4 +1,4 @@
-\documentclass[sigconf]{acmart}
+\documentclass[manuscript]{acmart}
 
 \usepackage{amsmath,amsfonts}
 \usepackage{algorithmic}
@@ -71,7 +71,7 @@
 
 \keywords{neural networks, multilayer perceptrons, APA matrix multiplication}
 
-\title{Accelerating Neural Network Training using Arbitrary Precision Approximating Matrix Multiplication Algorithms}
+\title[Accelerating NN Training using APA Matrix Multiplication Algorithms]{Accelerating Neural Network Training using Arbitrary Precision Approximating Matrix Multiplication Algorithms}
 
 \author{Grey Ballard}
 \affiliation{%
@@ -335,7 +335,7 @@ The third block column shows error parameters, and the error is calculated as $2
 \renewcommand{\datafile}{data/matmul_seq.dat}
 \renewcommand{\threads}{1}
 %\input{plots/matmul_perf}
-\includegraphics{tikz-taps/paper-figure2.pdf}
+\includegraphics[scale=.85]{tikz-taps/paper-figure2.pdf}
 %\caption{Single-threaded matrix multiplication performance}
 \label{fig:matmul_seq}}
 %
@@ -345,7 +345,7 @@ The third block column shows error parameters, and the error is calculated as $2
 \renewcommand{\datafile}{data/matmul_par_6.dat}
 \renewcommand{\threads}{6}
 %\input{plots/matmul_perf}
-\includegraphics{tikz-taps/paper-figure3.pdf}
+\includegraphics[scale=.85]{tikz-taps/paper-figure3.pdf}
 %\caption{Multithreaded matrix multiplication performance (6 threads)}
 \label{fig:matmul_par_6}}
 %
@@ -355,7 +355,7 @@ The third block column shows error parameters, and the error is calculated as $2
 \renewcommand{\datafile}{data/matmul_par_12.dat}
 \renewcommand{\threads}{12}
 %\input{plots/matmul_perf}
-\includegraphics{tikz-taps/paper-figure4.pdf}
+\includegraphics[scale=.85]{tikz-taps/paper-figure4.pdf}
 %\caption{Multithreaded matrix multiplication performance (6 threads)}
 \label{fig:matmul_par_12}}
 %
@@ -455,7 +455,7 @@ The performance results for 6 threads shows that algorithm $\dims{4,4,2}$ and it
 \renewcommand{\datafile}{data/NN_acc.dat}
 \renewcommand{\set}{train}
 %\input{plots/NN_acc}
-\includegraphics{tikz-taps/paper-figure5.pdf}
+\includegraphics[scale=.9]{tikz-taps/paper-figure5.pdf}
 \label{fig:NN_acc_train}}
 %
 \hfill
@@ -464,24 +464,23 @@ The performance results for 6 threads shows that algorithm $\dims{4,4,2}$ and it
 \renewcommand{\datafile}{data/NN_acc.dat}
 \renewcommand{\set}{test}
 %\input{plots/NN_acc}
-\includegraphics{tikz-taps/paper-figure6.pdf}
+\includegraphics[scale=.9]{tikz-taps/paper-figure6.pdf}
 \label{fig:NN_acc_test}}
 %
 \caption{MLP network accuracy for MNIST data set}
 \label{fig:NN_acc}
 \end{figure*}
 
-\begin{figure}[hb!]
+
+\subsection{MLP Network Structure}
+
+\begin{figure}[ht!]
 \centering
 %\input{figs/neuralnet}
 \includegraphics{tikz-taps/paper-figure7.pdf}
 \caption{Multi-Layer Perceptron network structure}
 \label{fig:neuralnet}
 \end{figure}
-
-
-
-\subsection{MLP Network Structure}
 
 To illustrate the effectiveness of APA algorithms in neural network training, we consider Multi-Layer Perceptron networks, as shown in Fig.~\ref{fig:neuralnet}.
 We use TensorFlow 2.2.0 to build the networks and implement custom operators for matrix multiplication.
@@ -522,7 +521,7 @@ We see more variability in the test error due to the sensitivity inherent in the
 \renewcommand{\datafile}{data/NN_seq.dat}
 \renewcommand{\threads}{1}
 %\input{plots/NN_reltime}
-\includegraphics{tikz-taps/paper-figure8.pdf}
+\includegraphics[scale=.85]{tikz-taps/paper-figure8.pdf}
 \label{fig:NNreltime_seq}}
 %
 \hfill
@@ -531,7 +530,7 @@ We see more variability in the test error due to the sensitivity inherent in the
 \renewcommand{\datafile}{data/NN_par_6.dat}
 \renewcommand{\threads}{6}
 %\input{plots/NN_reltime}
-\includegraphics{tikz-taps/paper-figure9.pdf}
+\includegraphics[scale=.85]{tikz-taps/paper-figure9.pdf}
 \label{fig:NNreltime_par_6}}
 %
 \hfill
@@ -540,7 +539,7 @@ We see more variability in the test error due to the sensitivity inherent in the
 \renewcommand{\datafile}{data/NN_par_12.dat}
 \renewcommand{\threads}{12}
 %\input{plots/NN_reltime}
-\includegraphics{tikz-taps/paper-figure10.pdf}
+\includegraphics[scale=.85]{tikz-taps/paper-figure10.pdf}
 \label{fig:NNreltime_par_12}}
 %
 \caption{Network training time relative to using classical matrix multiplication}
@@ -576,13 +575,13 @@ The algorithm with a number of sub-multiplications that is a multiple of 12, $\d
 \subfloat[One thread]{
 \centering
 %\input{plots/VGG_time_seq}
-\includegraphics{tikz-taps/paper-figure11.pdf}
+\includegraphics[scale=1.75]{tikz-taps/paper-figure11.pdf}
 \label{fig:vgg_seq}}%
 \hfill	
 \subfloat[Six threads]{
 \centering
 %\input{plots/VGG_time}
-\includegraphics{tikz-taps/paper-figure12.pdf}
+\includegraphics[scale=1.75]{tikz-taps/paper-figure12.pdf}
 \label{fig:vgg_par6}}
 %
 \caption{Per-batch training time on the fully connected layers of VGG-19 using $\dims{4,4,2}$ and Classical}
