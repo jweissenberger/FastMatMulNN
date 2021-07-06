@@ -10,17 +10,17 @@
 
 % cleveref
 \usepackage{hyperref}
-\usepackage[nameinlink]{cleveref}
-\crefname{section}{\S}{Sections}
-\crefname{figure}{Fig.}{Figs.}
-\Crefname{figure}{Figure}{Figures}
-\crefname{table}{Table}{Tables}
+%\usepackage[nameinlink]{cleveref}
+%\crefname{section}{\S}{Sections}
+%\crefname{figure}{Fig.}{Figs.}
+%\Crefname{figure}{Figure}{Figures}
+%\crefname{table}{Table}{Tables}
 
 % tikz
-\usepackage{tikz,pgfplots}
-\usetikzlibrary{positioning}
-\usetikzlibrary{external} 
-\tikzexternalize[optimize=false, prefix=tikz/]
+%\usepackage{tikz,pgfplots}
+%\usetikzlibrary{positioning}
+%\usetikzlibrary{external} 
+%\tikzexternalize[optimize=false, prefix=tikz/]
 
 % for subfigures
 \usepackage[caption=false,font=footnotesize]{subfig}
@@ -51,6 +51,25 @@
 \acmDOI{10.1145/3458744.3474050}
 \acmISBN{978-1-4503-8441-4/21/08}
 
+\begin{CCSXML}
+<ccs2012>
+   <concept>
+       <concept_id>10002950.10003705.10011686</concept_id>
+       <concept_desc>Mathematics of computing~Mathematical software performance</concept_desc>
+       <concept_significance>500</concept_significance>
+       </concept>
+  <concept>
+       <concept_id>10010147.10010257.10010293.10010294</concept_id>
+       <concept_desc>Computing methodologies~Neural networks</concept_desc>
+       <concept_significance>500</concept_significance>
+       </concept>
+ </ccs2012>
+\end{CCSXML}
+
+\ccsdesc[500]{Mathematics of computing~Mathematical software performance}
+\ccsdesc[500]{Computing methodologies~Neural networks}
+
+\keywords{neural networks, multilayer perceptrons, APA matrix multiplication}
 
 \title{Accelerating Neural Network Training using Arbitrary Precision Approximating Matrix Multiplication Algorithms}
 
@@ -96,7 +115,7 @@ For example, Strassen's original fast matrix multiplication algorithm performs $
 The true complexity of matrix multiplication, typically measured as the exponent $\omega$ for complexity $O(n^\omega)$ is an open question, but the current tightest upper bound is 2.37286 \cite{AW21}.
 Upper bounds in this range correspond to theoretical algorithms that are not expected to be practical.
 
-One of the reasons such algorithms are impractical is that they are based on so-called \emph{Arbitrary Precision Approximating} (APA) algorithms, which we describe in detail in \cref{sec:APA}.
+One of the reasons such algorithms are impractical is that they are based on so-called \emph{Arbitrary Precision Approximating} (APA) algorithms, which we describe in detail in \S~\ref{sec:APA}.
 In exact arithmetic, these algorithms compute an approximation of the correct result, where the error is polynomial in a nonzero parameter of the algorithm \cite{BLR80}.
 That is, in exact arithmetic, the error can be made arbitrarily small.
 In floating point arithmetic, however, there is a lower bound on the approximation error that depends on the working precision and properties of the algorithm.
@@ -150,7 +169,7 @@ An APA algorithm is one that takes as input $A$, $B$, and a scalar parameter $0<
 where $E$ is an error matrix that depends on $A$ and $B$ and corresponds to the leading term of the error polynomial.
 Thus, in exact arithmetic, letting $\lambda \rightarrow 0$ achieves arbitrarily small approximation error.
 In floating point arithmetic, choosing too small a value for $\lambda$ leads to accumulation of roundoff error that exceeds the approximation error.
-We discuss optimizing $\lambda$ in \cref{sec:APAerr}.
+We discuss optimizing $\lambda$ in \S~\ref{sec:APAerr}.
 
 In theory, APA algorithms can be converted to exact algorithms at the cost of an extra logarithmic factor of $n$, which is typically hidden by an arbitrarily small increase in the exponent \cite{Bini80}.
 In practice, $n$ is not large enough to ignore the logarithmic factor, so we consider each APA algorithm as is.
@@ -182,7 +201,7 @@ M_{10} =& (\lambda A_{31} + A_{32}) \cdot (B_{12} - \lambda B_{22})\\
 \hat C_{32} =& \lambda^{-1} (M_6 + M_7 - M_8 + M_9).\\
 \end{align*}
 For example, this rule computes the first entry of the output matrix as $\hat C_{11} = A_{11}  B_{11} + A_{12}  B_{21} - \lambda A_{12}  B_{11}$.
-Thus, in this case, the first entry of the error matrix $E$ in \cref{eq:APAapprox} is $E_{11} = A_{12}  B_{11}$.
+Thus, in this case, the first entry of the error matrix $E$ in eq.~\eqref{eq:APAapprox} is $E_{11} = A_{12}  B_{11}$.
 
 We highlight several properties of the rule which are common across all APA algorithms we consider.
 First, the rule requires fewer multiplications than the classical one (rank 10 instead of 12 for $\dims{3,2,2}$ here).
@@ -236,14 +255,14 @@ We use the notation $2^{-d}$ for working precision, where $d=52$ for double and 
 
 The two parameters of the APA algorithm specify the contribution of the approximation and roundoff errors, respectively.
 The first parameter, $\sigma$, is the smallest positive exponent of the error polynomial and represents the approximation error.
-\Cref{eq:APAapprox} shows the error as a polynomial of $\lambda$ whose leading term is linear in $\lambda$.
-If an algorithm satisfies \cref{eq:APAapprox} with $E\neq 0$, then $\sigma=1$.
+Equation~\eqref{eq:APAapprox} shows the error as a polynomial of $\lambda$ whose leading term is linear in $\lambda$.
+If an algorithm satisfies eq.~\eqref{eq:APAapprox} with $E\neq 0$, then $\sigma=1$.
 However, if $E=0$, then $\sigma>1$ is the degree of the leading monomial.
 Larger $\sigma$ implies smaller error due to the algorithm, though all of the APA algorithms we consider have $\sigma=1$.
 
 The second parameter, $\varphi$, is the largest (in absolute value) negative exponent of the algorithm, computed as the largest sum of negative exponents across all triplets of matrices.
 This parameter represents the effect of roundoff error caused by floating point arithmetic involving the largest intermediate values computed by the algorithm.
-For example, the triplet given in \cref{eq:triplet} yields a sum of negative exponents of $0+0+1=1$, and in the case of Bini's algorithm, no other triplet has a larger sum, so $\varphi=1$ for that algorithm.
+For example, the triplet given in eq.~\eqref{eq:triplet} yields a sum of negative exponents of $0+0+1=1$, and in the case of Bini's algorithm, no other triplet has a larger sum, so $\varphi=1$ for that algorithm.
 Smaller $\varphi$ implies smaller error due to roundoff, and the APA algorithms we consider exhibit a range of values.
 
 Given these two contributions to the numerical error, $\lambda$ can be optimized to balance the effects based on parameters $\sigma$ and $\varphi$ (and $d$).
@@ -251,9 +270,9 @@ As shown by Bini, Lotti, and Romani \cite{BLR80}, the optimal $\lambda$ should b
 Using this value of $\lambda$, the numerical error incurred by the algorithm will be bounded by $O(2^{-d\sigma/(\sigma+\varphi)})$.
 Taking Bini's algorithm as an example, we have $\sigma=\varphi=1$, so the error is $O(2^{-d/2})$, or the square root of working precision.
 Note that if multiple recursive steps are used, then $\varphi$ increases proportional to the number of steps, so straightforward optimization of $\lambda$ results in error of $O(2^{-d\sigma/(\sigma+s\varphi)})$ for $s$ recursive steps.
-The parameters and minimum error for the algorithms we consider are presented in \cref{sec:APAprops}.
+The parameters and minimum error for the algorithms we consider are presented in \S~\ref{sec:APAprops}.
 
-We show empirical error results for uniform random inputs of varying dimension in \cref{fig:accuracy}, as compared to the classical algorithm.
+We show empirical error results for uniform random inputs of varying dimension in Fig.~\ref{fig:accuracy}, as compared to the classical algorithm.
 We measure the relative Frobenius norm error, or $\|C-\hat C\|_F/\|C\|_F$, where $\hat C$ is computed by each algorithm and $C$ is computed using the classical algorithm in double precision.
 In order to choose the optimal $\lambda$ value for each algorithm, we tested the 5 powers of 2 closest to the theoretical optimal value and chose the best.
 
@@ -272,7 +291,7 @@ The two most accurate APA algorithms are the least recently discovered: Bini's $
 Algorithms that offer more potential speedup tend to be less accurate.
 Two algorithms with smaller error than expected are $\dims{5,5,5}$ and $\dims{7,2,2}$, which is explained by the coefficients of those algorithms including fractional pre-factors.
 While $\phi$ is computed using the exponents of the largest intermediate term of $\lambda$, the leading term of $\dims{5,5,5}$ has a constant of $1/4$, lessening its magnitude. 
-We study the effects of the matrix multiplication error on neural network training and test accuracy in \cref{sec:NNacc}.
+We study the effects of the matrix multiplication error on neural network training and test accuracy in \S~\ref{sec:NNacc}.
 
 \subsection{Practical Algorithms}
 
@@ -292,7 +311,7 @@ In the experimental results of this work, we use only 1 recursive step for all a
 \subsection{APA Algorithm Properties}
 \label{sec:APAprops}
 
-\Cref{tab:algs} shows the key performance and accuracy properties of the APA algorithms we consider.
+Table~\ref{tab:algs} shows the key performance and accuracy properties of the APA algorithms we consider.
 Each row corresponds to an algorithm, and the first row includes the classical algorithm for comparison.
 For all algorithms, we assume only 1 recursive step is used, though the speedup and error for more steps can be readily calculated from the parameters.
 The first column gives the reference where the algorithm was first specified.
@@ -359,7 +378,7 @@ We use single precision in all experiments.
 
 \subsection{Hybrid Parallelization Strategy}
 
-As described in \cref{sec:APAalgs}, each algorithm can be encoded by a set of triplets of coefficient matrices.
+As described in \S~\ref{sec:APAalgs}, each algorithm can be encoded by a set of triplets of coefficient matrices.
 From this representation, we generate recursive code that computes the linear combinations for the inputs to each multiplication and combines the outputs.
 The linear combinations are computed using a ``write-once'' strategy that was found to be most efficient in terms of memory bandwidth and performance.
 The multiplications are either computed recursively or via a call to \texttt{gemm}, the interface to a highly efficient BLAS implementation of the classical algorithm.
@@ -369,7 +388,7 @@ We note that the original code generation tool was designed primarily for exact 
 We adopt the ``hybrid'' parallelization strategy proposed by Benson and Ballard \cite{BB15}.
 All linear combinations are parallelized in a straightforward way, in order to maximize the memory bandwidth of the machine.
 The multiplications are parallelized as follows: given $r$ multiplications and $p$ threads, with $r=p\cdot q + \ell$ for integers $q$ and $\ell<p$, we assign each thread $q$ multiplications to be performed independently, and the remaining $\ell$ multiplications are performed by all threads using the multithreaded implementation of \texttt{gemm}.
-\Cref{fig:hybrid} shows the hybrid strategy for $r=10$ (Bini's algorithm) and $p=4$.
+Figure~\ref{fig:hybrid} shows the hybrid strategy for $r=10$ (Bini's algorithm) and $p=4$.
 
 
 
@@ -379,7 +398,7 @@ The hybrid strategy also perfectly load balances the computation across threads,
 
 \subsection{Sequential Performance}
 
-\Cref{fig:matmul_seq} reports the sequential performance of the APA algorithms in comparison to the most efficient implementation of the classical algorithm, MKL's single-precision \texttt{gemm}.
+Figure~\ref{fig:matmul_seq} reports the sequential performance of the APA algorithms in comparison to the most efficient implementation of the classical algorithm, MKL's single-precision \texttt{gemm}.
 The y-axis is the \emph{effective} GFLOPS, which is measured as $\num{1e-9} \cdot 2n^3 / \text{ time}$.
 That is, the GFLOPS reported for APA algorithms is not true performance, as they perform fewer flops than the classical algorithm.
 We use this metric to be able to compare relative times across algorithms performing different amounts of computation.
@@ -393,18 +412,18 @@ We note that $\dims{4,4,2}$ is also high performing, achieving a 25\% observed i
 \subsection{Parallel Performance}
 \label{sec:matmul_perf_par}
 
-We report parallel performance in \cref{fig:matmul_par_6,fig:matmul_par_12} for running with 6 threads (one socket) and 12 threads (both sockets).
+We report parallel performance in Figs.~\ref{fig:matmul_par_6} and \ref{fig:matmul_par_12} for running with 6 threads (one socket) and 12 threads (both sockets).
 Overall, speedups of APA algorithms over classical are reduced in the parallel case.
 Again, the theoretical speedup is based on a reduction in the multiplications, and the overhead of additions is the biggest impediment to realizing that speedup.
 In the parallel case, the additions can become an even larger bottleneck because the additions are memory bandwidth bound, and the memory bandwidth does not scale with the number of cores \cite{BB15}.
 While we can expect close to linear speedup with cores on the multiplications (which are perfectly load balanced), linear scaling is impossible to achieve with the additions.
 We also note that when the hybrid method uses all threads on remainder multiplications, the smaller dimensions make it harder for multithreaded \texttt{gemm} to scale as well as it can on the original matrix dimensions.
 
-In the performance results for 6 threads (\cref{fig:matmul_par_6}), we see that many of the algorithms start to outperform classical around dimension 2000, though some poor performance is observed for algorithms and particular matrix dimensions.
+In the performance results for 6 threads (Fig.~\ref{fig:matmul_par_6}), we see that many of the algorithms start to outperform classical around dimension 2000, though some poor performance is observed for algorithms and particular matrix dimensions.
 The fastest algorithms (e.g., $\dims{4,4,4}$ and $\dims{4,4,2}$) achieve a speedup of up to 25\% over \texttt{gemm} and exceed the machine peak for classical algorithms.
 We note that the $\dims{4,4,2}$ algorithm has 24 subproblems, which is a multiple of 6, so there are no remainder subproblems that require all threads.
 
-\Cref{fig:matmul_par_12} shows the results for 12 threads.
+Figure~\ref{fig:matmul_par_12} shows the results for 12 threads.
 Here we see a majority of the algorithms are slower than the classical algorithm, even for large matrices.
 We attribute the poor performance to the effect of lower \texttt{gemm} performance for smaller matrices, as well as a lack of NUMA-aware optimization.
 The ``ramp-up'' range of \texttt{gemm} performance is much shallower for 12 threads than for 6 threads, not achieving the plateau performance until dimension 4000 or so.
@@ -464,14 +483,14 @@ The performance results for 6 threads shows that algorithm $\dims{4,4,2}$ and it
 
 \subsection{MLP Network Structure}
 
-To illustrate the effectiveness of APA algorithms in neural network training, we consider Multi-Layer Perceptron networks, as shown in \cref{fig:neuralnet}.
+To illustrate the effectiveness of APA algorithms in neural network training, we consider Multi-Layer Perceptron networks, as shown in Fig.~\ref{fig:neuralnet}.
 We use TensorFlow 2.2.0 to build the networks and implement custom operators for matrix multiplication.
 For internal layers, we use the custom operator for both forward propagation and gradient calculation.
 For fair comparison against the classical algorithm, we use a custom classical operator that directly calls \texttt{gemm}, which significantly outperformed TensorFlow's built-in matrix multiplication operator for fully connected layers.
 
-We show an MLP network with two hidden layers in \cref{fig:neuralnet}.
-The dimensions in the figure match those of the accuracy experiment described in \cref{sec:NNacc}.
-For the performance experiment of \cref{sec:NNperf}, we use an MLP with four hidden layers and varying numbers of nodes in the hidden layers.
+We show an MLP network with two hidden layers in Fig.~\ref{fig:neuralnet}.
+The dimensions in the figure match those of the accuracy experiment described in \S~\ref{sec:NNacc}.
+For the performance experiment of \S~\ref{sec:NNperf}, we use an MLP with four hidden layers and varying numbers of nodes in the hidden layers.
 
 \subsection{Accuracy}
 \label{sec:NNacc}
@@ -489,7 +508,7 @@ APA algorithms are used for the middle multiplication of the network (yielding m
 The APA algorithms are also used during back propagation in the corresponding multiplications in the center of the network.
 One network is trained for 50 epochs for each of the APA algorithms, and one is trained using the classical matrix multiplication algorithm.
 
-\Cref{fig:NN_acc_train} plots the accuracy on the training data over each epoch, and \cref{fig:NN_acc_test} shows the test accuracy over epochs. 
+Figure~\ref{fig:NN_acc_train} plots the accuracy on the training data over each epoch, and Fig.~\ref{fig:NN_acc_test} shows the test accuracy over epochs. 
 The matrix multiplication error introduced from these algorithms has minimal effect on the training error; all algorithms yield convergence to nearly full accuracy after 20 epochs or so.
 We see more variability in the test error due to the sensitivity inherent in the generalizability of the model, though all algorithms achieve between 97\% and 99\% test accuracy.
 
@@ -535,19 +554,19 @@ The APA algorithms are used only in the multiplications in the hidden layers dur
 
 Following the methodology of ParaDnn, we measure the performance of each algorithm with the number of nodes in each hidden layer varying from 512 to 8192. 
 We also match the batch size of each network to the number of nodes in the hidden layer to produce square matrix multiplications in the hidden layers. 
-\cref{fig:NNreltime} shows the empirical results using 1, 6, and 12 threads.
+Fig.~\ref{fig:NNreltime} shows the empirical results using 1, 6, and 12 threads.
 
-As shown in \cref{fig:NNreltime_seq}, the single-threaded results begin to show speed up over the classical algorithm when the matrix dimensions are at least 1024.
+As shown in Fig.~\ref{fig:NNreltime_seq}, the single-threaded results begin to show speed up over the classical algorithm when the matrix dimensions are at least 1024.
 The highest performing algorithm is $\dims{4,4,4}$, which obtains a 25\% speed up at dimension 8192. 
 All algorithms outperform classical for dimensions 4096 and 8192.
 
-\Cref{fig:NNreltime_par_6} shows the results for six threads (one socket).
-As described in \cref{sec:matmul_perf_par}, the APA algorithms do not scale to higher numbers of cores as efficiently as \texttt{gemm}, due to both the overhead of matrix additions (a memory bandwidth bottleneck) and reduced parallel performance of \texttt{gemm} for smaller dimensions.
+Figure~\ref{fig:NNreltime_par_6} shows the results for six threads (one socket).
+As described in \S~\ref{sec:matmul_perf_par}, the APA algorithms do not scale to higher numbers of cores as efficiently as \texttt{gemm}, due to both the overhead of matrix additions (a memory bandwidth bottleneck) and reduced parallel performance of \texttt{gemm} for smaller dimensions.
 In this case, not all APA algorithms outperform the classical algorithm.
 The highest performing algorithms are $\dims{4,4,2}$ and $\dims{4,4,4}$, which obtain an improvement of 13\% for dimension 8192.
 
-In the case of 12 threads (both sockets), as shown in \cref{fig:NNreltime_par_12}, most APA algorithms underperform the classical algorithm.
-These results match the behavior of standalone matrix multiplications using 12 threads (see \cref{sec:matmul_perf_par}); the lack of scaling is due in large part to the poor performance of multithreaded \texttt{gemm} on remainder multiplications of small dimensions.
+In the case of 12 threads (both sockets), as shown in Fig.~\ref{fig:NNreltime_par_12}, most APA algorithms underperform the classical algorithm.
+These results match the behavior of standalone matrix multiplications using 12 threads (see \S~\ref{sec:matmul_perf_par}); the lack of scaling is due in large part to the poor performance of multithreaded \texttt{gemm} on remainder multiplications of small dimensions.
 The algorithm with a number of sub-multiplications that is a multiple of 12, $\dims{4,4,2}$, continues to perform well and is slightly faster than the classical algorithm for dimensions 4096 and 8192, attaining speedups of up to 7\%.
 
 \section{Application of APA algorithms in VGG-19}
@@ -580,7 +599,7 @@ By using faster APA algorithms for the multiplication, we are able to speed up t
 %\subsection{Performance}
 
 Replacing the classic matrix multiplication algorithm in these layers with the $\dims{4,4,2}$ algorithm provides up to a 10\% speed up of the fully connected layers during training with 6 threads and a 15\% speed up using a single thread. 
-\Cref{fig:vgg} shows the per-batch training time of the fully connected layers across batch sizes.
+Figure~\ref{fig:vgg} shows the per-batch training time of the fully connected layers across batch sizes.
 
 \section{Conclusion}
 
