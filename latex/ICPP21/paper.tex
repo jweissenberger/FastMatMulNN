@@ -218,32 +218,6 @@ For example, encoding the first multiplication $M_1$ in Bini's algorithm can be 
 The first two matrices specify the linear combinations taken of entries of $A$ and $B$, and the third matrix specifies the contributions of $M_1$ to the entries of $\hat C$.
 Ten such triplets completely specify Bini's algorithm.
 
-\begin{table}
-\centering
-\begin{tabular}{| c | c c c | c c c |} 
-\hline
-\textbf{Ref} & \textbf{Dims} & \textbf{Rank} & \textbf{Speedup} & $\mathbf{\sigma}$ & $\mathbf{\varphi}$ & \textbf{Error} \\
-\hline
-- & $\dims{2,2,2}$ & 8 & - & 1 & 0 & \num{1.2e-7} \\
-\hline
-\cite{BCRL79} & $\dims{3,2,2}$ & 10 & $20\%$ & 1 & 1 & \num{3.5e-4} \\
-\cite{AS13} & $\dims{4,2,2}$ & 13 & $23\%$ & 1 & 2 & \num{4.9e-3} \\
-\cite{Smirnov13} & $\dims{3,3,2}$ & 14 & $29\%$ & 1 & 3 & \num{1.9e-2} \\
-\cite{Smirnov13} & $\dims{5,2,2}$ & 16 & $25\%$ & 1 & 3 & \num{1.9e-2} \\
-\cite{Smirnov13} & $\dims{3,3,3}$ & 20 & $35\%$ & 1 & 6 & \num{1.0e-1} \\
-\cite{Schonhage81} & $\dims{3,3,3}$ & 21 & $29\%$ & 1 & 2 & \num{4.9e-3} \\
-\cite{Smirnov15} & $\dims{7,2,2}$ & 22 & $27\%$ & 1 & 5 & \num{7.0e-2} \\
-\cite{Smirnov16b} & $\dims{4,4,2}$ & 24 & $33\%$ & 1 & 3 & \num{1.9e-2} \\
-\cite{Smirnov16a} & $\dims{4,3,3}$ & 27 & $33\%$ & 1 & 3 & \num{1.9e-2} \\
-\cite{Smirnov16b} & $\dims{5,5,2}$ & 37 & $35\%$ & 1 & 3 & \num{1.9e-2} \\
-\cite{Smirnov14} & $\dims{4,4,4}$ & 46 & $39\%$ & 1 & 3 & \num{1.9e-2} \\
-\cite{Smirnov18} & $\dims{5,5,5}$ & 90 & $39\%$ & 1 & 3 & \num{1.9e-2} \\
-\hline
-\end{tabular}
-\caption{Properties of APA algorithms. Speedup and error are computed assuming 1 recursive step.}
-\label{tab:algs}
-\end{table}
-
 \subsection{Numerical Error of APA Algorithms}
 \label{sec:APAerr}
 
@@ -316,16 +290,33 @@ The first column gives the reference where the algorithm was first specified.
 The second block column demonstrates the possible performance improvement, where speedup is calculated as $(mnk/r - 1)\cdot100\%$ for $\dims{m,n,k}$ and rank $r$.
 The third block column shows error parameters, and the error is calculated as $2^{-d\cdot\sigma/(\sigma+\varphi)}$ with $d=23$, corresponding to single precision.
 
-\section{Parallel Fast Matrix Multiplication}
-
-\begin{figure}
+\begin{table}
 \centering
-%\input{figs/hybrid}
-\includegraphics{tikz-taps/paper-figure1.pdf}
-\caption{Illustration of hybrid parallelization strategy for $r=10$ and 4 threads.  Each thread is assigned two multiplications to compute using single-threaded \texttt{gemm} and the two remaining multiplications are performed using multithreaded \texttt{gemm}.}
-\label{fig:hybrid}
-\end{figure}
+\begin{tabular}{| c | c c c | c c c |} 
+\hline
+\textbf{Ref} & \textbf{Dims} & \textbf{Rank} & \textbf{Speedup} & $\mathbf{\sigma}$ & $\mathbf{\varphi}$ & \textbf{Error} \\
+\hline
+- & $\dims{2,2,2}$ & 8 & - & 1 & 0 & \num{1.2e-7} \\
+\hline
+\cite{BCRL79} & $\dims{3,2,2}$ & 10 & $20\%$ & 1 & 1 & \num{3.5e-4} \\
+\cite{AS13} & $\dims{4,2,2}$ & 13 & $23\%$ & 1 & 2 & \num{4.9e-3} \\
+\cite{Smirnov13} & $\dims{3,3,2}$ & 14 & $29\%$ & 1 & 3 & \num{1.9e-2} \\
+\cite{Smirnov13} & $\dims{5,2,2}$ & 16 & $25\%$ & 1 & 3 & \num{1.9e-2} \\
+\cite{Smirnov13} & $\dims{3,3,3}$ & 20 & $35\%$ & 1 & 6 & \num{1.0e-1} \\
+\cite{Schonhage81} & $\dims{3,3,3}$ & 21 & $29\%$ & 1 & 2 & \num{4.9e-3} \\
+\cite{Smirnov15} & $\dims{7,2,2}$ & 22 & $27\%$ & 1 & 5 & \num{7.0e-2} \\
+\cite{Smirnov16b} & $\dims{4,4,2}$ & 24 & $33\%$ & 1 & 3 & \num{1.9e-2} \\
+\cite{Smirnov16a} & $\dims{4,3,3}$ & 27 & $33\%$ & 1 & 3 & \num{1.9e-2} \\
+\cite{Smirnov16b} & $\dims{5,5,2}$ & 37 & $35\%$ & 1 & 3 & \num{1.9e-2} \\
+\cite{Smirnov14} & $\dims{4,4,4}$ & 46 & $39\%$ & 1 & 3 & \num{1.9e-2} \\
+\cite{Smirnov18} & $\dims{5,5,5}$ & 90 & $39\%$ & 1 & 3 & \num{1.9e-2} \\
+\hline
+\end{tabular}
+\caption{Properties of APA algorithms. Speedup and error are computed assuming 1 recursive step.}
+\label{tab:algs}
+\end{table}
 
+\section{Parallel Fast Matrix Multiplication}
 
 We exploit the common algorithmic structure across APA (and exact) algorithms to develop a unified strategy of high performance multithreaded implementation using C++/OpenMP.
 We build upon the work of Benson and Ballard \cite{BB15}, using code generation to apply the strategy to each algorithm.
@@ -353,7 +344,13 @@ All linear combinations are parallelized in a straightforward way, in order to m
 The multiplications are parallelized as follows: given $r$ multiplications and $p$ threads, with $r=p\cdot q + \ell$ for integers $q$ and $\ell<p$, we assign each thread $q$ multiplications to be performed independently, and the remaining $\ell$ multiplications are performed by all threads using the multithreaded implementation of \texttt{gemm}.
 Figure~\ref{fig:hybrid} shows the hybrid strategy for $r=10$ (Bini's algorithm) and $p=4$.
 
-
+\begin{figure}
+\centering
+%\input{figs/hybrid}
+\includegraphics{tikz-taps/paper-figure1.pdf}
+\caption{Illustration of hybrid parallelization strategy for $r=10$ and 4 threads.  Each thread is assigned two multiplications to compute using single-threaded \texttt{gemm} and the two remaining multiplications are performed using multithreaded \texttt{gemm}.}
+\label{fig:hybrid}
+\end{figure}
 
 The hybrid strategy is efficient because each thread can achieve close to the peak performance of a core when computing independent matrix multiplications, even for relatively small problems.
 The alternative strategy of employing multithreaded \texttt{gemm} for each of the $r$ multiplications (known as ``DFS'') suffers performance degradation for small problems, where the parallel implementation attains a smaller fraction of peak.
@@ -374,6 +371,13 @@ We note that $\dims{4,4,2}$ is also high performing, achieving a 25\% observed i
 
 \subsection{Parallel Performance}
 \label{sec:matmul_perf_par}
+
+We report parallel performance in Figs.~\ref{fig:matmul_par_6} and \ref{fig:matmul_par_12} for running with 6 threads (one socket) and 12 threads (both sockets).
+Overall, speedups of APA algorithms over classical are reduced in the parallel case.
+Again, the theoretical speedup is based on a reduction in the multiplications, and the overhead of additions is the biggest impediment to realizing that speedup.
+In the parallel case, the additions can become an even larger bottleneck because the additions are memory bandwidth bound, and the memory bandwidth does not scale with the number of cores \cite{BB15}.
+While we can expect close to linear speedup with cores on the multiplications (which are perfectly load balanced), linear scaling is impossible to achieve with the additions.
+We also note that when the hybrid method uses all threads on remainder multiplications, the smaller dimensions make it harder for multithreaded \texttt{gemm} to scale as well as it can on the original matrix dimensions.
 
 \begin{figure*}
 %
@@ -410,13 +414,6 @@ We note that $\dims{4,4,2}$ is also high performing, achieving a 25\% observed i
 \label{fig:matmul_perf}
 \end{figure*}
 
-We report parallel performance in Figs.~\ref{fig:matmul_par_6} and \ref{fig:matmul_par_12} for running with 6 threads (one socket) and 12 threads (both sockets).
-Overall, speedups of APA algorithms over classical are reduced in the parallel case.
-Again, the theoretical speedup is based on a reduction in the multiplications, and the overhead of additions is the biggest impediment to realizing that speedup.
-In the parallel case, the additions can become an even larger bottleneck because the additions are memory bandwidth bound, and the memory bandwidth does not scale with the number of cores \cite{BB15}.
-While we can expect close to linear speedup with cores on the multiplications (which are perfectly load balanced), linear scaling is impossible to achieve with the additions.
-We also note that when the hybrid method uses all threads on remainder multiplications, the smaller dimensions make it harder for multithreaded \texttt{gemm} to scale as well as it can on the original matrix dimensions.
-
 In the performance results for 6 threads (Fig.~\ref{fig:matmul_par_6}), we see that many of the algorithms start to outperform classical around dimension 2000, though some poor performance is observed for algorithms and particular matrix dimensions.
 The fastest algorithms (e.g., $\dims{4,4,4}$ and $\dims{4,4,2}$) achieve a speedup of up to 25\% over \texttt{gemm} and exceed the machine peak for classical algorithms.
 We note that the $\dims{4,4,2}$ algorithm has 24 subproblems, which is a multiple of 6, so there are no remainder subproblems that require all threads.
@@ -451,14 +448,6 @@ The performance results for 6 threads shows that algorithm $\dims{4,4,2}$ and it
 
 \subsection{MLP Network Structure}
 
-\begin{figure}
-\centering
-%\input{figs/neuralnet}
-\includegraphics{tikz-taps/paper-figure7.pdf}
-\caption{Multi-Layer Perceptron network structure}
-\label{fig:neuralnet}
-\end{figure}
-
 To illustrate the effectiveness of APA algorithms in neural network training, we consider Multi-Layer Perceptron networks, as shown in Fig.~\ref{fig:neuralnet}.
 We use TensorFlow 2.2.0 to build the networks and implement custom operators for matrix multiplication.
 For internal layers, we use the custom operator for both forward propagation and gradient calculation.
@@ -468,8 +457,33 @@ We show an MLP network with two hidden layers in Fig.~\ref{fig:neuralnet}.
 The dimensions in the figure match those of the accuracy experiment described in \S~\ref{sec:NNacc}.
 For the performance experiment of \S~\ref{sec:NNperf}, we use an MLP with four hidden layers and varying numbers of nodes in the hidden layers.
 
+\begin{figure}
+\centering
+%\input{figs/neuralnet}
+\includegraphics{tikz-taps/paper-figure7.pdf}
+\caption{Multi-Layer Perceptron network structure}
+\label{fig:neuralnet}
+\end{figure}
+
 \subsection{Accuracy}
 \label{sec:NNacc}
+
+To measure the effect of the matrix multiplication error introduced from the APA algorithms on neural network accuracy, we trained an MLP network on the MNIST dataset \cite{LBBH98} and measured its accuracy over the course of training. 
+
+MNIST is a common machine learning dataset of 70,000 images of hand-written numerical digits. 
+Each of the images are composed of 28 by 28 grayscale pixels, which are flattened into a vector of length 784.
+The dataset is split into 60,000 examples for the training set and 10,000 examples for the test set. 
+
+The MLP network is composed of 4 fully-connected layers with 784, 300, 300, and 10 nodes, respectively.  
+The output layer has one node for each digit 0-9. 
+Training is performed using batched stochastic gradient descent with a batch size of 300.
+APA algorithms are used for the middle multiplication of the network (yielding matrix multiplication dimensions $300\times 300\times300$), while the input and output layers use the classical matrix multiplication algorithm. 
+The APA algorithms are also used during back propagation in the corresponding multiplications in the center of the network.
+One network is trained for 50 epochs for each of the APA algorithms, and one is trained using the classical matrix multiplication algorithm.
+
+Figure~\ref{fig:NN_acc_train} plots the accuracy on the training data over each epoch, and Fig.~\ref{fig:NN_acc_test} shows the test accuracy over epochs. 
+The matrix multiplication error introduced from these algorithms has minimal effect on the training error; all algorithms yield convergence to nearly full accuracy after 20 epochs or so.
+We see more variability in the test error due to the sensitivity inherent in the generalizability of the model, though all algorithms achieve between 97\% and 99\% test accuracy.
 
 \begin{figure*}
 %
@@ -494,25 +508,17 @@ For the performance experiment of \S~\ref{sec:NNperf}, we use an MLP with four h
 \label{fig:NN_acc}
 \end{figure*}
 
-To measure the effect of the matrix multiplication error introduced from the APA algorithms on neural network accuracy, we trained an MLP network on the MNIST dataset \cite{LBBH98} and measured its accuracy over the course of training. 
-
-MNIST is a common machine learning dataset of 70,000 images of hand-written numerical digits. 
-Each of the images are composed of 28 by 28 grayscale pixels, which are flattened into a vector of length 784.
-The dataset is split into 60,000 examples for the training set and 10,000 examples for the test set. 
-
-The MLP network is composed of 4 fully-connected layers with 784, 300, 300, and 10 nodes, respectively.  
-The output layer has one node for each digit 0-9. 
-Training is performed using batched stochastic gradient descent with a batch size of 300.
-APA algorithms are used for the middle multiplication of the network (yielding matrix multiplication dimensions $300\times 300\times300$), while the input and output layers use the classical matrix multiplication algorithm. 
-The APA algorithms are also used during back propagation in the corresponding multiplications in the center of the network.
-One network is trained for 50 epochs for each of the APA algorithms, and one is trained using the classical matrix multiplication algorithm.
-
-Figure~\ref{fig:NN_acc_train} plots the accuracy on the training data over each epoch, and Fig.~\ref{fig:NN_acc_test} shows the test accuracy over epochs. 
-The matrix multiplication error introduced from these algorithms has minimal effect on the training error; all algorithms yield convergence to nearly full accuracy after 20 epochs or so.
-We see more variability in the test error due to the sensitivity inherent in the generalizability of the model, though all algorithms achieve between 97\% and 99\% test accuracy.
-
 \subsection{Performance}
 \label{sec:NNperf}
+
+The neural networks used for performance benchmarking were 6-layer MLPs (4 hidden layers), and were trained on the MNIST dataset. 
+We base the structure of the network on the fully connected canonical model of ParaDnn \cite{WWB20}.
+The purpose of these experiments was to measure the speed up in training time provided by the APA algorithms and not to measure the accuracy of the networks. 
+The APA algorithms are used only in the multiplications in the hidden layers during both forward and backward propagation; the standard operation was used in the input and output layers. 
+
+Following the methodology of ParaDnn, we measure the performance of each algorithm with the number of nodes in each hidden layer varying from 512 to 8192. 
+We also match the batch size of each network to the number of nodes in the hidden layer to produce square matrix multiplications in the hidden layers. 
+Fig.~\ref{fig:NNreltime} shows the empirical results using 1, 6, and 12 threads.
 
 \begin{figure*}[t!]
 %
@@ -546,15 +552,6 @@ We see more variability in the test error due to the sensitivity inherent in the
 \label{fig:NNreltime}
 \end{figure*}
 
-The neural networks used for performance benchmarking were 6-layer MLPs (4 hidden layers), and were trained on the MNIST dataset. 
-We base the structure of the network on the fully connected canonical model of ParaDnn \cite{WWB20}.
-The purpose of these experiments was to measure the speed up in training time provided by the APA algorithms and not to measure the accuracy of the networks. 
-The APA algorithms are used only in the multiplications in the hidden layers during both forward and backward propagation; the standard operation was used in the input and output layers. 
-
-Following the methodology of ParaDnn, we measure the performance of each algorithm with the number of nodes in each hidden layer varying from 512 to 8192. 
-We also match the batch size of each network to the number of nodes in the hidden layer to produce square matrix multiplications in the hidden layers. 
-Fig.~\ref{fig:NNreltime} shows the empirical results using 1, 6, and 12 threads.
-
 As shown in Fig.~\ref{fig:NNreltime_seq}, the single-threaded results begin to show speed up over the classical algorithm when the matrix dimensions are at least 1024.
 The highest performing algorithm is $\dims{4,4,4}$, which obtains a 25\% speed up at dimension 8192. 
 All algorithms outperform classical for dimensions 4096 and 8192.
@@ -570,24 +567,6 @@ The algorithm with a number of sub-multiplications that is a multiple of 12, $\d
 
 \section{Application of APA algorithms in VGG-19}
 
-\begin{figure}
-%
-\subfloat[One thread]{
-\centering
-%\input{plots/VGG_time_seq}
-\includegraphics[scale=1.75]{tikz-taps/paper-figure11.pdf}
-\label{fig:vgg_seq}}%
-\hfill	
-\subfloat[Six threads]{
-\centering
-%\input{plots/VGG_time}
-\includegraphics[scale=1.75]{tikz-taps/paper-figure12.pdf}
-\label{fig:vgg_par6}}
-%
-\caption{Per-batch training time on the fully connected layers of VGG-19 using $\dims{4,4,2}$ and Classical}
-\label{fig:vgg}
-\end{figure}
-
 
 %\subsection{VGG-19 Network}
 VGG-19 \cite{SZ15} is a convolutional neural network typically trained on the ImageNet dataset as a classification task. 
@@ -599,6 +578,24 @@ By using faster APA algorithms for the multiplication, we are able to speed up t
 
 Replacing the classic matrix multiplication algorithm in these layers with the $\dims{4,4,2}$ algorithm provides up to a 10\% speed up of the fully connected layers during training with 6 threads and a 15\% speed up using a single thread. 
 Figure~\ref{fig:vgg} shows the per-batch training time of the fully connected layers across batch sizes.
+
+\begin{figure}
+%
+\subfloat[One thread]{
+\centering
+%\input{plots/VGG_time_seq}
+\includegraphics[scale=1.65]{tikz-taps/paper-figure11.pdf}
+\label{fig:vgg_seq}}%
+\hfill	
+\subfloat[Six threads]{
+\centering
+%\input{plots/VGG_time}
+\includegraphics[scale=1.65]{tikz-taps/paper-figure12.pdf}
+\label{fig:vgg_par6}}
+%
+\caption{Per-batch training time on the fully connected layers of VGG-19 using $\dims{4,4,2}$ and Classical}
+\label{fig:vgg}
+\end{figure}
 
 \section{Conclusion}
 
