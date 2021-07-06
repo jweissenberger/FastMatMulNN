@@ -3,9 +3,9 @@
 \usepackage{amsmath,amsfonts}
 \usepackage{algorithmic}
 \usepackage{graphicx}
-\usepackage{textcomp}
-\usepackage{xcolor}
-\usepackage{ifthen}
+%\usepackage{textcomp}
+%\usepackage{xcolor}
+%\usepackage{ifthen}
 \usepackage{balance}
 
 % cleveref
@@ -26,8 +26,9 @@
 \usepackage[caption=false,font=footnotesize]{subfig}
 
 % for scientific notation like 1e-8
-\usepackage{siunitx}
-\sisetup{output-exponent-marker=\ensuremath{\mathrm{e}}}
+%\usepackage{siunitx}
+%\sisetup{output-exponent-marker=\ensuremath{\mathrm{e}}}
+\newcommand{\num}[1]{\texttt{#1}}
 
 \newcommand{\dims}[1]{\langle #1 \rangle}
 
@@ -39,9 +40,6 @@
 \newcommand{\GB}[1]{\textcolor{red}{\textbf{GB}: #1}}
 \newcommand{\JW}[1]{\textcolor{blue}{\textbf{JW}: #1}}
 \newcommand{\RZ}[1]{\textcolor{purple}{\textbf{RZ}: #1}}
-
-\setcopyright{rightsretained}
-
 
 \copyrightyear{2021} 
 \acmYear{2021} 
@@ -328,41 +326,6 @@ The third block column shows error parameters, and the error is calculated as $2
 \label{fig:hybrid}
 \end{figure}
 
-\begin{figure*}[t!]
-%
-\subfloat[One thread]{
-\centering
-\renewcommand{\datafile}{data/matmul_seq.dat}
-\renewcommand{\threads}{1}
-%\input{plots/matmul_perf}
-\includegraphics[scale=.85]{tikz-taps/paper-figure2.pdf}
-%\caption{Single-threaded matrix multiplication performance}
-\label{fig:matmul_seq}}
-%
-\hfill
-\subfloat[Six threads]{
-\centering
-\renewcommand{\datafile}{data/matmul_par_6.dat}
-\renewcommand{\threads}{6}
-%\input{plots/matmul_perf}
-\includegraphics[scale=.85]{tikz-taps/paper-figure3.pdf}
-%\caption{Multithreaded matrix multiplication performance (6 threads)}
-\label{fig:matmul_par_6}}
-%
-\hfill
-\subfloat[Twelve threads]{
-\centering
-\renewcommand{\datafile}{data/matmul_par_12.dat}
-\renewcommand{\threads}{12}
-%\input{plots/matmul_perf}
-\includegraphics[scale=.85]{tikz-taps/paper-figure4.pdf}
-%\caption{Multithreaded matrix multiplication performance (6 threads)}
-\label{fig:matmul_par_12}}
-%
-\caption{Single- and multi-threaded square matrix multiplication performance, relative to $2n^3$ operations.  The machine peak with respect to classical algorithms is given as a dotted line.}
-\label{fig:matmul_perf}
-\end{figure*}
-
 
 We exploit the common algorithmic structure across APA (and exact) algorithms to develop a unified strategy of high performance multithreaded implementation using C++/OpenMP.
 We build upon the work of Benson and Ballard \cite{BB15}, using code generation to apply the strategy to each algorithm.
@@ -412,6 +375,41 @@ We note that $\dims{4,4,2}$ is also high performing, achieving a 25\% observed i
 \subsection{Parallel Performance}
 \label{sec:matmul_perf_par}
 
+\begin{figure*}
+%
+\subfloat[One thread]{
+\centering
+\renewcommand{\datafile}{data/matmul_seq.dat}
+\renewcommand{\threads}{1}
+%\input{plots/matmul_perf}
+\includegraphics[scale=.85]{tikz-taps/paper-figure2.pdf}
+%\caption{Single-threaded matrix multiplication performance}
+\label{fig:matmul_seq}}
+%
+\hfill
+\subfloat[Six threads]{
+\centering
+\renewcommand{\datafile}{data/matmul_par_6.dat}
+\renewcommand{\threads}{6}
+%\input{plots/matmul_perf}
+\includegraphics[scale=.85]{tikz-taps/paper-figure3.pdf}
+%\caption{Multithreaded matrix multiplication performance (6 threads)}
+\label{fig:matmul_par_6}}
+%
+\hfill
+\subfloat[Twelve threads]{
+\centering
+\renewcommand{\datafile}{data/matmul_par_12.dat}
+\renewcommand{\threads}{12}
+%\input{plots/matmul_perf}
+\includegraphics[scale=.85]{tikz-taps/paper-figure4.pdf}
+%\caption{Multithreaded matrix multiplication performance (6 threads)}
+\label{fig:matmul_par_12}}
+%
+\caption{Single- and multi-threaded square matrix multiplication performance, relative to $2n^3$ operations.  The machine peak with respect to classical algorithms is given as a dotted line.}
+\label{fig:matmul_perf}
+\end{figure*}
+
 We report parallel performance in Figs.~\ref{fig:matmul_par_6} and \ref{fig:matmul_par_12} for running with 6 threads (one socket) and 12 threads (both sockets).
 Overall, speedups of APA algorithms over classical are reduced in the parallel case.
 Again, the theoretical speedup is based on a reduction in the multiplications, and the overhead of additions is the biggest impediment to realizing that speedup.
@@ -448,7 +446,32 @@ The performance results for 6 threads shows that algorithm $\dims{4,4,2}$ and it
 
 \section{Application of APA Algorithms in Multi-Layer Perceptron Network Training}
 
-\begin{figure*}[ht!]
+
+
+
+\subsection{MLP Network Structure}
+
+\begin{figure}
+\centering
+%\input{figs/neuralnet}
+\includegraphics{tikz-taps/paper-figure7.pdf}
+\caption{Multi-Layer Perceptron network structure}
+\label{fig:neuralnet}
+\end{figure}
+
+To illustrate the effectiveness of APA algorithms in neural network training, we consider Multi-Layer Perceptron networks, as shown in Fig.~\ref{fig:neuralnet}.
+We use TensorFlow 2.2.0 to build the networks and implement custom operators for matrix multiplication.
+For internal layers, we use the custom operator for both forward propagation and gradient calculation.
+For fair comparison against the classical algorithm, we use a custom classical operator that directly calls \texttt{gemm}, which significantly outperformed TensorFlow's built-in matrix multiplication operator for fully connected layers.
+
+We show an MLP network with two hidden layers in Fig.~\ref{fig:neuralnet}.
+The dimensions in the figure match those of the accuracy experiment described in \S~\ref{sec:NNacc}.
+For the performance experiment of \S~\ref{sec:NNperf}, we use an MLP with four hidden layers and varying numbers of nodes in the hidden layers.
+
+\subsection{Accuracy}
+\label{sec:NNacc}
+
+\begin{figure*}
 %
 \subfloat[Training accuracy]{
 \centering
@@ -470,29 +493,6 @@ The performance results for 6 threads shows that algorithm $\dims{4,4,2}$ and it
 \caption{MLP network accuracy for MNIST data set}
 \label{fig:NN_acc}
 \end{figure*}
-
-
-\subsection{MLP Network Structure}
-
-\begin{figure}[ht!]
-\centering
-%\input{figs/neuralnet}
-\includegraphics{tikz-taps/paper-figure7.pdf}
-\caption{Multi-Layer Perceptron network structure}
-\label{fig:neuralnet}
-\end{figure}
-
-To illustrate the effectiveness of APA algorithms in neural network training, we consider Multi-Layer Perceptron networks, as shown in Fig.~\ref{fig:neuralnet}.
-We use TensorFlow 2.2.0 to build the networks and implement custom operators for matrix multiplication.
-For internal layers, we use the custom operator for both forward propagation and gradient calculation.
-For fair comparison against the classical algorithm, we use a custom classical operator that directly calls \texttt{gemm}, which significantly outperformed TensorFlow's built-in matrix multiplication operator for fully connected layers.
-
-We show an MLP network with two hidden layers in Fig.~\ref{fig:neuralnet}.
-The dimensions in the figure match those of the accuracy experiment described in \S~\ref{sec:NNacc}.
-For the performance experiment of \S~\ref{sec:NNperf}, we use an MLP with four hidden layers and varying numbers of nodes in the hidden layers.
-
-\subsection{Accuracy}
-\label{sec:NNacc}
 
 To measure the effect of the matrix multiplication error introduced from the APA algorithms on neural network accuracy, we trained an MLP network on the MNIST dataset \cite{LBBH98} and measured its accuracy over the course of training. 
 
